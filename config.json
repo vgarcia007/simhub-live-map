@@ -1,16 +1,16 @@
 {
     "PROXY_TARGET_URL": "http://192.168.188.102:8888/api/getgamedata",
-    "mapAPIurl": "http://localhost:5000/fakedata",
+    "mapAPIurl": "http://localhost:5000/proxy",
     "defaultMapCenter": [50.34, 6.94],
     "defaultMapZoom": 15,
-    "minZoom": 10,
+    "minZoom": 18,
     "maxZoom": 19,
-    "fetchIntervalMs": 500,
-    "DEBUG": true,
+    "fetchIntervalMs": 60,
+    "DEBUG": false,
     "layerURLs": {
         "default": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         "satellite": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
     },
-    "layerSelect":"satellite"
+    "layerSelect":"default"
 
 }

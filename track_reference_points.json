@@ -1,6 +1,7 @@
 {
   "FM8": {
     "Nurburgring Nordschleife": {
+      "yaw": 0.0,
       "ref_points": [
         {
           "CoordinatesX": 845.2489013671875,
@@ -19,6 +20,29 @@
           "CoordinatesY": -4827.6171875,
           "lat": 50.372251,
           "lng": 6.985946
+        }
+      ]
+    },
+    "Brands Hatch GP": {
+      "yaw": 150,
+      "ref_points": [
+        {
+          "CoordinatesX": -92.8747329711914,
+          "CoordinatesY": 410.75592041015625,
+          "lat": 51.360192,
+          "lng": 0.260088
+        },
+        {
+          "CoordinatesX": -202.61399841308594,
+          "CoordinatesY": 108.54524230957031,
+          "lat": 51.358272,
+          "lng": 0.263573
+        },
+        {
+          "CoordinatesX": -164.31101989746094,
+          "CoordinatesY": -56.438453674316406,
+          "lat": 51.356830,
+          "lng": 0.264280
         }
       ]
     }

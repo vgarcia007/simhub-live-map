@@ -14,6 +14,8 @@ let lastGameName = null;
 let lastTrackCode = null;
 let transformCache = {};
 let map, marker; // Make map and marker accessible globally
+let overlay = document.getElementById('race-overlay');
+let overlayText = document.getElementById('race-overlay-text');
 
 function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
     if (speedKmh <= 50) return maxZoom;
@@ -32,8 +34,7 @@ async function fetchGameData(config) {
         const data = await res.json();
 
         if (!data.IsGameInRace) {
-            const overlay = document.getElementById('race-overlay');
-            const overlayText = document.getElementById('race-overlay-text');
+            
             if (overlay) {
                 overlay.style.display = 'flex';
                 overlayText.textContent = 'Waiting for race to start...';
@@ -41,7 +42,6 @@ async function fetchGameData(config) {
             setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
             return;
         } else {
-            const overlay = document.getElementById('race-overlay');
             if (overlay) overlay.style.display = 'none';
         }
 
@@ -59,7 +59,15 @@ async function fetchGameData(config) {
             const tfJson = await tfRes.json();
 
             if (!tfJson[gameName] || !tfJson[gameName][trackCode]) {
-                throw new Error(`No transform for ${gameName} / ${trackCode}`);
+                if (overlay) {
+                    overlay.style.display = 'flex';
+                    overlayText.textContent = `No transform for ${gameName} / ${trackCode}`;
+                }
+                setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
+                return;
+            }
+            else {
+                if (overlay) overlay.style.display = 'none';
             }
 
             transformCache[gameName] = transformCache[gameName] || {};
@@ -69,7 +77,8 @@ async function fetchGameData(config) {
             const coeffs = transformCache[gameName][trackCode];
             gameToLatLng = (x, y) => [
             coeffs.lat[0] * x + coeffs.lat[1] * y + coeffs.lat[2],
-            coeffs.lng[0] * x + coeffs.lng[1] * y + coeffs.lng[2]
+            coeffs.lng[0] * x + coeffs.lng[1] * y + coeffs.lng[2],
+            coeffs.yaw
             ];
 
             lastGameName = gameName;
@@ -78,14 +87,17 @@ async function fetchGameData(config) {
 
         if (!gameToLatLng) throw new Error("Transformation missing");
 
-        const [lat, lng] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
-        const yaw = d.OrientationYaw;
+        const [lat, lng, yaw_cor] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
+        const yaw = d.OrientationYaw + yaw_cor;
         const speed = data.NewData.FilteredSpeedKmh;
         const zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom);
 
         marker.setLatLng([lat, lng]);
-        map.flyTo([lat, lng], zoom, { animate: true, duration: config.fetchIntervalMs / 1000 });
-
+        //map.flyTo([lat, lng], zoom, { animate: true, duration: config.fetchIntervalMs / 1000 });
+        map.setView([lat, lng], zoom, {
+        animate: true,
+        duration: config.fetchIntervalMs / 1000  // seconds
+        });
         const iconDiv = document.getElementById('car-marker');
         if (iconDiv) iconDiv.style.transform = `rotate(${yaw}deg)`;
 

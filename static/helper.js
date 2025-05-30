@@ -38,6 +38,6 @@ async function runHelper(config) {
         console.error("API-Error:", err);
     } finally {
         runHelper.fetchInProgress = false;
-        setTimeout(() => runHelper(config), config.fetchIntervalMs);
+        
     }
 }

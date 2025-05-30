@@ -20,7 +20,8 @@ def process_tracks(input_file, output_file):
             lng_coeffs = solve_affine(refs, 'lng')
             result[game][track_name] = {
                 'lat': lat_coeffs,
-                'lng': lng_coeffs
+                'lng': lng_coeffs,
+                'yaw': values.get('yaw', 0),  # Optional yaw value
             }
 
     with open(output_file, 'w') as f:
