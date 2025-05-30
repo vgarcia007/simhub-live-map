@@ -1,0 +1,26 @@
+{
+  "FM8": {
+    "Nurburgring Nordschleife": {
+      "ref_points": [
+        {
+          "CoordinatesX": 845.2489013671875,
+          "CoordinatesY": -1175.4990234375,
+          "lat": 50.338832,
+          "lng": 6.949010
+        },
+        {
+          "CoordinatesX": -1072.189697265625,
+          "CoordinatesY": -3434.1201171875,
+          "lat": 50.358592,
+          "lng": 6.921315
+        },
+        {
+          "CoordinatesX": 3568.911376953125,
+          "CoordinatesY": -4827.6171875,
+          "lat": 50.372251,
+          "lng": 6.985946
+        }
+      ]
+    }
+  }
+}
