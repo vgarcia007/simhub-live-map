@@ -1,141 +1,20 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>FM8 Live Map</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    .car-icon {
-      width: 32px;
-      height: 32px;
-      background-image: url('/static/marker.png');
-      background-size: cover;
-      transform-origin: center center;
-    }
-
-    #map-wrapper {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    #map-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 300vw;
-      height: 300vh;
-      transform-origin: center center;
-      transition: transform 0.2s linear;
-    }
-
-    #map {
-      width: 100%;
-      height: 100%;
-    }
-  </style>
-</head>
-<body>
-  <div id="map-container">
-    <div id="map"></div>
-  </div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="{{ url_for('static', filename='map-config.js') }}"></script>
-  <script>
-    let gameToLatLng = null;
-    let lastGameName = null;
-    let lastTrackCode = null;
-    let transformCache = {};
-
-    function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
-      if (speedKmh <= 50) return maxZoom;
-      if (speedKmh >= 150) return minZoom;
-      const factor = (speedKmh - 50) / (150 - 50);
-      const zoom = maxZoom - factor * (maxZoom - minZoom);
-      return Math.round(zoom * 10) / 10;
-    }
-
-    async function fetchGameData(config) {
-      if (fetchGameData.fetchInProgress) return;
-      fetchGameData.fetchInProgress = true;
-
-      try {
-        const res = await fetch(config.mapAPIurl);
-        const data = await res.json();
-
-        if (!data?.NewData?.FeedbackData) throw new Error("Invalid API format");
-
-        const d = data.NewData.FeedbackData;
-        const gameName = data.GameName;
-        const trackCode = data.NewData.TrackCode;
-
-        if (gameName !== lastGameName || trackCode !== lastTrackCode) {
-          console.log(`Track change detected: ${gameName} / ${trackCode}`);
-
-          if (!transformCache[gameName]?.[trackCode]) {
-            const tfRes = await fetch("/static/track_transforms.json");
-            const tfJson = await tfRes.json();
-
-            if (!tfJson[gameName] || !tfJson[gameName][trackCode]) {
-              throw new Error(`No transform for ${gameName} / ${trackCode}`);
-            }
-
-            transformCache[gameName] = transformCache[gameName] || {};
-            transformCache[gameName][trackCode] = tfJson[gameName][trackCode];
-          }
-
-          const coeffs = transformCache[gameName][trackCode];
-          gameToLatLng = (x, y) => [
-            coeffs.lat[0] * x + coeffs.lat[1] * y + coeffs.lat[2],
-            coeffs.lng[0] * x + coeffs.lng[1] * y + coeffs.lng[2]
-          ];
-
-          lastGameName = gameName;
-          lastTrackCode = trackCode;
-        }
-
-        if (!gameToLatLng) throw new Error("Transformation missing");
-
-        const [lat, lng] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
-        const yaw = d.OrientationYaw;
-        const speed = data.NewData.FilteredSpeedKmh;
-        const zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom);
-
-        marker.setLatLng([lat, lng]);
-        map.flyTo([lat, lng], zoom, { animate: true, duration: config.fetchIntervalMs / 1000 });
-
-        const iconDiv = document.getElementById('car-marker');
-        if (iconDiv) iconDiv.style.transform = `rotate(${yaw}deg)`;
-
-        document.getElementById('map-container').style.transform = `translate(-50%, -50%) rotate(${-yaw}deg)`;
-      } catch (err) {
-        console.error("API-Fehler:", err);
-      } finally {
-        fetchGameData.fetchInProgress = false;
-        setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
-      }
-    }
-
-    const map = L.map('map').setView(CONFIG.defaultMapCenter, CONFIG.defaultMapZoom);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      minZoom: 10,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    const marker = L.marker(CONFIG.defaultMapCenter, {
-      icon: L.divIcon({
-        className: '',
-        html: '<div class="car-icon" id="car-marker"></div>',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-      })
-    }).addTo(map);
-
-    fetchGameData(CONFIG);
-  </script>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Live Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/static/app.css">
+  </head>
+  <body>
+    <div id="race-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:black; color:white; z-index:9999; display:flex; align-items:center; justify-content:center; font-size:2em; text-align:center;">
+      <span id="race-overlay-text">Waiting for race to start...</span>
+    </div>
+    <div id="map-container">
+      <div id="map"></div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/app.js"></script>
+  </body>
 </html>

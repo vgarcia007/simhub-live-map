@@ -3,6 +3,7 @@ import requests
 from flask_cors import CORS
 import json
 from generate_transforms import process_tracks
+from waitress import serve
 
 process_tracks("track_reference_points.json", "static/track_transforms.json")
 
@@ -20,6 +21,15 @@ PROXY_TARGET_URL = config.get('PROXY_TARGET_URL', 'http://192.168.188.102:8888/a
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/helper')
+def helper():
+    return render_template('helper.html')
+
+@app.route('/config')
+def get_config():
+    return jsonify(config)
 
 # Route to handle CORS requests
 @app.route('/proxy')
@@ -42,4 +52,9 @@ def fakedata():
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    debug = config.get('DEBUG', False)
+    if debug:
+        app.run(port=5000, debug=True)
+    else:
+        serve(app, host="0.0.0.0", port=5000)
+    

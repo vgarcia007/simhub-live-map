@@ -2,7 +2,6 @@ import json
 import numpy as np
 
 def solve_affine(refs, key):
-    # Verwende exakte Werte ohne Rundung
     A = np.array([[p['CoordinatesX'], p['CoordinatesY'], 1] for p in refs])
     b = np.array([p[key] for p in refs])
     x, _, _, _ = np.linalg.lstsq(A, b, rcond=None)

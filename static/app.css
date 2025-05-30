@@ -1,0 +1,29 @@
+.car-icon {
+    width: 32px;
+    height: 32px;
+    background-image: url('/static/marker.png');
+    background-size: cover;
+    transform-origin: center center;
+}
+
+#map-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#map-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300vw;
+    height: 300vh;
+    transform-origin: center center;
+    transition: transform 0.2s linear;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}

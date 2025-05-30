@@ -46,7 +46,7 @@ Want to add a new track or improve existing reference points? Here's how:
 1. Install the dependencies:
 
    ```
-   pip install flask requests flask-cors numpy
+   pip install flask requests flask-cors numpy waitress
    ```
 2. Edit static/map-config.js Line 1  
  ```"mapAPIurl": "http://localhost:5000/fakedata"``` for fakedata. Just a test and not moving  
@@ -54,7 +54,7 @@ Or  ```"http://localhost:5000/proxy"``` for Live Data
 
 3. Edit config.json and Put in the API URL of your SimHub PC
  
-4. Start the proxy server:
+4. Start the server:
 
    ```
    python app.py
