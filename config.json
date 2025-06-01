@@ -1,16 +1,23 @@
 {
     "PROXY_TARGET_URL": "http://192.168.188.102:8888/api/getgamedata",
-    "mapAPIurl": "http://localhost:5000/proxy",
+    "mapAPIurl": "http://localhost:5000/fakedata",
     "defaultMapCenter": [50.34, 6.94],
     "defaultMapZoom": 15,
+    "mapboxToken": "pk.eyJ1IjoiaGpldHp0IiwiYSI6ImNtYmRqNzlsNzA2M3gya3M2NmgxZHI1eWwifQ.XCn5RJ_jMQLuTv7lS8C1xQ",
+    "mapboxStyle": "satellite",
+    "mapboxStyles":{
+        "steet": "mapbox://styles/mapbox/streets-v12",
+        "satellite": "mapbox://styles/mapbox/satellite-v9",
+        "satelliteStreets": "mapbox://styles/mapbox/satellite-streets-v12",
+        "outdoors": "mapbox://styles/mapbox/outdoors-v12",
+        "dark": "mapbox://styles/mapbox/dark-v11",
+        "light": "mapbox://styles/mapbox/light-v11",
+        "navigationDay": "mapbox://styles/mapbox/navigation-day-v1",
+        "navigationNight": "mapbox://styles/mapbox/navigation-night-v1"
+        },
     "minZoom": 18,
     "maxZoom": 19,
-    "fetchIntervalMs": 60,
-    "DEBUG": false,
-    "layerURLs": {
-        "default": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "satellite": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-    },
-    "layerSelect":"default"
+    "fetchIntervalMs": 100,
+    "DEBUG": true
 
 }

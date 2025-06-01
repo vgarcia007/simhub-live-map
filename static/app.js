@@ -1,10 +1,10 @@
 fetch('/config')
     .then(response => response.json())
     .then(config => {
-    var CONFIG = config;
-    initMap(CONFIG);
-    fetchGameData(CONFIG);
-    
+        console.log("Loaded config:", config); // <---- Hier!
+        mapboxgl.accessToken = config.mapboxToken;
+        initMap(config);
+        fetchGameData(config);
     })
     .catch(err => console.error("Error loading config:", err));
 
@@ -18,11 +18,10 @@ let overlay = document.getElementById('race-overlay');
 let overlayText = document.getElementById('race-overlay-text');
 
 function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
-    if (speedKmh <= 50) return maxZoom;
-    if (speedKmh >= 150) return minZoom;
-    const factor = (speedKmh - 50) / (150 - 50);
-    const zoom = maxZoom - factor * (maxZoom - minZoom);
-    return Math.round(zoom * 10) / 10;
+  if (speedKmh >= 150) return minZoom + 0.5; // nicht ganz reinzoomen
+  if (speedKmh <= 60) return maxZoom;
+  const factor = (speedKmh - 60) / (90);
+  return Math.round((maxZoom - factor * (maxZoom - minZoom)) * 10) / 10;
 }
 
 async function fetchGameData(config) {
@@ -89,19 +88,30 @@ async function fetchGameData(config) {
 
         const [lat, lng, yaw_cor] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
         const yaw = d.OrientationYaw + yaw_cor;
+        //const yaw = d.OrientationYaw
         const speed = data.NewData.FilteredSpeedKmh;
         const zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom);
 
-        marker.setLatLng([lat, lng]);
-        //map.flyTo([lat, lng], zoom, { animate: true, duration: config.fetchIntervalMs / 1000 });
-        map.setView([lat, lng], zoom, {
-        animate: true,
-        duration: config.fetchIntervalMs / 1000  // seconds
-        });
-        const iconDiv = document.getElementById('car-marker');
-        if (iconDiv) iconDiv.style.transform = `rotate(${yaw}deg)`;
+        marker.setLngLat([lng, lat]);
+        
 
-        document.getElementById('map-container').style.transform = `translate(-50%, -50%) rotate(${-yaw}deg)`;
+        if (!window._mapInitialized) {
+            map.jumpTo({ center: [lng, lat], zoom: zoom, bearing: yaw });
+            window._mapInitialized = true;
+        } else {
+            const method = speed > 180 ? 'jumpTo' : 'easeTo';
+            map[method]({
+            center: [lng, lat],
+            bearing: yaw,
+            zoom: zoom,
+            duration: config.fetchIntervalMs,
+            easing: t => t
+            });
+
+            }
+
+
+
     } catch (err) {
         console.error("API-Error (is SimHub running?):", err);
     } finally {
@@ -112,25 +122,33 @@ async function fetchGameData(config) {
 
 function initMap(CONFIG) {
     if (CONFIG.defaultMapCenter && CONFIG.defaultMapZoom) {
-    map = L.map('map').setView(CONFIG.defaultMapCenter, CONFIG.defaultMapZoom);
-    layer = CONFIG.layerSelect || 'default';
-    layerURL = CONFIG.layerURLs[layer] || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    L.tileLayer(layerURL, {
-        maxZoom: 19,
-        minZoom: 10,
-        attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
+        mapboxgl.accessToken = CONFIG.mapboxToken;
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: CONFIG.mapboxStyles[CONFIG.mapboxStyle] || 'mapbox://styles/mapbox/streets-v12',
+            center: CONFIG.defaultMapCenter,
+            zoom: CONFIG.defaultMapZoom,
+            pitch: 45,
+            bearing: 0,
+            antialias: true,
+            collectResourceTiming: false
+        });
 
-    marker = L.marker(CONFIG.defaultMapCenter, {
-        icon: L.divIcon({
-        className: '',
-        html: '<div class="car-icon" id="car-marker"></div>',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
+        
+
+
+        const markerElement = document.createElement('div');
+        markerElement.className = 'car-icon';
+
+        marker = new mapboxgl.Marker({
+            element: markerElement,
+          
         })
-    }).addTo(map);
+        .setLngLat(CONFIG.defaultMapCenter)
+        .addTo(map);
     } else {
-    console.warn("Default map center or zoom not set in config");
+        console.warn("Default map center or zoom not set in config");
     }
 }
+
 

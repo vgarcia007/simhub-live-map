@@ -26,23 +26,26 @@
     "Brands Hatch GP": {
       "yaw": 150,
       "ref_points": [
-        {
+        { 
+          "notes": "Start/Finish Pos1",
           "CoordinatesX": -92.8747329711914,
           "CoordinatesY": 410.75592041015625,
           "lat": 51.360192,
           "lng": 0.260088
         },
         {
-          "CoordinatesX": -202.61399841308594,
-          "CoordinatesY": 108.54524230957031,
-          "lat": 51.358272,
-          "lng": 0.263573
+          "notes": "First bridge after Start. Middle of the bridge",
+          "CoordinatesX": -283.45132446289064,
+          "CoordinatesY": 110.41155242919922,
+          "lat": 51.35865071934182,
+          "lng": 0.2645964224253457
         },
-        {
-          "CoordinatesX": -164.31101989746094,
-          "CoordinatesY": -56.438453674316406,
-          "lat": 51.356830,
-          "lng": 0.264280
+        { 
+          "notes": "",
+          "CoordinatesX": 26.707338333129883,
+          "CoordinatesY": -144.44879150390625,
+          "lat": 51.355359,
+          "lng": 0.262491
         }
       ]
     }

@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Live Map</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="/static/app.css">
-  </head>
-  <body>
-    <div id="race-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; background:black; color:white; z-index:9999; display:flex; align-items:center; justify-content:center; font-size:2em; text-align:center;">
-      <span id="race-overlay-text">Waiting for race to start...</span>
-    </div>
-    <div id="map-container">
-      <div id="map"></div>
-    </div>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="/static/app.js"></script>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SimHub Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Mapbox GL JS CSS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css" rel="stylesheet" />
+  <!-- Eigene CSS -->
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <div id="map"></div>
+  <div id="race-overlay" style="display: none;">
+    <div id="race-overlay-text">Waiting for race to start...</div>
+  </div>
+  <!-- Mapbox GL JS -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.js"></script>
+  <!-- Eigene JS -->
+  <script src="/static/app.js"></script>
+</body>
 </html>
