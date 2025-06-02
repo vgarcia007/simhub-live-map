@@ -1,41 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Mapping Helper</title>
-        <link rel="stylesheet" href="/static/helper.css">
+<html lang="en" data-bs-theme="dark">
 
-    </head>
-    <body>
-        <header>
-            <h1>Mapping Helper</h1>
-            <button id="google">search google maps</button><button id="bing">search bing maps</button>
-        </header>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapping Helper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="/static/helper.css">
 
-        <main>
-            <div class="left">
-                <p><b>GameName: </b><input type="text" id="GameName"></input></p>
-                <p><b>TrackCode: </b><input type="text" id="TrackCode"></input></p>
-                <p><b>YawFix: </b><input type="text" id="yaw" value="0"></input> (if rotation on map is wrong)</p>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/helper">Mapping Helper</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" id="load" href="#"><i class="fa-solid fa-file-import"></i> Reload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="tracks" href="#"><i class="fa-solid fa-file-import"></i> Manage Tracks</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <main>
+        <div class="left">
+            <div class="mb-3">
+                <label for="GameName" class="form-label"><b>GameName:</b></label>
+                <input type="text" class="form-control" id="GameName" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="TrackCode" class="form-label"><b>TrackCode:</b></label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="TrackCode" readonly>
+                    <div class="dropdown">
+                    <button class="btn btn btn-dark dropdown-toggle border-radius-fix" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-magnifying-glass-location"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="#" id="google">Search with Google Maps</a></li>
+                        <li><a class="dropdown-item" href="#" id="bing">Search with Bing Maps</a></li>
+                    </ul>
+                    </div>
+                </div>
                 
-                <p><b>CoordinatesX: </b><input type="text" id="CoordinatesX"></input></p>
-                <p><b>CoordinatesY: </b><input type="text" id="CoordinatesY"></input></p>
-                <p><b>Note: </b><input type="text" id="notes"></input> (Optional Description of Point)</p>
-                <p><b>GPS Coordinates: </b><input type="text" id="gps"></input> <button id="gpsPaste">paste</button></p>
-                <p><button id="generate">Add</button></p>
             </div>
-            <div class="right">
-                <pre id="result"></pre>
+
+            <div class="mb-3">
+                <label for="yaw" class="form-label"><b>YawFix:</b></label>
+                <input type="number" class="form-control" id="yaw" value="0">
+                <small class="text-muted">(if rotation on map is wrong)</small>
             </div>
-            
-            
-        </main>
 
-        <footer>
-            <small><a href="https://github.com/vgarcia007/simhub-map-leaflet">https://github.com/vgarcia007/simhub-map-leaflet</a></small>
-        </footer>
+            <div class="mb-3">
+                <label for="CoordinatesX" class="form-label"><b>CoordinatesX:</b></label>
+                <input type="text" class="form-control" id="CoordinatesX">
+                <small class="text-muted">(updates as you move ingame)</small>
+            </div>
 
-        <script src="/static/helper.js"></script>
-    </body>
+            <div class="mb-3">
+                <label for="CoordinatesY" class="form-label"><b>CoordinatesY:</b></label>
+                <input type="text" class="form-control" id="CoordinatesY">
+                <small class="text-muted">(updates as you move ingame)</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="notes" class="form-label"><b>Note:</b></label>
+                <input type="text" class="form-control" id="notes">
+                <small class="text-muted">(Optional Description of Point)</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="gps" class="form-label"><b>GPS Coordinates:</b></label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="gps">
+                    <button class="btn btn-dark border-radius-fix" type="button" id="gpsPaste"><i class="fa-solid fa-paste fa-fw"></i></button>
+                </div>
+            </div>
+
+
+
+            <div class="text-end">
+                <button class="btn btn-success w-100" id="generate">Add</button>
+            </div>
+        </div>
+        <div class="right">
+
+
+            <ol class="list-group list-group" id="ref_points_list">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <pre></pre>
+                    </div>
+                    <button class="btn btn-sm btn-danger" id="delete"><i class="fa-solid fa-trash-can"></i></button>
+                </li>
+            </ol>
+            
+
+            <div class="card mt-4" >
+                <div class="card-header text-end">
+                    <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#debug" aria-expanded="false" aria-controls="debug"><i class="fa-solid fa-spider"></i> Debug</button>
+                    <button class="btn btn-success" type="button" id="save"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                </div>
+                <div class="card-body collapse" id="debug">
+                    <p>Debugging output</p>
+                    <pre id="result"></pre>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+    <footer>
+        <small><a href="https://github.com/vgarcia007/simhub-live-map"><i class="fa-brands fa-github"></i></a></small>
+    </footer>
+
+    <!-- Bootstrap Alert‐Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertModalLabel">Hinweis</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="alertModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap TrackList Modal -->
+    <div class="modal fade" id="TrackListModal" tabindex="-1" aria-labelledby="TrackListModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="TrackListModallLabel">Track List</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="alert alert-danger text-center" role="alert">
+                <i class="fa-solid fa-skull-crossbones"></i> BE CAREFUL! <i class="fa-solid fa-skull-crossbones"></i><br> CLICK A TRACK TO DELETE IT 
+            </div>
+            <div class="modal-body" id="trackList">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/helper.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>

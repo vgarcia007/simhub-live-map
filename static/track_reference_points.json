@@ -1,13 +1,13 @@
 {
   "FM8": {
     "Nurburgring Nordschleife": {
-      "yaw": 0.0,
+      "yaw": 0,
       "ref_points": [
         {
           "CoordinatesX": 845.2489013671875,
           "CoordinatesY": -1175.4990234375,
           "lat": 50.338832,
-          "lng": 6.949010
+          "lng": 6.94901
         },
         {
           "CoordinatesX": -1072.189697265625,
@@ -26,7 +26,7 @@
     "Brands Hatch GP": {
       "yaw": 150,
       "ref_points": [
-        { 
+        {
           "notes": "Start/Finish Pos1",
           "CoordinatesX": -92.8747329711914,
           "CoordinatesY": 410.75592041015625,
@@ -35,12 +35,12 @@
         },
         {
           "notes": "First bridge after Start. Middle of the bridge",
-          "CoordinatesX": -283.45132446289064,
+          "CoordinatesX": -283.4513244628906,
           "CoordinatesY": 110.41155242919922,
           "lat": 51.35865071934182,
           "lng": 0.2645964224253457
         },
-        { 
+        {
           "notes": "",
           "CoordinatesX": 26.707338333129883,
           "CoordinatesY": -144.44879150390625,

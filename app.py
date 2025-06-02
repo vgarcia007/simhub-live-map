@@ -43,6 +43,86 @@ def get_refpoint(game, track):
     except Exception as e:
         return {'error': str(e)}, 500
 
+@app.route('/delete-track/<game>/<track>', methods=['GET'])
+def delete_track(game, track):
+    try:
+        with open('static/track_reference_points.json', 'r') as f:
+            refpoints = json.load(f)
+        
+        if game in refpoints and track in refpoints[game]:
+            del refpoints[game][track]
+            # If the game has no tracks left, remove the game entry
+            if not refpoints[game]:
+                del refpoints[game]
+            
+            with open('static/track_reference_points.json', 'w') as f:
+                json.dump(refpoints, f, indent=2)
+            
+            process_tracks("static/track_reference_points.json", "static/track_transforms.json")
+            return jsonify({'message': 'Track deleted successfully'}), 200
+        else:
+            return {'error': 'Track not found'}, 404
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+@app.route('/save-refpoints/<game>', methods=['POST'])
+def save_refpoints(game):
+
+    data = request.json
+
+    #check if data is valid
+    if not isinstance(data, dict):
+        return {'error': 'Invalid data format'}, 400
+    #check if track is provided
+    try:
+        track = top_key = next(iter(data))
+        print(game)
+        print(track)
+    except StopIteration:
+        return {'error': 'No track provided'}, 400
+
+    try:
+        with open('static/track_reference_points.json', 'r') as f:
+            refpoints = json.load(f)
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+    if game not in refpoints:
+        refpoints[game] = {}
+    if track not in refpoints[game]:
+        refpoints[game][track] = {}
+
+    if 'yaw' not in refpoints[game][track]:
+        refpoints[game][track]['yaw'] = 0.0
+    if 'ref_points' not in refpoints[game][track]:
+        refpoints[game][track]['ref_points'] = []
+
+    # Update the yaw value
+    if 'yaw' in data[track]:
+        refpoints[game][track]['yaw'] = data[track]['yaw']
+    else:
+        return {'error': 'Yaw value is required'}, 400
+    # Update the reference points
+    if 'ref_points' in data[track]:
+        #check if we have at least three ref_points
+        if len(data[track]['ref_points']) < 3:
+            return {'error': 'At least three reference points are required'}, 400
+        refpoints[game][track]['ref_points'] = data[track]['ref_points']
+    else:
+        return {'error': 'Reference points are required'}, 400
+    
+    #now write back the static/track_reference_points.json file
+    try:
+        with open('static/track_reference_points.json', 'w') as f:
+            json.dump(refpoints, f, indent=2)
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+    
+    process_tracks("static/track_reference_points.json", "static/track_transforms.json")
+
+    return jsonify({'message': 'Data saved successfully'}), 200
+
 
 # Route to handle CORS requests
 @app.route('/proxy')

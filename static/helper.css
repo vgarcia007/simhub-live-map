@@ -1,9 +1,3 @@
-:root {
-    color-scheme: dark;
-}
-
-
-
 body {
     margin: 0;
     font-family: system-ui, sans-serif;
@@ -35,6 +29,7 @@ main {
 .left {
     flex: 1;
     background-color: #1e1e1e;
+
 }
 
 .right {
@@ -59,23 +54,7 @@ h1 {
     color: #ffffff;
 }
 
-a {
-color: #90caf9;
-    text-decoration: none;
-}
 
-a:hover {
-    text-decoration: underline;
-}
-
-button {
-    background-color: #3f51b5;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    margin-right:0.5rem;
-    cursor: pointer;
-}
 
 @media (max-width: 600px) {
     body {
@@ -86,4 +65,10 @@ button {
     h1 {
         font-size: 1.5rem;
     }
+}
+
+.border-radius-fix{
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    border-color: #495057;
 }

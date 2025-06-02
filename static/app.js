@@ -8,7 +8,6 @@ fetch('/config')
     })
     .catch(err => console.error("Error loading config:", err));
 
-
 let gameToLatLng = null;
 let lastGameName = null;
 let lastTrackCode = null;
@@ -25,9 +24,11 @@ function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
 }
 
 async function fetchGameData(config) {
+    let stop = false;
     if (fetchGameData.fetchInProgress) return;
     fetchGameData.fetchInProgress = true;
 
+    
     try {
         const res = await fetch(config.mapAPIurl);
         const data = await res.json();
@@ -38,7 +39,7 @@ async function fetchGameData(config) {
                 overlay.style.display = 'flex';
                 overlayText.textContent = 'Waiting for race to start...';
             }
-            setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
+            stop = true;
             return;
         } else {
             if (overlay) overlay.style.display = 'none';
@@ -59,10 +60,18 @@ async function fetchGameData(config) {
 
             if (!tfJson[gameName] || !tfJson[gameName][trackCode]) {
                 if (overlay) {
-                    overlay.style.display = 'flex';
+                    overlay.style.display = 'block';
                     overlayText.textContent = `No transform for ${gameName} / ${trackCode}`;
+                    console.log(`No transform for ${gameName} / ${trackCode}`);
+                    mapcontainer = document.getElementById('map')
+                    mapcontainer.style.display = 'none';
+                    stop = true;
+                    
+                    return;
+
+
                 }
-                setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
+                //setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
                 return;
             }
             else {
@@ -116,7 +125,12 @@ async function fetchGameData(config) {
         console.error("API-Error (is SimHub running?):", err);
     } finally {
         fetchGameData.fetchInProgress = false;
-        setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
+        if (stop) {
+            console.log("Stopping further fetches");
+        }else{
+            setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
+        }
+        
     }
 }
 

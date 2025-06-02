@@ -10,4 +10,13 @@
   position: absolute;
   top: 0; bottom: 0; left: 0; right: 0;
   background-color: lightblue;
+  z-index: -1;
+}
+
+.race-overlay{
+   position: absolute;
+   top: 10px;
+   left: 10px;
+   z-index: 1!important;
+  background-color:red;
 }
