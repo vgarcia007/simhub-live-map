@@ -20,7 +20,7 @@ Want to add a new track or improve existing reference points? Here's how:
 
 1. Find three distinctive points on the track (e.g. start/finish, a notable corner, track end).
 2. For each point, determine the in-game coordinates (CoordinatesX, CoordinatesY) and the corresponding GPS coordinates (lat, lng).
-3. Add the three reference points to the `track_reference_points.json` file. The format looks like this:
+3. Add the three reference points to the `static/track_reference_points.json` file. The format looks like this:
 
    ```json
    {

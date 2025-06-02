@@ -3,19 +3,33 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Minimal Dark Mode Page</title>
+        <title>Mapping Helper</title>
         <link rel="stylesheet" href="/static/helper.css">
 
     </head>
     <body>
         <header>
-            <h1>Liva Data Helper</h1>
+            <h1>Mapping Helper</h1>
+            <button id="google">search google maps</button><button id="bing">search bing maps</button>
         </header>
 
         <main>
-            <p>This output can help you find the coordinates.</p>
-            <p><a href="#">Link</a></p>
-            <pre id="json">no data</pre>
+            <div class="left">
+                <p><b>GameName: </b><input type="text" id="GameName"></input></p>
+                <p><b>TrackCode: </b><input type="text" id="TrackCode"></input></p>
+                <p><b>YawFix: </b><input type="text" id="yaw" value="0"></input> (if rotation on map is wrong)</p>
+                
+                <p><b>CoordinatesX: </b><input type="text" id="CoordinatesX"></input></p>
+                <p><b>CoordinatesY: </b><input type="text" id="CoordinatesY"></input></p>
+                <p><b>Note: </b><input type="text" id="notes"></input> (Optional Description of Point)</p>
+                <p><b>GPS Coordinates: </b><input type="text" id="gps"></input> <button id="gpsPaste">paste</button></p>
+                <p><button id="generate">Add</button></p>
+            </div>
+            <div class="right">
+                <pre id="result"></pre>
+            </div>
+            
+            
         </main>
 
         <footer>
