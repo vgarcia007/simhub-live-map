@@ -50,9 +50,27 @@ async function runHelper(config) {
     }
 }
 
+document.getElementById("bing").addEventListener("click", () => {
+        const trackCode = document.getElementById("TrackCode").value;
+        searchMap("bing", trackCode);
+    });
+document.getElementById("google").addEventListener("click", () => {
+        const trackCode = document.getElementById("TrackCode").value;
+        searchMap("google", trackCode);
+    });
 
+document.getElementById("gpsPaste").addEventListener("click", () => {
+        // get clipboard content
+        navigator.clipboard.readText()
+            .then(text => {
+                // set the value of the input field
+                document.getElementById("gps").value = text;
+            })
+            .catch(err => console.error('Failed to read clipboard contents: ', err));
+    });
 
-//eventlistener for button with id  on click
+    
+
 document.getElementById("generate").addEventListener("click", () => {
     //get values of all inputs
     const gameName = document.getElementById("GameName").value;
@@ -91,3 +109,27 @@ document.getElementById("generate").addEventListener("click", () => {
         const stripped = asString.slice(1, -1).trim(); // schneidet erstes und letztes Zeichen ab
     document.getElementById("result").textContent = stripped;
 });
+
+  function searchMap(provider,term) {
+    const encoded = encodeURIComponent(term);
+
+    let url = "";
+
+    switch (provider) {
+      case "google":
+        url = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+        break;
+      case "bing":
+        url = `https://www.bing.com/maps?q=${encoded}`;
+        break;
+      default:
+        alert("Unsupported provider");
+        return;
+    }
+
+    if (term) {
+      window.open(url, "_blank");
+    } else {
+      alert("Please enter a location.");
+    }
+  }

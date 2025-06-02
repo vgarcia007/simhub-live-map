@@ -10,20 +10,26 @@
     <body>
         <header>
             <h1>Mapping Helper</h1>
+            <button id="google">search google maps</button><button id="bing">search bing maps</button>
         </header>
 
         <main>
-            <p>This output can help you find the coordinates.</p>
-            <p>GameName <input type="text" id="GameName"></input></p>
-            <p>TrackCode <input type="text" id="TrackCode"></input></p>
-            <p>yaw fix (if rotation on map is wrong) <input type="text" id="yaw" value="0"></input></p>
+            <div class="left">
+                <p><b>GameName: </b><input type="text" id="GameName"></input></p>
+                <p><b>TrackCode: </b><input type="text" id="TrackCode"></input></p>
+                <p><b>YawFix: </b><input type="text" id="yaw" value="0"></input> (if rotation on map is wrong)</p>
+                
+                <p><b>CoordinatesX: </b><input type="text" id="CoordinatesX"></input></p>
+                <p><b>CoordinatesY: </b><input type="text" id="CoordinatesY"></input></p>
+                <p><b>Note: </b><input type="text" id="notes"></input> (Optional Description of Point)</p>
+                <p><b>GPS Coordinates: </b><input type="text" id="gps"></input> <button id="gpsPaste">paste</button></p>
+                <p><button id="generate">Add</button></p>
+            </div>
+            <div class="right">
+                <pre id="result"></pre>
+            </div>
             
-            <p>CoordinatesX: <input type="text" id="CoordinatesX"></input></p>
-            <p>CoordinatesY: <input type="text" id="CoordinatesY"></input></p>
-            <p>Notes (Description of Point) <input type="text" id="notes"></input>*optional</p>
-            <p>Paste GPS here: <input type="text" id="gps"></input></p>
-            <p><button id="generate">Add</button></p>
-            <pre id="result"></pre>
+            
         </main>
 
         <footer>

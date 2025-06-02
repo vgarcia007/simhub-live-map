@@ -29,4 +29,4 @@ def process_tracks(input_file, output_file):
         print(f"✅ Transformations saved to {output_file}")
 
 if __name__ == "__main__":
-    process_tracks("track_reference_points.json", "static/track_transforms.json")
+    process_tracks("static/track_reference_points.json", "static/track_transforms.json")

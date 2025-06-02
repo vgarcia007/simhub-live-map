@@ -5,7 +5,7 @@ import json
 from generate_transforms import process_tracks
 from waitress import serve
 
-process_tracks("track_reference_points.json", "static/track_transforms.json")
+process_tracks("static/track_reference_points.json", "static/track_transforms.json")
 
 app = Flask(__name__)
 CORS(app)  
@@ -30,6 +30,19 @@ def helper():
 @app.route('/config')
 def get_config():
     return jsonify(config)
+
+@app.route('/refpoints/<game>/<track>')
+def get_refpoint(game, track):
+    try:
+        with open('static/track_reference_points.json', 'r') as f:
+            refpoints = json.load(f)
+        if game in refpoints and track in refpoints[game]:
+            return jsonify(refpoints[game][track])
+        else:
+            return {'error': 'Track not found'}, 404
+    except Exception as e:
+        return {'error': str(e)}, 500
+
 
 # Route to handle CORS requests
 @app.route('/proxy')
