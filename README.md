@@ -57,7 +57,7 @@ Or  ```"http://localhost:5000/proxy"``` for Live Data
    ```
 
 5. Open `localhost:5000` in your browser.
-6. Edit Settings ![alt text](screenshots/config01.png?raw=true)
+6. Edit Settings ![alt text](screenshots/config01.jpg?raw=true)
 7. Start Mapping ![alt text](screenshots/mapping01.png?raw=true)
 8. Enjoy the Map ![alt text](screenshots/map01.jpg?raw=true)
 
