@@ -1,9 +1,9 @@
 {
     "PROXY_TARGET_URL": "http://192.168.188.102:8888/api/getgamedata",
-    "mapAPIurl": "http://localhost:5000/fakedata",
+    "mapAPIurl": "http://localhost:5000/proxy",
     "defaultMapCenter": [50.34, 6.94],
     "defaultMapZoom": 15,
-    "mapboxToken": "pk.eyJ1IjoiaGpldHp0IiwiYSI6ImNtYmRqNzlsNzA2M3gya3M2NmgxZHI1eWwifQ.XCn5RJ_jMQLuTv7lS8C1xQ",
+    "mapboxToken": "",
     "mapboxStyle": "satellite",
     "mapboxStyles":{
         "steet": "mapbox://styles/mapbox/streets-v12",
@@ -18,6 +18,6 @@
     "minZoom": 18,
     "maxZoom": 19,
     "fetchIntervalMs": 100,
-    "DEBUG": true
+    "DEBUG": false
 
 }

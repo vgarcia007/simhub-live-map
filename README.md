@@ -1,6 +1,6 @@
 # SimHub Live Map for Real Tracks
 
-This project provides a live map view similar to a navigation system and uses the SimHub JSON API to display the current position of the car on real-world race tracks. It is a proof of concept, currently implemented for Forza Motorsport 8 and the Nordschleife.
+This project provides a live map view similar to a navigation system and uses the SimHub JSON API to display the current position of the car on real-world race tracks. It is a proof of concept, currently tested with Forza Motorsport 8 and the Nordschleife and other Tracks. It should work for every other game supported by simhub that outputs X and Y Coordinates.
 
 ## Features
 
@@ -12,34 +12,32 @@ This project provides a live map view similar to a navigation system and uses th
 
 A Python Flask server acts as a CORS proxy to fetch data from the SimHub JSON API. The frontend displays the car's position in real time on a Leaflet map.
 
-To map in-game coordinates to real GPS positions, three reference points are required for each track. A reference point consists of the in-game coordinates and the corresponding GPS coordinates.
+To map in-game coordinates to real GPS positions, a minimum of three reference points are required for each track (more points = better accuracy).  
+A reference point consists of the in-game coordinates and the corresponding GPS coordinates.
+
+### Why Affine Transformation?
+
+We use an affine transformation because game coordinates and GPS coordinates are not directly comparable. Rotation, translation, and different scales need to be accounted for, which can only be reliably achieved with at least three reference points.
 
 ## Contributing
 
-Want to add a new track or improve existing reference points? Here's how:
+### Using the Mapping Helper Tool
 
-1. Find three distinctive points on the track (e.g. start/finish, a notable corner, track end).
-2. For each point, determine the in-game coordinates (CoordinatesX, CoordinatesY) and the corresponding GPS coordinates (lat, lng).
-3. Add the three reference points to the `static/track_reference_points.json` file. The format looks like this:
+To simplify the creation and management of reference points, you can use the built-in Mapping Helper tool. This tool eliminates the need to manually edit the `static/track_reference_points.json` file.
 
-   ```json
-   {
-     "FM8": {
-       "Nurburgring Nordschleife": {
-         "ref_points": [
-           { "CoordinatesX": ..., "CoordinatesY": ..., "lat": ..., "lng": ... },
-           { "CoordinatesX": ..., "CoordinatesY": ..., "lat": ..., "lng": ... },
-           { "CoordinatesX": ..., "CoordinatesY": ..., "lat": ..., "lng": ... }
-         ]
-       },
-       "Your New Track": {
-         "ref_points": [ ... ]
-       }
-     }
-   }
-   ```
+#### How to Use the Mapping Helper
 
-4. Create a pull request with your changes or open an issue if you need help.
+1. Start the server as described in the "Getting Started" section.
+2. Open your browser and navigate to `http://localhost:5000/helper`.
+3. Use the interface to:
+   - Add new reference points by providing in-game coordinates and corresponding GPS coordinates.
+   - Adjust the yaw correction if the map rotation is incorrect.
+   - Save your changes directly to the reference points file.
+4. The tool automatically updates the transformations and ensures the data is valid.
+
+This tool streamlines the process and reduces the risk of errors when adding or modifying reference points.
+
+5. For now, please create a pull request with your changes or open an issue if you need help. (Sync Feature is planned for the future)
 
 ## Getting Started
 

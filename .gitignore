@@ -1,3 +1,4 @@
 *.min.js
 *.min.css
 __pycache__/
+config-user.json

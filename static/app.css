@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
 .car-icon {
   width: 32px;
   height: 32px;
@@ -8,15 +13,15 @@
 
 #map {
   position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
+  top: 40px; bottom: 0; left: 0; right: 0;
   background-color: lightblue;
-  z-index: -1;
 }
 
-.race-overlay{
-   position: absolute;
-   top: 10px;
-   left: 10px;
-   z-index: 1!important;
-  background-color:red;
+#race-overlay{
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color:#2B3035;
+  width: 100%;
+  height: 40px;
 }

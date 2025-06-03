@@ -155,20 +155,25 @@ document.getElementById("generate").addEventListener("click", () => {
     const coordinatesX = document.getElementById("CoordinatesX").value;
     const coordinatesY = document.getElementById("CoordinatesY").value;
     const notes = document.getElementById("notes").value;
-    const gps = document.getElementById("gps").value;
-    const gps_new = gps.replace(", ", "#");
-    const gpsParts = gps_new.split("#").map(part => part.trim());
-    const lat = gpsParts[0].replace(",", ".");
-    const lng = gpsParts[1].replace(",", ".");
-  
+    try {
+        const gps = document.getElementById("gps").value;
+        const gps_new = gps.replace(", ", "#");
+        const gpsParts = gps_new.split("#").map(part => part.trim());
+        const lat = gpsParts[0].replace(",", ".");
+        const lng = gpsParts[1].replace(",", ".");
+    } catch (error) {
+        showAlertModal("Error", "Invalid GPS format. Please use strings like '50.341456263483394, 6.954064802665204' or '50,335810, 6,945043'.");
+        return;
+    }
+
     console.log("GPS Coordinates:", lat, lng);
 
     const result_json ={ 
-          "notes": notes,
-          "CoordinatesX": parseFloat(coordinatesX),
-          "CoordinatesY": parseFloat(coordinatesY),
-          "lat": parseFloat(lat),
-          "lng": parseFloat(lng)
+        "notes": notes,
+        "CoordinatesX": parseFloat(coordinatesX),
+        "CoordinatesY": parseFloat(coordinatesY),
+        "lat": parseFloat(lat),
+        "lng": parseFloat(lng)
         }
     ref_points.push(result_json);
 

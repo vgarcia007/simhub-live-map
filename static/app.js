@@ -1,48 +1,63 @@
 fetch('/config')
     .then(response => response.json())
     .then(config => {
-        console.log("Loaded config:", config); // <---- Hier!
         mapboxgl.accessToken = config.mapboxToken;
         initMap(config);
         fetchGameData(config);
     })
     .catch(err => console.error("Error loading config:", err));
 
+let lastPosition = null;
 let gameToLatLng = null;
 let lastGameName = null;
 let lastTrackCode = null;
 let transformCache = {};
-let map, marker; // Make map and marker accessible globally
+let map, marker;
 let overlay = document.getElementById('race-overlay');
 let overlayText = document.getElementById('race-overlay-text');
+let message = '';
+
+function animateMarker(posA, posB, duration) {
+    const startTime = performance.now();
+
+    function step(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const currentLng = posA.lng + (posB.lng - posA.lng) * t;
+        const currentLat = posA.lat + (posB.lat - posA.lat) * t;
+
+        marker.setLngLat([currentLng, currentLat]);
+
+        if (t < 1) {
+        requestAnimationFrame(step);
+        }
+
+    }
+
+    requestAnimationFrame(step);
+}
 
 function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
-  if (speedKmh >= 150) return minZoom + 0.5; // nicht ganz reinzoomen
-  if (speedKmh <= 60) return maxZoom;
-  const factor = (speedKmh - 60) / (90);
-  return Math.round((maxZoom - factor * (maxZoom - minZoom)) * 10) / 10;
+    if (speedKmh >= 150) return minZoom + 0.5; 
+    if (speedKmh <= 60) return maxZoom;
+    const factor = (speedKmh - 60) / (90);
+    return Math.round((maxZoom - factor * (maxZoom - minZoom)) * 10) / 10;
 }
 
 async function fetchGameData(config) {
-    let stop = false;
     if (fetchGameData.fetchInProgress) return;
     fetchGameData.fetchInProgress = true;
 
-    
     try {
         const res = await fetch(config.mapAPIurl);
         const data = await res.json();
 
         if (!data.IsGameInRace) {
-            
-            if (overlay) {
-                overlay.style.display = 'flex';
-                overlayText.textContent = 'Waiting for race to start...';
-            }
-            stop = true;
+            message = 'Waiting for race to start...';
+            if (overlay) overlayText.textContent = message;
+            fetchGameData.fetchInProgress = false;
+            // Continue polling, even if the race has not started yet:
+            setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
             return;
-        } else {
-            if (overlay) overlay.style.display = 'none';
         }
 
         if (!data?.NewData?.FeedbackData) throw new Error("Invalid API format");
@@ -51,42 +66,29 @@ async function fetchGameData(config) {
         const gameName = data.GameName;
         const trackCode = data.NewData.TrackCode;
 
+        // Track or game change → reload transform
         if (gameName !== lastGameName || trackCode !== lastTrackCode) {
             console.log(`Track change detected: ${gameName} / ${trackCode}`);
 
             if (!transformCache[gameName]?.[trackCode]) {
-            const tfRes = await fetch("/static/track_transforms.json");
-            const tfJson = await tfRes.json();
+                const tfRes = await fetch("/static/track_transforms.json");
+                const tfJson = await tfRes.json();
 
-            if (!tfJson[gameName] || !tfJson[gameName][trackCode]) {
-                if (overlay) {
-                    overlay.style.display = 'block';
-                    overlayText.textContent = `No transform for ${gameName} / ${trackCode}`;
-                    console.log(`No transform for ${gameName} / ${trackCode}`);
-                    mapcontainer = document.getElementById('map')
-                    mapcontainer.style.display = 'none';
-                    stop = true;
-                    
-                    return;
-
-
+                if (!tfJson[gameName] || !tfJson[gameName][trackCode]) {
+                    message = `No transform for ${gameName} / ${trackCode}`;
+                    if (overlay) overlayText.textContent = message;
+                    throw new Error(message);
                 }
-                //setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
-                return;
-            }
-            else {
-                if (overlay) overlay.style.display = 'none';
-            }
 
-            transformCache[gameName] = transformCache[gameName] || {};
-            transformCache[gameName][trackCode] = tfJson[gameName][trackCode];
+                transformCache[gameName] = transformCache[gameName] || {};
+                transformCache[gameName][trackCode] = tfJson[gameName][trackCode];
             }
 
             const coeffs = transformCache[gameName][trackCode];
             gameToLatLng = (x, y) => [
-            coeffs.lat[0] * x + coeffs.lat[1] * y + coeffs.lat[2],
-            coeffs.lng[0] * x + coeffs.lng[1] * y + coeffs.lng[2],
-            coeffs.yaw
+                coeffs.lat[0] * x + coeffs.lat[1] * y + coeffs.lat[2],
+                coeffs.lng[0] * x + coeffs.lng[1] * y + coeffs.lng[2],
+                coeffs.yaw
             ];
 
             lastGameName = gameName;
@@ -95,44 +97,50 @@ async function fetchGameData(config) {
 
         if (!gameToLatLng) throw new Error("Transformation missing");
 
+        // Transformiere X/Y → Lat/Lng + Yaw
         const [lat, lng, yaw_cor] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
         const yaw = d.OrientationYaw + yaw_cor;
-        //const yaw = d.OrientationYaw
         const speed = data.NewData.FilteredSpeedKmh;
         const zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom);
 
-        marker.setLngLat([lng, lat]);
-        
 
+        const newPosition = { lng: lng, lat: lat };
+
+        if (!lastPosition) {
+            marker.setLngLat([newPosition.lng, newPosition.lat]);
+            lastPosition = { ...newPosition };
+        } else {
+            // make it smooth
+            animateMarker(lastPosition, newPosition, config.fetchIntervalMs);
+            lastPosition = { ...newPosition };
+        }
+
+        // Camera
         if (!window._mapInitialized) {
             map.jumpTo({ center: [lng, lat], zoom: zoom, bearing: yaw });
             window._mapInitialized = true;
         } else {
             const method = speed > 180 ? 'jumpTo' : 'easeTo';
             map[method]({
-            center: [lng, lat],
-            bearing: yaw,
-            zoom: zoom,
-            duration: config.fetchIntervalMs,
-            easing: t => t
+                center: [lng, lat],
+                bearing: yaw,
+                zoom: zoom,
+                duration: config.fetchIntervalMs,
+                easing: t => t
             });
+        }
 
-            }
-
-
+        if (overlay) overlayText.textContent = `${trackCode} (${gameName})`;
 
     } catch (err) {
         console.error("API-Error (is SimHub running?):", err);
     } finally {
         fetchGameData.fetchInProgress = false;
-        if (stop) {
-            console.log("Stopping further fetches");
-        }else{
-            setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
-        }
-        
+        // Polling-Schleife weiterhin alle config.fetchIntervalMs ms
+        setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
     }
 }
+
 
 function initMap(CONFIG) {
     if (CONFIG.defaultMapCenter && CONFIG.defaultMapZoom) {
@@ -156,7 +164,7 @@ function initMap(CONFIG) {
 
         marker = new mapboxgl.Marker({
             element: markerElement,
-          
+
         })
         .setLngLat(CONFIG.defaultMapCenter)
         .addTo(map);
