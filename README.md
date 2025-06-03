@@ -50,15 +50,16 @@ This tool streamlines the process and reduces the risk of errors when adding or 
  ```"mapAPIurl": "http://localhost:5000/fakedata"``` for fakedata. Just a test and not moving  
 Or  ```"http://localhost:5000/proxy"``` for Live Data
 
-3. Edit config.json and Put in the API URL of your SimHub PC
- 
-4. Start the server:
+3. Start the server:
 
    ```
    python app.py
    ```
 
 5. Open `localhost:5000` in your browser.
+6. Edit Settings ![alt text](screenshots/config01.png?raw=true)
+7. Start Mapping ![alt text](screenshots/mapping01.png?raw=true)
+8. Enjoy the Map ![alt text](screenshots/map01.jpg?raw=true)
 
 ## Status
 
