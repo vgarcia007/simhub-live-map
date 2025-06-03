@@ -46,21 +46,18 @@ This tool streamlines the process and reduces the risk of errors when adding or 
    ```
    pip install flask requests flask-cors numpy waitress
    ```
-2. Edit static/map-config.js Line 1  
- ```"mapAPIurl": "http://localhost:5000/fakedata"``` for fakedata. Just a test and not moving  
-Or  ```"http://localhost:5000/proxy"``` for Live Data
 
-3. Start the server:
+2. Start the server:
 
    ```
    python app.py
    ```
 
-5. Open `localhost:5000` in your browser.
-6. Edit Settings ![alt text](screenshots/config01.jpg?raw=true)
-7. Start Mapping ![alt text](screenshots/mapping01.png?raw=true)
-8. Enjoy the Map ![alt text](screenshots/map01.jpg?raw=true)
+3. Open `localhost:5000` in your browser.
+4. Edit Settings ![alt text](screenshots/config01.jpg?raw=true)
+5. Start Mapping ![alt text](screenshots/mapping01.png?raw=true)
+6. Enjoy the Map ![alt text](screenshots/map01.jpg?raw=true)
 
 ## Status
 
-The project is in an early stage and currently only supports Forza Motorsport 8 on the Nordschleife. More tracks and features are planned. Community contributions are very welcome!
+The project is in an early stage! More tracks and features are planned. Community contributions are very welcome!
