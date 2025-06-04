@@ -49,5 +49,157 @@
         }
       ]
     }
+  },
+  "PCars3": {
+    "Nurburgring-Nordschleife": {
+      "yaw": 180,
+      "ref_points": [
+        {
+          "notes": "start",
+          "CoordinatesX": 395.71966552734375,
+          "CoordinatesY": -676.8517456054688,
+          "lat": 50.338830210939065,
+          "lng": 6.949007698808146
+        },
+        {
+          "notes": "hochleichen",
+          "CoordinatesX": -757.954345703125,
+          "CoordinatesY": -945.93408203125,
+          "lat": 50.34133989841657,
+          "lng": 6.932978981914291
+        },
+        {
+          "notes": "postbruecke",
+          "CoordinatesX": -1613.151611328125,
+          "CoordinatesY": -2848.044189453125,
+          "lat": 50.3585885854052,
+          "lng": 6.921294978432513
+        },
+        {
+          "notes": "adenauer forst",
+          "CoordinatesX": -972.8450927734375,
+          "CoordinatesY": -3571.00927734375,
+          "lat": 50.365037647997596,
+          "lng": 6.930403820333273
+        },
+        {
+          "notes": "metzgersfeld",
+          "CoordinatesX": -490.1823425292969,
+          "CoordinatesY": -4240.609375,
+          "lat": 50.37097113924593,
+          "lng": 6.9373225750212875
+        },
+        {
+          "notes": "kallenhard",
+          "CoordinatesX": -725.954345703125,
+          "CoordinatesY": -4575.185546875,
+          "lat": 50.37400510491342,
+          "lng": 6.9340754881523035
+        },
+        {
+          "notes": "werseifen",
+          "CoordinatesX": -76.3403549194336,
+          "CoordinatesY": -4834.28125,
+          "lat": 50.376223884487956,
+          "lng": 6.943281334276957
+        },
+        {
+          "notes": "vor karussell",
+          "CoordinatesX": 3178.1767578125,
+          "CoordinatesY": -4605.21142578125,
+          "lat": 50.37371119073996,
+          "lng": 6.98890347041331
+        },
+        {
+          "notes": "karussell eingang",
+          "CoordinatesX": 2964.21630859375,
+          "CoordinatesY": -4433.1923828125,
+          "lat": 50.372240941854145,
+          "lng": 6.985924584777163
+        },
+        {
+          "notes": "karussell ausgang",
+          "CoordinatesX": 2999.8955078125,
+          "CoordinatesY": -4395.35595703125,
+          "lat": 50.371894095057804,
+          "lng": 6.986446274427319
+        }
+      ]
+    },
+    "Bathurst-Mount_Panorama": {
+      "yaw": 190,
+      "ref_points": [
+        {
+          "notes": "start",
+          "CoordinatesX": -151.59280395507812,
+          "CoordinatesY": -44.04142379760742,
+          "lat": -33.439297,
+          "lng": 149.558256
+        },
+        {
+          "notes": "corner",
+          "CoordinatesX": -386.30816650390625,
+          "CoordinatesY": -9.743095397949219,
+          "lat": -33.439266,
+          "lng": 149.555647
+        },
+        {
+          "notes": "sign1",
+          "CoordinatesX": -397.3109130859375,
+          "CoordinatesY": 682.6800537109375,
+          "lat": -33.445404016882726,
+          "lng": 149.5543392687411
+        },
+        {
+          "notes": "corner fix 1",
+          "CoordinatesX": -546.075927734375,
+          "CoordinatesY": 1098.5928955078125,
+          "lat": -33.44882962957363,
+          "lng": 149.5520811544554
+        },
+        {
+          "notes": "corner fix 2",
+          "CoordinatesX": -869.6348876953125,
+          "CoordinatesY": 1083.781494140625,
+          "lat": -33.44817031003291,
+          "lng": 149.54868968791618
+        },
+        {
+          "notes": "sign2",
+          "CoordinatesX": -793.1683349609375,
+          "CoordinatesY": 1369.3953857421875,
+          "lat": -33.45083798020572,
+          "lng": 149.54904906340983
+        },
+        {
+          "notes": "sign3",
+          "CoordinatesX": -507.3636474609375,
+          "CoordinatesY": 1870.6351318359375,
+          "lat": -33.45568919056049,
+          "lng": 149.55129647271386
+        },
+        {
+          "notes": "corner fix 3",
+          "CoordinatesX": -45.231258392333984,
+          "CoordinatesY": 2014.0814208984375,
+          "lat": -33.45770494867286,
+          "lng": 149.5559201075368
+        },
+        {
+          "notes": "house1",
+          "CoordinatesX": 108.5052490234375,
+          "CoordinatesY": 1981.0975341796875,
+          "lat": -33.457498144690625,
+          "lng": 149.55750049356254
+        },
+        {
+          "notes": "brembo sign",
+          "CoordinatesX": 143.00331115722656,
+          "CoordinatesY": 1692.4716796875,
+          "lat": -33.45503125965666,
+          "lng": 149.55830582389385
+        }
+      ]
+    }
   }
 }

@@ -155,12 +155,13 @@ document.getElementById("generate").addEventListener("click", () => {
     const coordinatesX = document.getElementById("CoordinatesX").value;
     const coordinatesY = document.getElementById("CoordinatesY").value;
     const notes = document.getElementById("notes").value;
+    let lat, lng;  // <-- hier außerhalb deklarieren
     try {
         const gps = document.getElementById("gps").value;
         const gps_new = gps.replace(", ", "#");
         const gpsParts = gps_new.split("#").map(part => part.trim());
-        const lat = gpsParts[0].replace(",", ".");
-        const lng = gpsParts[1].replace(",", ".");
+        lat = gpsParts[0].replace(",", ".");
+        lng = gpsParts[1].replace(",", ".");
     } catch (error) {
         showAlertModal("Error", "Invalid GPS format. Please use strings like '50.341456263483394, 6.954064802665204' or '50,335810, 6,945043'.");
         return;

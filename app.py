@@ -108,6 +108,9 @@ def update_config_user():
     if 'DEBUG' in data:
         data['DEBUG'] = data['DEBUG'].lower() == 'true' or data['DEBUG'] == '1'
 
+    if 'speedZoom' in data:
+        data['speedZoom'] = data['speedZoom'].lower() == 'true' or data['speedZoom'] == '1'
+
     if not isinstance(data, dict):
         return {'error': 'Invalid data format'}, 400
     
@@ -230,6 +233,7 @@ def save_refpoints(game):
 @app.route('/proxy')
 def proxy():
     try:
+        print(f"Fetching data from {PROXY_TARGET_URL}")
         response = requests.get(PROXY_TARGET_URL)
         data = response.json()
         return jsonify(minimize_json(data))

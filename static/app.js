@@ -101,7 +101,11 @@ async function fetchGameData(config) {
         const [lat, lng, yaw_cor] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
         const yaw = d.OrientationYaw + yaw_cor;
         const speed = data.NewData.FilteredSpeedKmh;
-        const zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom);
+        const zoom = config.defaultMapZoom;
+        if (config.speedZoom){
+            zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom);
+        }
+        
 
 
         const newPosition = { lng: lng, lat: lat };
@@ -120,14 +124,22 @@ async function fetchGameData(config) {
             map.jumpTo({ center: [lng, lat], zoom: zoom, bearing: yaw });
             window._mapInitialized = true;
         } else {
-            const method = speed > 180 ? 'jumpTo' : 'easeTo';
-            map[method]({
-                center: [lng, lat],
-                bearing: yaw,
-                zoom: zoom,
-                duration: config.fetchIntervalMs,
-                easing: t => t
-            });
+            if (config.speedZoom){
+                map['easeTo']({
+                    center: [lng, lat],
+                    bearing: yaw,
+                    zoom: zoom,
+                    duration: config.fetchIntervalMs,
+                    easing: t => t
+                });
+            }else{
+                map['easeTo']({
+                    center: [lng, lat],
+                    bearing: yaw,
+                    duration: config.fetchIntervalMs,
+                    easing: t => t
+                });
+            }
         }
 
         if (overlay) overlayText.textContent = `${trackCode} (${gameName})`;

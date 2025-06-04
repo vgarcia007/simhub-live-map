@@ -70,6 +70,15 @@
             </div>
 
             <div class="mb-3">
+                <label for="speedZoom" class="form-label"><b>speedZoom</b></label>
+                <select class="form-select" id="speedZoom">
+                    <option value="1" {% if config.speedZoom %} selected {% endif %}>True</option>
+                    <option value="0" {% if not config.speedZoom %} selected {% endif %}>False</option>
+                </select>
+                <small class="text-muted">Zoom out on higher speeds</small>
+            </div>
+
+            <div class="mb-3">
                 <label for="DEBUG" class="form-label"><b>Debug Mode</b></label>
                 <select class="form-select" id="DEBUG">
                     <option value="1" {% if config.DEBUG %} selected {% endif %}>True</option>
