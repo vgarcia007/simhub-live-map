@@ -25,7 +25,7 @@ async function runHelper(config) {
         const gameName = data.GameName;
         const trackCode = data.NewData.TrackCode;
         const yaw = d.OrientationYaw;
-        const speed = data.NewData.FilteredSpeedKmh
+        const speed = data.NewData.FilteredSpeedKmh;
 
         jsonOut ={
             "IsGameInRace": data.IsGameInRace,

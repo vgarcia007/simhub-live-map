@@ -46,6 +46,18 @@ def minimize_json(data):
         small_data['NewData']['FeedbackData']['OrientationYaw'] = data['NewData']['FeedbackData']['OrientationYaw']
     except KeyError:
         pass
+    try:
+        small_data['NewData']['CurrentLapTime']= data['NewData']['CurrentLapTime']
+    except KeyError:
+        pass
+    try:
+        small_data['NewData']['CurrentLap']= data['NewData']['CurrentLap']
+    except KeyError:
+        pass
+    try:
+        small_data['NewData']['CurrentSectorIndex']= data['NewData']['CurrentSectorIndex']
+    except KeyError:
+        pass
     
     return small_data
 

@@ -13,8 +13,7 @@ let lastGameName = null;
 let lastTrackCode = null;
 let transformCache = {};
 let map, marker;
-let overlay = document.getElementById('race-overlay');
-let overlayText = document.getElementById('race-overlay-text');
+let infoBox = document.getElementById('nav-info-box');
 let message = '';
 
 function animateMarker(posA, posB, duration) {
@@ -36,6 +35,37 @@ function animateMarker(posA, posB, duration) {
     requestAnimationFrame(step);
 }
 
+function setInfoBox(text1 = null, text2 = null, time = null, distance = null) {
+    // if all is null, do not show the info box
+    if (!text1 && !text2 && distance === null && time === null) {
+        infoBox.style.display = 'none';
+        return;
+    }
+    
+    if (text1) {
+        infoBox.querySelector('.text1').textContent = text1;
+    }else {
+        infoBox.querySelector('.text1').textContent = '';
+    }
+    if (text2) {
+        infoBox.querySelector('.text2').textContent = text2;
+    }else {
+        infoBox.querySelector('.text2').textContent = '';
+    }
+    if (distance !== null) {
+        infoBox.querySelector('.distance').textContent = distance;
+    }else {
+        infoBox.querySelector('.distance').textContent = '';
+    }
+    if (time !== null) {
+        infoBox.querySelector('.lap-time').textContent = time;
+    }else {
+        infoBox.querySelector('.lap-time').textContent = '';
+    }
+    // Show the info box
+    infoBox.style.display = 'block';
+}
+
 function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
     if (speedKmh >= 150) return minZoom + 0.5; 
     if (speedKmh <= 60) return maxZoom;
@@ -52,12 +82,13 @@ async function fetchGameData(config) {
         const data = await res.json();
 
         if (!data.IsGameInRace) {
-            message = 'Waiting for race to start...';
-            if (overlay) overlayText.textContent = message;
+            setInfoBox(text1 = "Message", text2 = "Waiting for race to start...", time = null, distance = null);
             fetchGameData.fetchInProgress = false;
             // Continue polling, even if the race has not started yet:
             setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
             return;
+        }else {
+            setInfoBox();
         }
 
         if (!data?.NewData?.FeedbackData) throw new Error("Invalid API format");
@@ -75,9 +106,11 @@ async function fetchGameData(config) {
                 const tfJson = await tfRes.json();
 
                 if (!tfJson[gameName] || !tfJson[gameName][trackCode]) {
-                    message = `No transform for ${gameName} / ${trackCode}`;
-                    if (overlay) overlayText.textContent = message;
+
+                    setInfoBox(text1 = gameName, text2 = trackCode, time = "No transform for", distance = "<a href='/helper'>Click here to create</a>"); 
                     throw new Error(message);
+                }else {
+                    setInfoBox();
                 }
 
                 transformCache[gameName] = transformCache[gameName] || {};
@@ -101,6 +134,9 @@ async function fetchGameData(config) {
         const [lat, lng, yaw_cor] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
         const yaw = d.OrientationYaw + yaw_cor;
         const speed = data.NewData.FilteredSpeedKmh;
+        const CurrentLapTime = data.NewData.CurrentLapTime;
+        const CurrentLap = data.NewData.CurrentLap;
+        const CurrentSectorIndex = data.NewData.CurrentSectorIndex;
         const zoom = config.defaultMapZoom;
         if (config.speedZoom){
             zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom);
@@ -142,7 +178,9 @@ async function fetchGameData(config) {
             }
         }
 
-        if (overlay) overlayText.textContent = `${trackCode} (${gameName})`;
+        distance = 'Lap ' + CurrentLap + ' · Sector ' + CurrentSectorIndex;
+        const Se = (data.NewData.SectorDistances && data.NewData.SectorDistances[CurrentSectorIndex]) ? data.NewData.SectorDistances[CurrentSectorIndex] : 'N/A';
+        setInfoBox(text1 = gameName, text2 = trackCode, time = String(CurrentLapTime), distance = distance); 
 
     } catch (err) {
         console.error("API-Error (is SimHub running?):", err);
