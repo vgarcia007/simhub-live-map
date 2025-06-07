@@ -3,6 +3,9 @@ fetch('/config')
     .then(config => {
         mapboxgl.accessToken = config.mapboxToken;
         initMap(config);
+        InfoBoxShowHide("show");
+        InfoBoxSetTitle("Info");
+        InfoBoxEntryClear();
         fetchGameData(config);
     })
     .catch(err => console.error("Error loading config:", err));
@@ -14,7 +17,13 @@ let lastTrackCode = null;
 let transformCache = {};
 let map, marker;
 let infoBox = document.getElementById('nav-info-box');
+let infoBoxEntries = document.getElementById('nib-entries');
 let message = '';
+let infobox_warning_TrackInfo_id = null;
+let infobox_warning_IsGameInRace_id = null;
+let infobox_warning_NoTransform_id = null;
+let infobox_warning_LapInfo_id = null;
+let infobox_warning_Error_id = null;
 
 function animateMarker(posA, posB, duration) {
     const startTime = performance.now();
@@ -35,36 +44,76 @@ function animateMarker(posA, posB, duration) {
     requestAnimationFrame(step);
 }
 
-function setInfoBox(text1 = null, text2 = null, time = null, distance = null) {
-    // if all is null, do not show the info box
-    if (!text1 && !text2 && distance === null && time === null) {
+function InfoBoxShowHide(visibility) {
+    if (visibility === 'show') {
+        infoBox.style.display = 'block';
+    } else if (visibility === 'hide') {
         infoBox.style.display = 'none';
+    } else {
+        console.warn("Invalid visibility parameter. Use 'show' or 'hide'.");
+    }
+}
+function InfoBoxSetTitle(title = null ){
+    if (title) {
+        infoBox.querySelector('.nib-title').textContent = title;
+    } else {
+        infoBox.querySelector('.nib-title').textContent = 'Info';
+    }
+}
+
+function InfoBoxEntryClear() {
+    infoBoxEntries.innerHTML = '';
+}
+
+function InfoBoxEntryAdd(entry_icon = 'fa-solid fa-house', entry_name = null, entry_info = null) {
+    // check if infoBoxEntries.innerHTML is emty
+    let separator = '<hr class="entry-separator">';
+    if (infoBoxEntries.innerHTML.trim() === '') {
+        separator = '';
+    }
+    const id = 'nib-entry-' + Date.now() + Math.floor(Math.random() * 1000);
+    const entry =  `<div id="${id}">
+                        ${separator}
+                    <div class="destination-entry">
+                            <div class="entry-icon"><i class="${entry_icon}"></i></div>
+                            <div class="entry-text">
+                                <div class="entry-name">${entry_name}</div>
+                                <div class="entry-info">${entry_info}</div>
+                            </div>
+                        </div>
+                    </div>`;
+    infoBoxEntries.insertAdjacentHTML('beforeend', entry);
+    return id;
+}
+
+function InfoBoxEntryUpdate(id, entry_icon = 'fa-solid fa-house', entry_name = null, entry_info = null) {
+    const entry = document.getElementById(id);
+    if (!entry) {
+        console.warn(`Entry with ID ${id} not found.`);
         return;
     }
-    
-    if (text1) {
-        infoBox.querySelector('.text1').textContent = text1;
-    }else {
-        infoBox.querySelector('.text1').textContent = '';
+    entry.querySelector('.entry-icon i').className = entry_icon;
+    if (entry_name) {
+        entry.querySelector('.entry-name').innerHTML = entry_name;
+    } else {
+        entry.querySelector('.entry-name').innerHTML = '';
     }
-    if (text2) {
-        infoBox.querySelector('.text2').textContent = text2;
-    }else {
-        infoBox.querySelector('.text2').textContent = '';
+    if (entry_info) {
+        entry.querySelector('.entry-info').innerHTML = entry_info;
+    } else {
+        entry.querySelector('.entry-info').innerHTML = '';
     }
-    if (distance !== null) {
-        infoBox.querySelector('.distance').textContent = distance;
-    }else {
-        infoBox.querySelector('.distance').textContent = '';
-    }
-    if (time !== null) {
-        infoBox.querySelector('.lap-time').textContent = time;
-    }else {
-        infoBox.querySelector('.lap-time').textContent = '';
-    }
-    // Show the info box
-    infoBox.style.display = 'block';
 }
+
+function InfoBoxEntryDelete(id) {
+    const entry = document.getElementById(id);
+    if (entry) {
+        entry.remove();
+    } else {
+        console.warn(`Entry with ID ${id} not found.`);
+    }
+}
+
 
 function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
     if (speedKmh >= 150) return minZoom + 0.5; 
@@ -81,17 +130,32 @@ async function fetchGameData(config) {
         const res = await fetch(config.mapAPIurl);
         const data = await res.json();
 
+        if (!data || typeof data !== 'object') throw new Error("Invalid API response");
+        if (!data.NewData || typeof data.NewData !== 'object') throw new Error("Invalid API format");
+        if (!data.NewData.FeedbackData || typeof data.NewData.FeedbackData !== 'object') throw new Error("Invalid API format");
+
         if (!data.IsGameInRace) {
-            setInfoBox(text1 = "Message", text2 = "Waiting for race to start...", time = null, distance = null);
+            if(infobox_warning_IsGameInRace_id) {
+                InfoBoxEntryUpdate(infobox_warning_IsGameInRace_id, 'fa-solid fa-satellite-dish fa-fw', 'GPS', 'Waiting for position data...'); 
+            }else {
+                infobox_warning_IsGameInRace_id = InfoBoxEntryAdd('fa-solid fa-satellite-dish fa-fw', 'GPS', 'Waiting for position data...'); 
+            }
+            if(infobox_warning_LapInfo_id) {
+                InfoBoxEntryDelete(infobox_warning_LapInfo_id);
+                infobox_warning_LapInfo_id = null;
+            }
             fetchGameData.fetchInProgress = false;
             // Continue polling, even if the race has not started yet:
             setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
             return;
         }else {
-            setInfoBox();
-        }
+            if(infobox_warning_IsGameInRace_id) {
+                InfoBoxEntryDelete(infobox_warning_IsGameInRace_id);
+                infobox_warning_IsGameInRace_id = null;
+            }
 
-        if (!data?.NewData?.FeedbackData) throw new Error("Invalid API format");
+        }
+        
 
         const d = data.NewData.FeedbackData;
         const gameName = data.GameName;
@@ -99,18 +163,34 @@ async function fetchGameData(config) {
 
         // Track or game change → reload transform
         if (gameName !== lastGameName || trackCode !== lastTrackCode) {
+
             console.log(`Track change detected: ${gameName} / ${trackCode}`);
+
+
+
+
 
             if (!transformCache[gameName]?.[trackCode]) {
                 const tfRes = await fetch("/static/track_transforms.json");
                 const tfJson = await tfRes.json();
 
                 if (!tfJson[gameName] || !tfJson[gameName][trackCode]) {
+                    if(infobox_warning_TrackInfo_id) {
+                        InfoBoxEntryUpdate(infobox_warning_TrackInfo_id, 'fa-solid fa-road fa-fw', trackCode, gameName);
+                    }else {
+                        infobox_warning_TrackInfo_id = InfoBoxEntryAdd('fa-solid fa-road fa-fw', trackCode, gameName);
+                    }
 
-                    setInfoBox(text1 = gameName, text2 = trackCode, time = "No transform for", distance = "<a href='/helper'>Click here to create</a>"); 
-                    throw new Error(message);
+
+                    throw new Error("Transformation missing");
+
                 }else {
-                    setInfoBox();
+
+                    if(infobox_warning_NoTransform_id) {
+                        InfoBoxEntryDelete(infobox_warning_NoTransform_id);
+                        infobox_warning_NoTransform_id = null;
+                    }
+
                 }
 
                 transformCache[gameName] = transformCache[gameName] || {};
@@ -129,6 +209,15 @@ async function fetchGameData(config) {
         }
 
         if (!gameToLatLng) throw new Error("Transformation missing");
+
+        if(infobox_warning_NoTransform_id) {
+            InfoBoxEntryUpdate(infobox_warning_NoTransform_id, 'fa-solid fa-road-circle-xmark fa-fw', 'Transform missing', 'Please Create a Transform for this Track<br><a href="/helper">Click here to create</a>');
+        }
+
+        if(infobox_warning_NoTransform_id) {
+            InfoBoxEntryDelete(infobox_warning_NoTransform_id);
+            infobox_warning_NoTransform_id = null;
+        }
 
         // Transformiere X/Y → Lat/Lng + Yaw
         const [lat, lng, yaw_cor] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
@@ -178,15 +267,67 @@ async function fetchGameData(config) {
             }
         }
 
+        if(infobox_warning_TrackInfo_id) {
+            InfoBoxEntryUpdate(infobox_warning_TrackInfo_id, 'fa-solid fa-road fa-fw', trackCode, gameName);
+        }else {
+            infobox_warning_TrackInfo_id = InfoBoxEntryAdd('fa-solid fa-road fa-fw', trackCode, gameName);
+        }
+
         distance = 'Lap ' + CurrentLap + ' · Sector ' + CurrentSectorIndex;
-        const Se = (data.NewData.SectorDistances && data.NewData.SectorDistances[CurrentSectorIndex]) ? data.NewData.SectorDistances[CurrentSectorIndex] : 'N/A';
-        setInfoBox(text1 = gameName, text2 = trackCode, time = String(CurrentLapTime), distance = distance); 
+        if(infobox_warning_LapInfo_id) {
+            InfoBoxEntryUpdate(infobox_warning_LapInfo_id, 'fa-solid fa-stopwatch fa-fw', time = String(CurrentLapTime), distance);
+        }else {
+            infobox_warning_LapInfo_id = InfoBoxEntryAdd('fa-solid fa-stopwatch fa-fw', time = String(CurrentLapTime), distance);
+        }
+        
 
     } catch (err) {
-        console.error("API-Error (is SimHub running?):", err);
+
+        //check wich error we have
+        
+        
+        if(infobox_warning_IsGameInRace_id) {
+            InfoBoxEntryDelete(infobox_warning_IsGameInRace_id);
+            infobox_warning_IsGameInRace_id = null;
+        }
+
+        if(infobox_warning_LapInfo_id) {
+            InfoBoxEntryDelete(infobox_warning_LapInfo_id);
+            infobox_warning_LapInfo_id = null;
+        }
+
+        if (err.message.includes("Invalid API format")) {
+            console.error("Invalid API format:", err);
+            if(infobox_warning_Error_id) {
+                InfoBoxEntryUpdate(infobox_warning_Error_id, 'fa-solid fa-triangle-exclamation fa-fw', 'API', 'Is SimHub and Game running?');
+            }else {
+                infobox_warning_Error_id = InfoBoxEntryAdd('fa-solid fa-triangle-exclamation fa-fw', 'API', 'Is SimHub and Game running?'); 
+            }
+            if(infobox_warning_NoTransform_id) {
+                InfoBoxEntryDelete(infobox_warning_NoTransform_id);
+            }
+            if(infobox_warning_TrackInfo_id) {
+                InfoBoxEntryDelete(infobox_warning_TrackInfo_id);
+                infobox_warning_TrackInfo_id = null;
+            }
+        }
+        if (err.message.includes("Transformation missing")) {
+            if(infobox_warning_NoTransform_id) {
+                InfoBoxEntryUpdate(infobox_warning_NoTransform_id, 'fa-solid fa-road-circle-xmark fa-fw', 'Transform missing', 'Please Create a Transform for this Track<br><a href="/helper">Click here to create</a>');
+            }else {
+                infobox_warning_NoTransform_id = InfoBoxEntryAdd('fa-solid fa-road-circle-xmark fa-fw', 'Transform missing', 'Please Create a Transform for this Track<br><a href="/helper">Click here to create</a>');
+            }
+            
+            if(infobox_warning_Error_id) {
+                InfoBoxEntryDelete(infobox_warning_Error_id);
+            }
+
+        }
+
     } finally {
+
         fetchGameData.fetchInProgress = false;
-        // Polling-Schleife weiterhin alle config.fetchIntervalMs ms
+        
         setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
     }
 }

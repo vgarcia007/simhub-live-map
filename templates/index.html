@@ -20,20 +20,38 @@
   <!-- Map -->
   <div id="map"></div>
 
-  <!-- Navigation Info Box -->
-  <div id="nav-info-box">
-    <div class="nav-direction">
-      <i class="fa-solid fa-turn-right fa-2x"></i>
-      <div>
-        <div><strong class="text1">0.2 mi</strong></div>
-        <div class="text2">Balboa St</div>
-      </div>
-    </div>
-    <div class="nav-details">
-      <span class="text-success lap-time">12 min</span> · <span class="distance"> · 5.5 mi · 5:20 PM</span>
-    </div>
-  </div>
 
+  <div id="nav-info-box">
+    <div class="box-header">
+        <i class="fa-solid fa-location-dot google-pin"></i>
+        <span class="nib-title">Info</span>
+        <i class="fa-solid fa-chevron-up ms-auto"></i>
+    </div>
+    <div class="nib-entries" id="nib-entries">
+
+        <div class="destination-entry">
+            <div class="entry-icon"><i class="fa-solid fa-house"></i></div>
+            <div class="entry-text">
+                <div class="entry-name">Zuhause</div>
+                <div class="entry-info">5 min · 2,8 km</div>
+            </div>
+        </div>
+        
+        <hr class="entry-separator">
+        
+        <div class="destination-entry">
+            <div class="entry-icon"><i class="fa-regular fa-clock"></i></div>
+            <div class="entry-text">
+                <div class="entry-name">Breitbrunn 3A</div>
+                <div class="entry-info">5 min · 2,8 km</div>
+            </div>
+        </div>
+
+    </div>
+
+
+  </div>
+  
 
   <!-- Bottom Toolbar -->
   <div id="bottom-toolbar">
