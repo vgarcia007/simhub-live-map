@@ -22,42 +22,45 @@ def minimize_json(data):
         small_data['IsGameInRace'] = data['IsGameInRace']
     except KeyError:
         small_data['IsGameInRace'] = False
-    try:
-        small_data['NewData']['TrackName'] = data['NewData']['TrackName']
-    except KeyError:
-        pass
-    try:
-        small_data['NewData']['TrackCode'] = data['NewData']['TrackCode']
-    except KeyError:
-        pass
-    try:
-        small_data['NewData']['FilteredSpeedKmh'] = data['NewData']['FilteredSpeedKmh']
-    except KeyError:
-        pass
-    try:
-        small_data['NewData']['FeedbackData']['CoordinatesX'] = data['NewData']['FeedbackData']['CoordinatesX']
-    except KeyError:
-        pass
-    try:
-        small_data['NewData']['FeedbackData']['CoordinatesY'] = data['NewData']['FeedbackData']['CoordinatesY']
-    except KeyError:
-        pass
-    try:
-        small_data['NewData']['FeedbackData']['OrientationYaw'] = data['NewData']['FeedbackData']['OrientationYaw']
-    except KeyError:
-        pass
-    try:
-        small_data['NewData']['CurrentLapTime']= data['NewData']['CurrentLapTime']
-    except KeyError:
-        pass
-    try:
-        small_data['NewData']['CurrentLap']= data['NewData']['CurrentLap']
-    except KeyError:
-        pass
-    try:
-        small_data['NewData']['CurrentSectorIndex']= data['NewData']['CurrentSectorIndex']
-    except KeyError:
-        pass
+    if data['NewData'] is not None:
+        try:
+            small_data['NewData']['TrackName'] = data['NewData']['TrackName']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['TrackCode'] = data['NewData']['TrackCode']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['FilteredSpeedKmh'] = data['NewData']['FilteredSpeedKmh']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['FeedbackData']['CoordinatesX'] = data['NewData']['FeedbackData']['CoordinatesX']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['FeedbackData']['CoordinatesY'] = data['NewData']['FeedbackData']['CoordinatesY']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['FeedbackData']['OrientationYaw'] = data['NewData']['FeedbackData']['OrientationYaw']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['CurrentLapTime']= data['NewData']['CurrentLapTime']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['CurrentLap']= data['NewData']['CurrentLap']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['CurrentSectorIndex']= data['NewData']['CurrentSectorIndex']
+        except KeyError:
+            pass
+    else:
+        small_data['NewData'] = None
     
     return small_data
 
