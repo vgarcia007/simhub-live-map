@@ -231,6 +231,81 @@ function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
 }
 
 
+function loadGeoJson(url) {
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch GeoJSON from ${url}: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .catch(error => {
+      console.error(`Error loading GeoJSON from ${url}:`, error);
+      throw error; // Re-throw the error for further handling if needed
+    }
+    );
+}
+
+function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
+  const stringLayerId = String(layerId); // Sicherstellen, dass layerId ein String ist
+
+  return loadGeoJson(url)
+    .then(geojson => {
+      if (!map.getSource(stringLayerId)) {
+        map.addSource(stringLayerId, {
+          type: 'geojson',
+          data: geojson
+        });
+      } else {
+        map.getSource(stringLayerId).setData(geojson);
+      }
+
+      if (!map.getLayer(stringLayerId)) {
+        map.addLayer({
+          id: stringLayerId,
+          type: 'line',
+          source: stringLayerId,
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': layerOptions.color || '#888',
+            'line-width': layerOptions.width || 2
+          }
+        });
+      }
+
+      // Punkte als Marker hinzufügen
+      geojson.features.forEach(feature => {
+        if (feature.geometry.type === 'Point') {
+          const [lng, lat] = feature.geometry.coordinates;
+          new mapboxgl.Marker()
+            .setLngLat([lng, lat])
+            .setPopup(new mapboxgl.Popup().setText(feature.properties.name || '')) // Optional: Popup mit Name
+            .addTo(map);
+        }
+      });
+
+      // Karte auf die GeoJSON-Daten zentrieren
+      const bounds = new mapboxgl.LngLatBounds();
+      geojson.features.forEach(feature => {
+        if (feature.geometry.type === 'Point') {
+          bounds.extend(feature.geometry.coordinates);
+        } else if (feature.geometry.type === 'LineString') {
+          feature.geometry.coordinates.forEach(coord => bounds.extend(coord));
+        } else if (feature.geometry.type === 'Polygon') {
+          feature.geometry.coordinates[0].forEach(coord => bounds.extend(coord));
+        }
+      });
+      map.fitBounds(bounds, { padding: 20 });
+    })
+    .catch(error => {
+      console.error(`Error adding GeoJSON layer ${stringLayerId}:`, error);
+    });
+}
+
+
 /**
  * Initializes a Mapbox map with the specified configuration.
  *
@@ -243,6 +318,7 @@ function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
  *
  * @throws {Error} Logs a warning if `defaultMapCenter` or `defaultMapZoom` is not set in the configuration.
  */
+
 function initMap(CONFIG) {
   if (CONFIG.defaultMapCenter && CONFIG.defaultMapZoom) {
     mapboxgl.accessToken = CONFIG.mapboxToken;
@@ -266,6 +342,8 @@ function initMap(CONFIG) {
       })
       .setLngLat(CONFIG.defaultMapCenter)
       .addTo(map);
+
+      loadGeoJsonAndAddLayer(map, '/static/poi/fm8/Nurburgring%20Nordschleife.json', 123456);
   } else {
     console.warn("Default map center or zoom not set in config");
   }
@@ -448,6 +526,39 @@ async function fetchGameData(config) {
 
 
 
+
+    // Nächstgelegenen Marker finden
+    const geojson = map.getSource('123456')._data; // Zugriff auf die vorhandene GeoJSON-Quelle
+    let nearestFeature = null;
+    let minDistance = Infinity;
+    console.log(`Suche nach dem nächsten Marker für Position: ${lat}, ${lng}`);
+    geojson.features.forEach(feature => {
+      if (feature.geometry.type === 'Point') {
+        console.log(`Überprüfe Marker: ${feature.properties.name || 'Unbenannter Marker'}`);
+        const [markerLng, markerLat] = feature.geometry.coordinates;
+        const distance = calculateDistance(lat, lng, markerLat, markerLng);
+        console.log(`Distanz zu ${feature.properties.name || 'Unbenannter Marker'}: ${distance} Meter`);
+
+        if (distance < minDistance) {
+          console.log(`Nächster Marker: ${feature.properties.name || 'Unbenannter Marker'} - Distanz: ${distance} Meter`);
+          minDistance = distance;
+          nearestFeature = feature;
+        }
+      }
+    });
+
+    // Popup anzeigen, wenn der Marker nahe genug ist (z. B. 50 Meter)
+    if (nearestFeature && minDistance < 100) {
+      console.log(`Nächster Marker: ${nearestFeature.properties.name || 'Unbenannter Marker'}`);
+      const popup = new mapboxgl.Popup({ closeOnClick: true })
+        .setLngLat(nearestFeature.geometry.coordinates)
+        .setText(nearestFeature.properties.name || 'Unbenannter Marker')
+        .addTo(map);
+    }
+
+
+    
+
     // Here comes the "Always Add or Update" for LapInfo
     const CurrentLapTime = data.NewData.CurrentLapTime;
     const CurrentLap = data.NewData.CurrentLap;
@@ -526,3 +637,57 @@ function toggleTheme() {
     setTheme(prefersDark ? 'dark' : 'light');
   }
 })();
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371e3; // Erdradius in Metern
+  const φ1 = (lat1 * Math.PI) / 180;
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // Entfernung in Metern
+}
+
+// Hinzufügen eines Caching-Mechanismus für die nächste Marker-Berechnung
+let lastNearestFeature = null;
+let lastMinDistance = Infinity;
+let lastCheckedPosition = null;
+const CACHE_DISTANCE_THRESHOLD = 50; // Mindestbewegung in Metern, um die Berechnung erneut auszuführen
+
+function findNearestMarker(lat, lng, geojson) {
+  if (
+    lastCheckedPosition &&
+    calculateDistance(lat, lng, lastCheckedPosition.lat, lastCheckedPosition.lng) < CACHE_DISTANCE_THRESHOLD
+  ) {
+    // Verwenden Sie den Cache, wenn die Bewegung minimal ist
+    return { nearestFeature: lastNearestFeature, minDistance: lastMinDistance };
+  }
+
+  let nearestFeature = null;
+  let minDistance = Infinity;
+
+  geojson.features.forEach(feature => {
+    if (feature.geometry.type === 'Point') {
+      const [markerLng, markerLat] = feature.geometry.coordinates;
+      const distance = calculateDistance(lat, lng, markerLat, markerLng);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestFeature = feature;
+      }
+    }
+  });
+
+  // Cache aktualisieren
+  lastNearestFeature = nearestFeature;
+  lastMinDistance = minDistance;
+  lastCheckedPosition = { lat, lng };
+
+  return { nearestFeature, minDistance };
+}
