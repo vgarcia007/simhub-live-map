@@ -120,6 +120,7 @@ def helper():
 def update_config_user():
     data = request.json
     # get the DEBUG key from the data
+    print(f"Received data for user config update: {data}")
     if 'DEBUG' in data:
         data['DEBUG'] = data['DEBUG'].lower() == 'true' or data['DEBUG'] == '1'
 

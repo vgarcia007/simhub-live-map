@@ -4,7 +4,7 @@ fetch('/config')
     mapboxgl.accessToken = config.mapboxToken;
     initMap(config);
     InfoBoxShowHide("show");
-    InfoBoxSetTitle("Info");
+    //InfoBoxSetTitle("Info");
     InfoBoxEntryClear();
     fetchGameData(config);
   })
@@ -488,8 +488,6 @@ async function fetchGameData(config) {
     setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
   }
 }
-
-
 
 
 //Theme Logic
