@@ -10,7 +10,24 @@ fetch('/config')
   })
   .catch(err => console.error("Error loading config:", err));
 
-let lastPosition = null;
+
+let index; // <-- global deklariert!
+let points;
+let poiInfo = document.getElementById('poiInfo');
+let poiInfoIcon = document.getElementById('poiInfoIcon');
+let goodGeojson = null;
+
+
+let directions = {
+  'left': 'fa-solid fa-diamond-turn-right fa-flip-horizontal',
+  'right': 'fa-solid fa-diamond-turn-right',
+  'route': 'fa-solid fa-route',
+  'landmark': 'fa-solid fa-landmark',
+  'danger': 'fa-solid fa-road-circle-exclamation',
+
+}
+
+let lastPoi = null;
 let gameToLatLng = null;
 let lastGameName = null;
 let lastTrackCode = null;
@@ -235,75 +252,138 @@ function loadGeoJson(url) {
   return fetch(url)
     .then(response => {
       if (!response.ok) {
-        throw new Error(`Failed to fetch GeoJSON from ${url}: ${response.statusText}`);
+        console.error(`Failed to load GeoJSON from ${url}:`, response.statusText);
       }
       return response.json();
     })
     .catch(error => {
       console.error(`Error loading GeoJSON from ${url}:`, error);
-      throw error; // Re-throw the error for further handling if needed
+
     }
     );
 }
 
-function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
-  const stringLayerId = String(layerId); // Sicherstellen, dass layerId ein String ist
+async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
+  const stringLayerId = String(layerId); // layerId als String
 
-  return loadGeoJson(url)
-    .then(geojson => {
-      if (!map.getSource(stringLayerId)) {
-        map.addSource(stringLayerId, {
-          type: 'geojson',
-          data: geojson
-        });
-      } else {
-        map.getSource(stringLayerId).setData(geojson);
-      }
+  let geojson;
+  // 1) GeoJSON laden und bei Fehler abbrechen
+  try {
+    geojson = await loadGeoJson(url);
+  } catch (error) {
+    console.error(`Failed to load GeoJSON from ${url}:`, error);
+    goodGeojson = null;
+    return; // Exit bevor irgendwas an der Karte passiert
+  }
 
-      if (!map.getLayer(stringLayerId)) {
-        map.addLayer({
-          id: stringLayerId,
-          type: 'line',
-          source: stringLayerId,
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round'
-          },
-          paint: {
-            'line-color': layerOptions.color || '#888',
-            'line-width': layerOptions.width || 2
-          }
-        });
-      }
+  // 2) Existenz und Inhalt prüfen
+  if (
+    !geojson ||
+    !Array.isArray(geojson.features) ||
+    geojson.features.length === 0
+  ) {
+    goodGeojson = null;
+    console.warn(`No features found in GeoJSON from ${url}`);
+    return;
+  }
 
-      // Punkte als Marker hinzufügen
-      geojson.features.forEach(feature => {
-        if (feature.geometry.type === 'Point') {
-          const [lng, lat] = feature.geometry.coordinates;
-          new mapboxgl.Marker()
-            .setLngLat([lng, lat])
-            .setPopup(new mapboxgl.Popup().setText(feature.properties.name || '')) // Optional: Popup mit Name
-            .addTo(map);
+  // 3) Source hinzufügen bzw. updaten
+  try {
+    if (!map.getSource(stringLayerId)) {
+      map.addSource(stringLayerId, {
+        type: 'geojson',
+        data: geojson
+      });
+    } else {
+      map.getSource(stringLayerId).setData(geojson);
+    }
+  } catch (error) {
+    goodGeojson = null;
+    console.error(`Error adding/updating source '${stringLayerId}':`, error);
+    return;
+  }
+
+  // 4) Layer hinzufügen
+  try {
+    if (!map.getLayer(stringLayerId)) {
+      map.addLayer({
+        id: stringLayerId,
+        type: 'line',
+        source: stringLayerId,
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': layerOptions.color || '#888',
+          'line-width': layerOptions.width || 2
         }
       });
+    }
+  } catch (error) {
+    goodGeojson = null; // Reset goodGeojson, da wir hier einen Fehler haben
+    console.error(`Error adding layer '${stringLayerId}':`, error);
+    return;
+  }
 
-      // Karte auf die GeoJSON-Daten zentrieren
-      const bounds = new mapboxgl.LngLatBounds();
-      geojson.features.forEach(feature => {
-        if (feature.geometry.type === 'Point') {
-          bounds.extend(feature.geometry.coordinates);
-        } else if (feature.geometry.type === 'LineString') {
-          feature.geometry.coordinates.forEach(coord => bounds.extend(coord));
-        } else if (feature.geometry.type === 'Polygon') {
-          feature.geometry.coordinates[0].forEach(coord => bounds.extend(coord));
-        }
+  // 5) Marker setzen (nur Point-Geometrien)
+  try {
+    geojson.features
+      .filter(f => f.geometry.type === 'Point')
+      .forEach(f => {
+        const [lng, lat] = f.geometry.coordinates;
+        new mapboxgl.Marker()
+          .setLngLat([lng, lat])
+          .setPopup(
+            new mapboxgl.Popup().setText(f.properties.name || '')
+          )
+          .addTo(map);
       });
-      map.fitBounds(bounds, { padding: 20 });
-    })
-    .catch(error => {
-      console.error(`Error adding GeoJSON layer ${stringLayerId}:`, error);
+  } catch (error) {
+    console.error(`Error adding markers for '${stringLayerId}':`, error);
+    // Nicht return, da wir zumindest die Karte schon gezeichnet haben
+  }
+
+  // 6) Karte auf GeoJSON zentrieren
+  try {
+    const bounds = new mapboxgl.LngLatBounds();
+    geojson.features.forEach(feature => {
+      const geom = feature.geometry;
+      if (geom.type === 'Point') {
+        bounds.extend(geom.coordinates);
+      } else if (geom.type === 'LineString') {
+        geom.coordinates.forEach(coord => bounds.extend(coord));
+      } else if (geom.type === 'Polygon') {
+        geom.coordinates[0].forEach(coord => bounds.extend(coord));
+      }
     });
+    if (!bounds.isEmpty()) {
+      map.fitBounds(bounds, { padding: 20 });
+    }
+  } catch (error) {
+    console.error(`Error fitting bounds for '${stringLayerId}':`, error);
+  }
+
+  // 7) RBush-Index aufbauen
+  try {
+    const points = geojson.features
+      .filter(f => f.geometry.type === 'Point')
+      .map(f => ({
+        minX: f.geometry.coordinates[0],
+        minY: f.geometry.coordinates[1],
+        maxX: f.geometry.coordinates[0],
+        maxY: f.geometry.coordinates[1],
+        properties: f.properties
+      }));
+    const index = new RBush();
+    index.load(points);
+    // optional: return index, wenn du ihn später nutzen möchtest
+    return index;
+  } catch (error) {
+    console.error(`Error building spatial index for '${stringLayerId}':`, error);
+  }
 }
+
 
 
 /**
@@ -343,7 +423,13 @@ function initMap(CONFIG) {
       .setLngLat(CONFIG.defaultMapCenter)
       .addTo(map);
 
-      loadGeoJsonAndAddLayer(map, '/static/poi/fm8/Nurburgring%20Nordschleife.json', 123456);
+      //TODO  THis part has to be done everytime a trackchange happens
+      // Load GeoJSON and add it as a layer
+      loadGeoJsonAndAddLayer(map, "/static/poi/FM8/Nurburgring Nordschleife.json", 123456);
+      
+
+
+
   } else {
     console.warn("Default map center or zoom not set in config");
   }
@@ -411,7 +497,8 @@ async function fetchGameData(config) {
 
     // Load Trackinfo
     if (gameName !== lastGameName || trackCode !== lastTrackCode) {
-
+      console.log("Loading TrackInfo for", gameName, trackCode);
+      
       if (infobox_warning_TrackInfo_id) {
         InfoBoxEntryUpdate(
           infobox_warning_TrackInfo_id,
@@ -524,37 +611,34 @@ async function fetchGameData(config) {
       });
     }
 
+    if (goodGeojson) {
+      
+      const nearest = findNearestMarker(lat, lng);
 
+      if (nearest) {
+        if (lastPoi && lastPoi.id === nearest.id) {
 
+        }else {
+          // Wenn der letzte POI anders ist, aktualisiere den letzten POI
+          console.log("Nächster Marker gefunden:", nearest);
+          
+          let direction = nearest.properties.direction;
+          console.log('direction:', direction, 'directions keys:', Object.keys(directions));
+          console.log('directions[direction]:', directions[direction]);
+          let html = '<i class="'+ directions[direction] +' fa-3x poi-pin"></i>'
+          console.log('html:', html);
+          poiInfoIcon.innerHTML = html; 
+          poiInfo.innerHTML = nearest.properties.name;
+          lastPoi = nearest;
 
-    // Nächstgelegenen Marker finden
-    const geojson = map.getSource('123456')._data; // Zugriff auf die vorhandene GeoJSON-Quelle
-    let nearestFeature = null;
-    let minDistance = Infinity;
-    console.log(`Suche nach dem nächsten Marker für Position: ${lat}, ${lng}`);
-    geojson.features.forEach(feature => {
-      if (feature.geometry.type === 'Point') {
-        console.log(`Überprüfe Marker: ${feature.properties.name || 'Unbenannter Marker'}`);
-        const [markerLng, markerLat] = feature.geometry.coordinates;
-        const distance = calculateDistance(lat, lng, markerLat, markerLng);
-        console.log(`Distanz zu ${feature.properties.name || 'Unbenannter Marker'}: ${distance} Meter`);
-
-        if (distance < minDistance) {
-          console.log(`Nächster Marker: ${feature.properties.name || 'Unbenannter Marker'} - Distanz: ${distance} Meter`);
-          minDistance = distance;
-          nearestFeature = feature;
         }
-      }
-    });
 
-    // Popup anzeigen, wenn der Marker nahe genug ist (z. B. 50 Meter)
-    if (nearestFeature && minDistance < 100) {
-      console.log(`Nächster Marker: ${nearestFeature.properties.name || 'Unbenannter Marker'}`);
-      const popup = new mapboxgl.Popup({ closeOnClick: true })
-        .setLngLat(nearestFeature.geometry.coordinates)
-        .setText(nearestFeature.properties.name || 'Unbenannter Marker')
-        .addTo(map);
+      } else {
+        console.warn("Kein nächster Marker gefunden");
+      }
     }
+
+
 
 
     
@@ -638,56 +722,40 @@ function toggleTheme() {
   }
 })();
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371e3; // Erdradius in Metern
-  const φ1 = (lat1 * Math.PI) / 180;
-  const φ2 = (lat2 * Math.PI) / 180;
-  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
 
+
+
+// Debugging in findNearestMarker hinzufügen
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371e3;
+  const φ1 = lat1 * Math.PI / 180;
+  const φ2 = lat2 * Math.PI / 180;
+  const Δφ = (lat2 - lat1) * Math.PI / 180;
+  const Δλ = (lon2 - lon1) * Math.PI / 180;
   const a =
     Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
     Math.cos(φ1) * Math.cos(φ2) *
     Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c; // Entfernung in Metern
+  return R * c;
 }
 
-// Hinzufügen eines Caching-Mechanismus für die nächste Marker-Berechnung
-let lastNearestFeature = null;
-let lastMinDistance = Infinity;
-let lastCheckedPosition = null;
-const CACHE_DISTANCE_THRESHOLD = 50; // Mindestbewegung in Metern, um die Berechnung erneut auszuführen
-
-function findNearestMarker(lat, lng, geojson) {
-  if (
-    lastCheckedPosition &&
-    calculateDistance(lat, lng, lastCheckedPosition.lat, lastCheckedPosition.lng) < CACHE_DISTANCE_THRESHOLD
-  ) {
-    // Verwenden Sie den Cache, wenn die Bewegung minimal ist
-    return { nearestFeature: lastNearestFeature, minDistance: lastMinDistance };
+function findNearestMarker(lat, lon) {
+  if (!index) {
+    console.error("RBush-Index ist nicht initialisiert.");
+    return null;
   }
-
-  let nearestFeature = null;
-  let minDistance = Infinity;
-
-  geojson.features.forEach(feature => {
-    if (feature.geometry.type === 'Point') {
-      const [markerLng, markerLat] = feature.geometry.coordinates;
-      const distance = calculateDistance(lat, lng, markerLat, markerLng);
-
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearestFeature = feature;
-      }
+  // Alle Punkte aus dem Index holen
+  const allPoints = index.all();
+  let nearest = null;
+  let minDist = Infinity;
+  for (const pt of allPoints) {
+    // pt.minY = lat, pt.minX = lon
+    const dist = calculateDistance(lat, lon, pt.minY, pt.minX);
+    if (dist < minDist) {
+      minDist = dist;
+      nearest = pt;
     }
-  });
-
-  // Cache aktualisieren
-  lastNearestFeature = nearestFeature;
-  lastMinDistance = minDistance;
-  lastCheckedPosition = { lat, lng };
-
-  return { nearestFeature, minDistance };
+  }
+  return nearest;
 }

@@ -12,6 +12,19 @@ html, body {
   z-index: 0;
 }
 
+#poi-info-box{
+  position: absolute;
+  display: block;
+  top: 50px;
+  right: 50px;
+  width: 450px;
+  border-radius: 16px;
+  background-color: #0A8042;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  color: white ;
+  height:100px;
+  z-index: 21;
+}
 /* Navigation Info Box */
 #nav-info-box {
   position: absolute;
@@ -21,7 +34,7 @@ html, body {
   background-color: white;
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  padding: 10px 0;
+
   
   color: black;
   font-family: sans-serif;
@@ -54,9 +67,19 @@ html, body {
   font-size: 1.8rem;
   color: #333;
 }
+.box-header-poi{
+    display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 1.8rem;
+}
 
 .google-pin {
-  margin-right: 20px;
+  margin-right: 10px;
+}
+
+.poi-pin {
+  margin: 10px;
 }
 
 .destination-entry {

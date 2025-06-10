@@ -1,1 +1,974 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"name":"test 123"},"geometry":{"coordinates":[6.9486014578007484,50.338854852534695],"type":"Point"}},{"type":"Feature","properties":{"name":"super asdfhaskjlh"},"geometry":{"coordinates":[6.948949041428563,50.33917908471156],"type":"Point"}}]}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sabine-Schmitz-Kurve",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.948965031884427,
+          50.33911563916851
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hatzenbogen",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.947314802643149,
+          50.33876303921491
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hatzenbach",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.943027367350794,
+          50.33785924332972
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hocheichen",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9358446336896975,
+          50.34012187276036
+        ],
+        "type": "Point"
+      },
+      "id": 3
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hatzenbach",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.936659474312961,
+          50.33966012315585
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hatzenbogen",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9434034334741455,
+          50.33776248285426
+        ],
+        "type": "Point"
+      },
+      "id": 5
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hocheichen",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9308396625093565,
+          50.34246834831839
+        ],
+        "type": "Point"
+      },
+      "id": 6
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Quiddelbacher Höhe",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.929825047688325,
+          50.34296717803463
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Quiddelbacher Höhe",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.927096887800076,
+          50.3448783137832
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Flugplatz",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.926857893800417,
+          50.345097494601646
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Flugplatz",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.927112990072004,
+          50.35042059605544
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Schwedenkreuz",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.927094607066834,
+          50.35091710794998
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Schwedenkreuz",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.924555174110452,
+          50.35545710170598
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Aremberg",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.922511624832879,
+          50.35697802429118
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Aremberg",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.920477324503281,
+          50.35824822029923
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Postbrücke",
+        "direction": "landmark"
+      },
+      "geometry": {
+        "coordinates": [
+          6.920902633355951,
+          50.358421485790785
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Fuchsröhre",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.922480887853595,
+          50.358777822451486
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Fuchsröhre",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.93031038964358,
+          50.36349390827658
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Adenauer Forst",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9306894598019255,
+          50.36412869731359
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Adenauer Forst",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.932015874095612,
+          50.36735648252494
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Metzgesfeld",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.932844889884535,
+          50.367734413650595
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Metzgesfeld",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.937582749636789,
+          50.37252971063165
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kallenhard",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.937320603090313,
+          50.373172765199115
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kallenhard",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.934581840986937,
+          50.37393344960583
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kallenhard",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.934731996512653,
+          50.37479231278883
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Spiegelkurve",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.935831348875979,
+          50.37519435546426
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Spiegelkurve",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.937430401480782,
+          50.37670443751128
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dreifach-Rechts",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.937953170436032,
+          50.37718490777428
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wehrseifen",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.940067309590916,
+          50.37753300053808
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wehrseifen",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.94191237649278,
+          50.376724048637755
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wehrseifen",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.942465896562368,
+          50.37614061415965
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wehrseifen",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9434729955779915,
+          50.37614061415945
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Breidscheid",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.944818356858036,
+          50.376606381757256
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Breidscheid",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.948454676207092,
+          50.37650832580087
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ex-Mühle",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.950650448873972,
+          50.377842307277575
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ex-Mühle",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.953447169851586,
+          50.37894041857581
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lauda-Links",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.955989643466694,
+          50.37927205792934
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lauda-Links",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.959133065391541,
+          50.38022274455818
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bergwerk",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9599304775738915,
+          50.38057648355496
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bergwerk",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9617639581340995,
+          50.379684006914914
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Senkenlinks",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.961929640111663,
+          50.377206872668864
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kesselchen",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.967214145323794,
+          50.374178728283084
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kesselchen",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.976112356984743,
+          50.373012306084405
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mutkurve",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.97838087339494,
+          50.37228327764748
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Klostertal",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.98559088679562,
+          50.37404414256875
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Klostertal",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.98789457400585,
+          50.37346093340091
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Karussell",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.985186422631358,
+          50.371677614735574
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hohe Acht",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.988562819150616,
+          50.37273191185707
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hohe Acht",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.993208532236139,
+          50.37380253186075
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hohe Acht",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.994206068992099,
+          50.37581090193706
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wippermann",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.999213312326958,
+          50.375885746383716
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Eschbach",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          7.002184931287104,
+          50.37193221452887
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Brünchen",
+        "direction": "landmark"
+      },
+      "geometry": {
+        "coordinates": [
+          7.00621419740861,
+          50.369861302053266
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pflanzgarten",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.998938046560795,
+          50.36661752266633
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pflanzgarten",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.999224094999164,
+          50.36424931174122
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sprunghügel",
+        "direction": "danger"
+      },
+      "geometry": {
+        "coordinates": [
+          6.996876949684207,
+          50.363026537831615
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Steffan-Bellof-S",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.993160636270943,
+          50.36003185643236
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Schwalbenschwanz",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.987116737088655,
+          50.35832230775392
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Schwalbenschwanz",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.985237196843855,
+          50.35870952109468
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Schwalbenschwanz",
+        "direction": "left"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9814193807224285,
+          50.35842223407931
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Galgenkopf",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.983083556980915,
+          50.356361211038575
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Galgenkopf",
+        "direction": "right"
+      },
+      "geometry": {
+        "coordinates": [
+          6.986968523003526,
+          50.35459607917346
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Döttinger Höhe",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.981435389577683,
+          50.35245529927619
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "In der Stroth",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.969456815305193,
+          50.34806076593432
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Antonius Buche",
+        "direction": "landmark"
+      },
+      "geometry": {
+        "coordinates": [
+          6.959773831811702,
+          50.343891215882564
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tiergarten",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.956623982265597,
+          50.34153496338536
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hohenrain",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.9545915696919,
+          50.339667447374524
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Marshals Lager",
+        "direction": "landmark"
+      },
+      "geometry": {
+        "coordinates": [
+          6.952035522969737,
+          50.337979805208164
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Start - Finish",
+        "direction": "route"
+      },
+      "geometry": {
+        "coordinates": [
+          6.949808039578045,
+          50.3385177458602
+        ],
+        "type": "Point"
+      }
+    }
+  ]
+}
