@@ -28,6 +28,21 @@ html, body {
   z-index: 20;
 }
 
+#nav-setting-box{
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  width: 450px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  padding: 10px 0;
+  
+  color: black;
+  font-family: sans-serif;
+  z-index: 21;
+}
+
 .box-header {
   display: flex;
   align-items: center;
@@ -86,8 +101,6 @@ html, body {
   background-image: url('/static/marker-new.png');
   background-size: cover;
   transform-origin: center center;
-  /* background-color: white;
-  color: #0066ff;*/
   padding: 12px;
   border-radius: 50%;
   box-shadow: 0 0 6px rgba(0,0,0,0.3);
@@ -101,23 +114,14 @@ html, body {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: black;
-  color: white;
-  height: 60px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
   z-index: 15;
   font-size: 1.5rem;
 }
 
-/* Optional: Spinner overlay */
-#no-map {
-  position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: black;
-  z-index: 20;
+[data-bs-toggle="collapse"] .fa-chevron-up {
+  transition: transform 0.2s;
+}
+
+[data-bs-toggle="collapse"].collapsed .fa-chevron-up {
+  transform: rotate(180deg);
 }

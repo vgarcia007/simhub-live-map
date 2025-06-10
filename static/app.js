@@ -162,7 +162,7 @@ function InfoBoxEntryAdd(entry_icon = 'fa-solid fa-house', entry_name = null, en
                     <div class="destination-entry">
                             <div class="entry-icon"><i class="${entry_icon}"></i></div>
                             <div class="entry-text">
-                                <div class="entry-name">${entry_name}</div>
+                                <div class="entry-name link-dark">${entry_name}</div>
                                 <div class="entry-info">${entry_info}</div>
                             </div>
                         </div>
@@ -488,3 +488,43 @@ async function fetchGameData(config) {
     setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
   }
 }
+
+
+
+
+//Theme Logic
+const themeLink = document.getElementById('theme-link');
+const toggleBtns = document.querySelectorAll('.theme-toggle');
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+const themeIcon = themeToggleBtn.querySelector('i');
+toggleBtns.forEach(btn => btn.addEventListener('click', toggleTheme));
+const DARK_CSS = '/static/app-dark.css';
+const LIGHT_CSS = '';
+
+function setTheme(mode) {
+  if (mode === 'dark') {
+    themeLink.href = DARK_CSS;
+    themeIcon.classList.remove('fa-sun');
+    themeIcon.classList.add('fa-moon');
+  } else {
+    themeLink.href = LIGHT_CSS;
+    themeIcon.classList.remove('fa-moon');
+    themeIcon.classList.add('fa-sun');
+  }
+  localStorage.setItem('theme', mode);
+}
+
+function toggleTheme() {
+  const current = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
+  setTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+(function init() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark' || saved === 'light') {
+    setTheme(saved);
+  } else {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(prefersDark ? 'dark' : 'light');
+  }
+})();

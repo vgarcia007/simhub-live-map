@@ -1,0 +1,28 @@
+#nav-setting-box,
+#nav-info-box {
+    background-color: #333;
+    color: white;
+}
+.box-header {
+    color: #ddd;
+}
+.entry-icon {
+    color: #bbb;
+}
+.entry-name,
+.entry-info {
+    color: #aaa;
+}
+.entry-separator {
+    border-top: 1px solid #555;
+}
+.link-dark {
+    color: #ddd!important;
+}
+.link-dark:hover {
+    color: #ddd!important;
+}
+.link-dark:focus,
+.link-dark:active {
+    color: #ddd!important;
+}
