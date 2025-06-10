@@ -1,15 +1,15 @@
 fetch('/config')
     .then(response => response.json())
     .then(config => {
-    var CONFIG = config;
-    runHelper(CONFIG);
-    
+        var CONFIG = config;
+        runHelper(CONFIG);
+
     })
     .catch(err => console.error("Error loading config:", err));
 
 let first_load = true;
 
-const ref_points=[]
+const ref_points = []
 
 async function runHelper(config) {
     if (runHelper.fetchInProgress) return;
@@ -25,9 +25,9 @@ async function runHelper(config) {
         const gameName = data.GameName;
         const trackCode = data.NewData.TrackCode;
         const yaw = d.OrientationYaw;
-        const speed = data.NewData.FilteredSpeedKmh
+        const speed = data.NewData.FilteredSpeedKmh;
 
-        jsonOut ={
+        jsonOut = {
             "IsGameInRace": data.IsGameInRace,
             "GameName": gameName,
             "TrackCode": trackCode,
@@ -37,10 +37,10 @@ async function runHelper(config) {
             "FilteredSpeedKmh": speed
         };
 
-        document.getElementById("GameName").value= gameName;
-        document.getElementById("TrackCode").value= trackCode;
-        document.getElementById("CoordinatesX").value= d.CoordinatesX;
-        document.getElementById("CoordinatesY").value= d.CoordinatesY;
+        document.getElementById("GameName").value = gameName;
+        document.getElementById("TrackCode").value = trackCode;
+        document.getElementById("CoordinatesX").value = d.CoordinatesX;
+        document.getElementById("CoordinatesY").value = d.CoordinatesY;
 
         if (first_load) {
             loadRefPoints();
@@ -51,13 +51,13 @@ async function runHelper(config) {
     } finally {
         runHelper.fetchInProgress = false;
         setTimeout(() => runHelper(config), config.fetchIntervalMs);
-        
+
     }
 }
 
 
-function loadRefPoints(){
-        url  ="/refpoints/<game>/<track>";
+function loadRefPoints() {
+    url = "/refpoints/<game>/<track>";
     const gameName = document.getElementById("GameName").value;
     const trackCode = document.getElementById("TrackCode").value;
     url = url.replace("<game>", gameName).replace("<track>", trackCode);
@@ -86,7 +86,7 @@ function loadRefPoints(){
 }
 
 
-document.getElementById("yaw").addEventListener("keyup" , () => {
+document.getElementById("yaw").addEventListener("keyup", () => {
     event.preventDefault();
     const yaw = document.getElementById("yaw").value;
     const trackCode = document.getElementById("TrackCode").value;
@@ -95,39 +95,39 @@ document.getElementById("yaw").addEventListener("keyup" , () => {
 
 document.getElementById("bing").addEventListener("click", () => {
 
-        event.preventDefault();
-        const trackCode = document.getElementById("TrackCode").value;
-        searchMap("bing", trackCode);
-    });
+    event.preventDefault();
+    const trackCode = document.getElementById("TrackCode").value;
+    searchMap("bing", trackCode);
+});
 
 document.getElementById("google").addEventListener("click", () => {
-        event.preventDefault();
-        const trackCode = document.getElementById("TrackCode").value;
-        searchMap("google", trackCode);
-    });
+    event.preventDefault();
+    const trackCode = document.getElementById("TrackCode").value;
+    searchMap("google", trackCode);
+});
 
 document.getElementById("gpsPaste").addEventListener("click", () => {
-        event.preventDefault();
-        navigator.clipboard.readText()
-            .then(text => {
-                // set the value of the input field
-                document.getElementById("gps").value = text;
-            })
-            .catch(err => console.error('Failed to read clipboard contents: ', err));
-    });
+    event.preventDefault();
+    navigator.clipboard.readText()
+        .then(text => {
+            // set the value of the input field
+            document.getElementById("gps").value = text;
+        })
+        .catch(err => console.error('Failed to read clipboard contents: ', err));
+});
 
 document.getElementById("load").addEventListener("click", () => {
     loadRefPoints();
 });
 
 document.getElementById("save").addEventListener("click", () => {
-        event.preventDefault();
-        //get json from the result div and post it to /save-refpoints/<game>
-        const result = document.getElementById("result").textContent;
-        const gameName = document.getElementById("GameName").value;
-        const trackCode = document.getElementById("TrackCode").value;
-        const url = `/save-refpoints/${gameName}`;
-        fetch(url, {
+    event.preventDefault();
+    //get json from the result div and post it to /save-refpoints/<game>
+    const result = document.getElementById("result").textContent;
+    const gameName = document.getElementById("GameName").value;
+    const trackCode = document.getElementById("TrackCode").value;
+    const url = `/save-refpoints/${gameName}`;
+    fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -155,7 +155,7 @@ document.getElementById("generate").addEventListener("click", () => {
     const coordinatesX = document.getElementById("CoordinatesX").value;
     const coordinatesY = document.getElementById("CoordinatesY").value;
     const notes = document.getElementById("notes").value;
-    let lat, lng;  // <-- hier außerhalb deklarieren
+    let lat, lng; // <-- hier außerhalb deklarieren
     try {
         const gps = document.getElementById("gps").value;
         const gps_new = gps.replace(", ", "#");
@@ -169,13 +169,13 @@ document.getElementById("generate").addEventListener("click", () => {
 
     console.log("GPS Coordinates:", lat, lng);
 
-    const result_json ={ 
+    const result_json = {
         "notes": notes,
         "CoordinatesX": parseFloat(coordinatesX),
         "CoordinatesY": parseFloat(coordinatesY),
         "lat": parseFloat(lat),
         "lng": parseFloat(lng)
-        }
+    }
     ref_points.push(result_json);
 
     buildJSON(ref_points);
@@ -189,8 +189,8 @@ function buildJSON(ref_points) {
     const yaw = document.getElementById("yaw").value;
     const full_json = {
         [trackCode]: {
-        "yaw": parseFloat(yaw),
-        "ref_points": ref_points
+            "yaw": parseFloat(yaw),
+            "ref_points": ref_points
         }
     }
     const asString = JSON.stringify(full_json, null, 2);
@@ -274,55 +274,55 @@ function listTracks() {
             });
         })
         .catch(err => console.error("Error loading track list:", err));
-    }
+}
 
 // eventlistener for tracks click
 document.getElementById("tracks").addEventListener("click", (event) => {
-    
+
     event.preventDefault();
     listTracks();
     // show modal with the id TrackListModal
     const modalElement = document.getElementById('TrackListModal');
     const bsModal = new bootstrap.Modal(modalElement, {
-      backdrop: 'static',
-      keyboard: true
+        backdrop: 'static',
+        keyboard: true
     });
     bsModal.show();
-    
+
 });
 
 
-function searchMap(provider,term) {
+function searchMap(provider, term) {
     const encoded = encodeURIComponent(term);
 
     let url = "";
 
     switch (provider) {
-      case "google":
-        url = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
-        break;
-      case "bing":
-        url = `https://www.bing.com/maps?q=${encoded}`;
-        break;
-      default:
-        alert("Unsupported provider");
-        return;
+        case "google":
+            url = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+            break;
+        case "bing":
+            url = `https://www.bing.com/maps?q=${encoded}`;
+            break;
+        default:
+            alert("Unsupported provider");
+            return;
     }
 
     if (term) {
-      window.open(url, "_blank");
+        window.open(url, "_blank");
     } else {
-      alert("Please enter a location.");
+        alert("Please enter a location.");
     }
-  }
+}
 
-function showAlertModal(title,message) {
+function showAlertModal(title, message) {
     const ModalLabel = document.getElementById('alertModalLabel');
-    if (title =="Error") {
-        title='<i class="fa-solid fa-triangle-exclamation fa-2x text-danger"></i>';
+    if (title == "Error") {
+        title = '<i class="fa-solid fa-triangle-exclamation fa-2x text-danger"></i>';
     }
-    if (title =="Success") {
-        title='<i class="fa-solid fa-circle-check fa-2x text-success"></i>';
+    if (title == "Success") {
+        title = '<i class="fa-solid fa-circle-check fa-2x text-success"></i>';
     }
     ModalLabel.innerHTML = title;
     const ModalBody = document.getElementById('alertModalBody');
@@ -330,9 +330,9 @@ function showAlertModal(title,message) {
 
     const modalElement = document.getElementById('alertModal');
     const bsModal = new bootstrap.Modal(modalElement, {
-      backdrop: 'static',
-      keyboard: true
+        backdrop: 'static',
+        keyboard: true
     });
 
     bsModal.show();
-  }
+}

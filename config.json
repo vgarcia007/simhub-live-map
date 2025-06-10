@@ -16,8 +16,8 @@
         "navigationDay": "mapbox://styles/mapbox/navigation-day-v1",
         "navigationNight": "mapbox://styles/mapbox/navigation-night-v1"
         },
-    "minZoom": 18,
-    "maxZoom": 19,
+    "minZoom": 17,
+    "maxZoom": 18,
     "fetchIntervalMs": 100,
     "DEBUG": false
 

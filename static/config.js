@@ -20,6 +20,7 @@ function getConfig() {
     const mapAPIurl = document.getElementById("mapAPIurl").value;
     const mapboxToken = document.getElementById("mapboxToken").value;
     const mapboxStyle = document.getElementById("mapboxStyle").value;
+    const speedZoom = document.getElementById("speedZoom").value;
     const DEBUG = document.getElementById("DEBUG").value;
     
     new_conf = {
@@ -27,6 +28,7 @@ function getConfig() {
         "mapAPIurl": mapAPIurl,
         "mapboxToken": mapboxToken,
         "mapboxStyle": mapboxStyle,
+        "speedZoom": speedZoom,
         "DEBUG": DEBUG,
     }
     return new_conf;
