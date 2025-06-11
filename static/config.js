@@ -22,6 +22,7 @@ function getConfig() {
     const mapboxStyle = document.getElementById("mapboxStyle").value;
     const speedZoom = document.getElementById("speedZoom").value;
     const DEBUG = document.getElementById("DEBUG").value;
+    const mapInterfaceScale = document.getElementById("mapInterfaceScale").value;
     
     new_conf = {
         "PROXY_TARGET_URL": PROXY_TARGET_URL,
@@ -30,6 +31,7 @@ function getConfig() {
         "mapboxStyle": mapboxStyle,
         "speedZoom": speedZoom,
         "DEBUG": DEBUG,
+        "mapInterfaceScale": mapInterfaceScale
     }
     return new_conf;
 }

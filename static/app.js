@@ -10,7 +10,25 @@ fetch('/config')
   })
   .catch(err => console.error("Error loading config:", err));
 
-let lastPosition = null;
+
+let index;
+let points;
+let poiInfoBox = document.getElementById('poi-info-box');
+let poiInfo = document.getElementById('poiInfo');
+let poiInfoIcon = document.getElementById('poiInfoIcon');
+let goodGeojson = null;
+
+
+let directions = {
+  'left': 'fa-solid fa-diamond-turn-right fa-flip-horizontal',
+  'right': 'fa-solid fa-diamond-turn-right',
+  'route': 'fa-solid fa-route',
+  'landmark': 'fa-solid fa-landmark',
+  'danger': 'fa-solid fa-road-circle-exclamation',
+
+}
+
+let lastPoi = null;
 let gameToLatLng = null;
 let lastGameName = null;
 let lastTrackCode = null;
@@ -111,7 +129,7 @@ function InfoBoxShowHide(visibility) {
   if (visibility === 'show') {
     infoBox.style.display = 'block';
   } else if (visibility === 'hide') {
-    infoBox.style.display = 'none';
+    infoBox.style.display = 'none'; 
   } else {
     console.warn("Invalid visibility parameter. Use 'show' or 'hide'.");
   }
@@ -225,10 +243,164 @@ function InfoBoxEntryDelete(id) {
  * @param {number} maxZoom - The maximum zoom level allowed.
  * @returns {number} The calculated zoom level, rounded to one decimal place.
  */
-function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
-  if (speedKmh >= 150) return minZoom;
-  if (speedKmh <= 60) return maxZoom;
+function getZoomForSpeed(speedKmh, minZoom, maxZoom, defaultMapZoom) {
+  console.log("Calculating zoom for speed:", speedKmh, "km/h");
+  if (Number(speedKmh) >= 150){
+    
+    console.log("Speed is below 150 km/h, using default zoom level:", defaultMapZoom);
+    return minZoom;
+
+  }else if (Number(speedKmh) <= 60){
+    console.log("Speed is below 60 km/h, using max zoom level:", maxZoom);
+    return maxZoom;
+
+  }else{
+    console.log("Speed is between 60 km/h, using max zoom level:", defaultMapZoom);
+    return defaultMapZoom;
+  }
+  
 }
+
+
+function loadGeoJson(url) {
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        console.error(`Failed to load GeoJSON from ${url}:`, response.statusText);
+      }
+      return response.json();
+    })
+    .catch(error => {
+      console.error(`Error loading GeoJSON from ${url}:`, error);
+
+    }
+    );
+}
+
+async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
+  const stringLayerId = String(layerId); // layerId als String
+
+  let geojson;
+  // 1) GeoJSON laden und bei Fehler abbrechen
+  try {
+    geojson = await loadGeoJson(url);
+    console.log(`GeoJSON loaded from ${url}`);
+    goodGeojson = true;
+  } catch (error) {
+    console.error(`Failed to load GeoJSON from ${url}:`, error);
+    goodGeojson = null;
+    return; // Exit bevor irgendwas an der Karte passiert
+  }
+
+  // 2) Existenz und Inhalt prüfen
+  if (
+    !geojson ||
+    !Array.isArray(geojson.features) ||
+    geojson.features.length === 0
+  ) {
+    goodGeojson = null;
+    console.warn(`No features found in GeoJSON from ${url}`);
+    return;
+  }
+
+  // 3) Source hinzufügen bzw. updaten
+  try {
+    if (!map.getSource(stringLayerId)) {
+      map.addSource(stringLayerId, {
+        type: 'geojson',
+        data: geojson
+      });
+    } else {
+      map.getSource(stringLayerId).setData(geojson);
+    }
+  } catch (error) {
+    goodGeojson = null;
+    console.error(`Error adding/updating source '${stringLayerId}':`, error);
+    return;
+  }
+
+  // 4) Layer hinzufügen
+  try {
+    if (!map.getLayer(stringLayerId)) {
+      map.addLayer({
+        id: stringLayerId,
+        type: 'line',
+        source: stringLayerId,
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': layerOptions.color || '#888',
+          'line-width': layerOptions.width || 2
+        }
+      });
+      
+    }
+  } catch (error) {
+    goodGeojson = null; // Reset goodGeojson, da wir hier einen Fehler haben
+    console.error(`Error adding layer '${stringLayerId}':`, error);
+    return;
+  }
+
+  // 5) Marker setzen (nur Point-Geometrien)
+  try {
+    geojson.features
+      .filter(f => f.geometry.type === 'Point')
+      .forEach(f => {
+        const [lng, lat] = f.geometry.coordinates;
+        new mapboxgl.Marker()
+          .setLngLat([lng, lat])
+          .setPopup(
+            new mapboxgl.Popup().setText(f.properties.name || '')
+          )
+          .addTo(map);
+      });
+  } catch (error) {
+    console.error(`Error adding markers for '${stringLayerId}':`, error);
+    // Nicht return, da wir zumindest die Karte schon gezeichnet haben
+  }
+
+  // 6) Karte auf GeoJSON zentrieren
+  try {
+    const bounds = new mapboxgl.LngLatBounds();
+    geojson.features.forEach(feature => {
+      const geom = feature.geometry;
+      if (geom.type === 'Point') {
+        bounds.extend(geom.coordinates);
+      } else if (geom.type === 'LineString') {
+        geom.coordinates.forEach(coord => bounds.extend(coord));
+      } else if (geom.type === 'Polygon') {
+        geom.coordinates[0].forEach(coord => bounds.extend(coord));
+      }
+    });
+    if (!bounds.isEmpty()) {
+      map.fitBounds(bounds, { padding: 20 });
+    }
+  } catch (error) {
+    console.error(`Error fitting bounds for '${stringLayerId}':`, error);
+  }
+
+  // 7) RBush-Index aufbauen
+  try {
+    const points = geojson.features
+      .filter(f => f.geometry.type === 'Point')
+      .map(f => ({
+        minX: f.geometry.coordinates[0],
+        minY: f.geometry.coordinates[1],
+        maxX: f.geometry.coordinates[0],
+        maxY: f.geometry.coordinates[1],
+        properties: f.properties
+      }));
+    index = new RBush();
+    index.load(points);
+    // optional: return index, wenn du ihn später nutzen möchtest
+    return index;
+  } catch (error) {
+    console.error(`Error building spatial index for '${stringLayerId}':`, error);
+  }
+}
+
 
 
 /**
@@ -243,6 +415,7 @@ function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
  *
  * @throws {Error} Logs a warning if `defaultMapCenter` or `defaultMapZoom` is not set in the configuration.
  */
+
 function initMap(CONFIG) {
   if (CONFIG.defaultMapCenter && CONFIG.defaultMapZoom) {
     mapboxgl.accessToken = CONFIG.mapboxToken;
@@ -266,6 +439,12 @@ function initMap(CONFIG) {
       })
       .setLngLat(CONFIG.defaultMapCenter)
       .addTo(map);
+
+
+      
+
+
+
   } else {
     console.warn("Default map center or zoom not set in config");
   }
@@ -318,6 +497,15 @@ async function fetchGameData(config) {
         InfoBoxEntryDelete(infobox_warning_LapInfo_id);
         infobox_warning_LapInfo_id = null;
       }
+      //unload layer if it exists
+      if (map.getLayer('123456')) {
+        map.removeLayer('123456');
+      }
+      //hide the info box
+      poiInfoBox.style.display = 'none'; 
+      //goodGeojson = null;
+      lastPos = null;
+
       return;
     }
 
@@ -333,7 +521,10 @@ async function fetchGameData(config) {
 
     // Load Trackinfo
     if (gameName !== lastGameName || trackCode !== lastTrackCode) {
-
+      console.log("Loading TrackInfo for", gameName, trackCode);
+      loadGeoJsonAndAddLayer(map, `/static/poi/${gameName}/${trackCode}.json`, 123456);
+      
+      
       if (infobox_warning_TrackInfo_id) {
         InfoBoxEntryUpdate(
           infobox_warning_TrackInfo_id,
@@ -395,6 +586,9 @@ async function fetchGameData(config) {
     }
 
     if (!gameToLatLng) throw new Error("Transformation missing");
+    if(goodGeojson) {
+      poiInfoBox.style.display = 'block';
+    }
 
     // revert erroneous API status
     if (infobox_warning_Error_id) {
@@ -419,10 +613,14 @@ async function fetchGameData(config) {
     }
     lastPos = newPos;
 
-
-    const zoom = config.speedZoom ?
-      getZoomForSpeed(speed, config.minZoom, config.maxZoom) :
-      config.defaultMapZoom;
+    let zoom = config.defaultMapZoom;
+    console.log("Zoom level:", zoom, "Speed:", speed, "km/h");
+    if (data.IsGameInRace){
+      if (config.speedZoom ) {
+        zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom, config.defaultMapZoom);
+      }
+    }
+    console.log("Zoom level:", zoom, "Speed:", speed, "km/h");
 
     // Map-Kamera
 
@@ -445,8 +643,34 @@ async function fetchGameData(config) {
         maxDuration: config.fetchIntervalMs
       });
     }
+    console.log(goodGeojson);
+    if (goodGeojson) {
+      
+      const nearest = findNearestMarker(lat, lng);
+
+      if (nearest) {
+
+        if (lastPoi && lastPoi.properties.name === nearest.properties.name) {
+          //console.warn("Marker is the same as last POI, skipping update");
+
+        }else {         
+          let direction = nearest.properties.direction;
+          let html = '<i class="'+ directions[direction] +' fa-3x poi-pin"></i>'
+          poiInfoIcon.innerHTML = html; 
+          poiInfo.innerHTML = nearest.properties.name;
+          lastPoi = nearest;
+
+        }
+
+      } else {
+        console.warn("Kein nächster Marker gefunden");
+      }
+    }
 
 
+
+
+    
 
     // Here comes the "Always Add or Update" for LapInfo
     const CurrentLapTime = data.NewData.CurrentLapTime;
@@ -526,3 +750,41 @@ function toggleTheme() {
     setTheme(prefersDark ? 'dark' : 'light');
   }
 })();
+
+
+
+
+// Debugging in findNearestMarker hinzufügen
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371e3;
+  const φ1 = lat1 * Math.PI / 180;
+  const φ2 = lat2 * Math.PI / 180;
+  const Δφ = (lat2 - lat1) * Math.PI / 180;
+  const Δλ = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function findNearestMarker(lat, lon) {
+  if (!index) {
+    console.error("RBush-Index ist nicht initialisiert.");
+    return null;
+  }
+  // Alle Punkte aus dem Index holen
+  const allPoints = index.all();
+  let nearest = null;
+  let minDist = Infinity;
+  for (const pt of allPoints) {
+    // pt.minY = lat, pt.minX = lon
+    const dist = calculateDistance(lat, lon, pt.minY, pt.minX);
+    if (dist < minDist) {
+      minDist = dist;
+      nearest = pt;
+    }
+  }
+  return nearest;
+}
