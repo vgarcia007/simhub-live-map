@@ -11,8 +11,9 @@ fetch('/config')
   .catch(err => console.error("Error loading config:", err));
 
 
-let index; // <-- global deklariert!
+let index;
 let points;
+let poiInfoBox = document.getElementById('poi-info-box');
 let poiInfo = document.getElementById('poiInfo');
 let poiInfoIcon = document.getElementById('poiInfoIcon');
 let goodGeojson = null;
@@ -128,7 +129,7 @@ function InfoBoxShowHide(visibility) {
   if (visibility === 'show') {
     infoBox.style.display = 'block';
   } else if (visibility === 'hide') {
-    infoBox.style.display = 'none';
+    infoBox.style.display = 'none'; 
   } else {
     console.warn("Invalid visibility parameter. Use 'show' or 'hide'.");
   }
@@ -270,6 +271,8 @@ async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
   // 1) GeoJSON laden und bei Fehler abbrechen
   try {
     geojson = await loadGeoJson(url);
+    console.log(`GeoJSON loaded from ${url}`);
+    goodGeojson = true;
   } catch (error) {
     console.error(`Failed to load GeoJSON from ${url}:`, error);
     goodGeojson = null;
@@ -319,6 +322,7 @@ async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
           'line-width': layerOptions.width || 2
         }
       });
+      
     }
   } catch (error) {
     goodGeojson = null; // Reset goodGeojson, da wir hier einen Fehler haben
@@ -375,7 +379,7 @@ async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
         maxY: f.geometry.coordinates[1],
         properties: f.properties
       }));
-    const index = new RBush();
+    index = new RBush();
     index.load(points);
     // optional: return index, wenn du ihn später nutzen möchtest
     return index;
@@ -423,9 +427,7 @@ function initMap(CONFIG) {
       .setLngLat(CONFIG.defaultMapCenter)
       .addTo(map);
 
-      //TODO  THis part has to be done everytime a trackchange happens
-      // Load GeoJSON and add it as a layer
-      loadGeoJsonAndAddLayer(map, "/static/poi/FM8/Nurburgring Nordschleife.json", 123456);
+
       
 
 
@@ -474,7 +476,7 @@ async function fetchGameData(config) {
           infobox_warning_IsGameInRace_id,
           'fa-solid fa-satellite-dish fa-fw',
           'GPS',
-          'Waiting for position data…'
+          'Waiting for  aaa data…'
         );
       }
 
@@ -482,6 +484,15 @@ async function fetchGameData(config) {
         InfoBoxEntryDelete(infobox_warning_LapInfo_id);
         infobox_warning_LapInfo_id = null;
       }
+      //unload layer if it exists
+      if (map.getLayer('123456')) {
+        map.removeLayer('123456');
+      }
+      //hide the info box
+      poiInfoBox.style.display = 'none'; 
+      //goodGeojson = null;
+      lastPos = null;
+
       return;
     }
 
@@ -498,6 +509,8 @@ async function fetchGameData(config) {
     // Load Trackinfo
     if (gameName !== lastGameName || trackCode !== lastTrackCode) {
       console.log("Loading TrackInfo for", gameName, trackCode);
+      loadGeoJsonAndAddLayer(map, `/static/poi/${gameName}/${trackCode}.json`, 123456);
+      
       
       if (infobox_warning_TrackInfo_id) {
         InfoBoxEntryUpdate(
@@ -560,6 +573,9 @@ async function fetchGameData(config) {
     }
 
     if (!gameToLatLng) throw new Error("Transformation missing");
+    if(goodGeojson) {
+      poiInfoBox.style.display = 'block';
+    }
 
     // revert erroneous API status
     if (infobox_warning_Error_id) {
@@ -610,23 +626,19 @@ async function fetchGameData(config) {
         maxDuration: config.fetchIntervalMs
       });
     }
-
+    console.log(goodGeojson);
     if (goodGeojson) {
       
       const nearest = findNearestMarker(lat, lng);
 
       if (nearest) {
-        if (lastPoi && lastPoi.id === nearest.id) {
 
-        }else {
-          // Wenn der letzte POI anders ist, aktualisiere den letzten POI
-          console.log("Nächster Marker gefunden:", nearest);
-          
+        if (lastPoi && lastPoi.properties.name === nearest.properties.name) {
+          //console.warn("Marker is the same as last POI, skipping update");
+
+        }else {         
           let direction = nearest.properties.direction;
-          console.log('direction:', direction, 'directions keys:', Object.keys(directions));
-          console.log('directions[direction]:', directions[direction]);
           let html = '<i class="'+ directions[direction] +' fa-3x poi-pin"></i>'
-          console.log('html:', html);
           poiInfoIcon.innerHTML = html; 
           poiInfo.innerHTML = nearest.properties.name;
           lastPoi = nearest;

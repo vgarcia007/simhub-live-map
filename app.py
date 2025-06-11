@@ -107,7 +107,7 @@ load_config()
 def index():
     if not user_config_active:
         return redirect(url_for('get_config_user'))
-    return render_template('index.html')
+    return render_template('index.html', config=config)
 
 
 @app.route('/helper')
