@@ -243,9 +243,22 @@ function InfoBoxEntryDelete(id) {
  * @param {number} maxZoom - The maximum zoom level allowed.
  * @returns {number} The calculated zoom level, rounded to one decimal place.
  */
-function getZoomForSpeed(speedKmh, minZoom, maxZoom) {
-  if (speedKmh >= 150) return minZoom;
-  if (speedKmh <= 60) return maxZoom;
+function getZoomForSpeed(speedKmh, minZoom, maxZoom, defaultMapZoom) {
+  console.log("Calculating zoom for speed:", speedKmh, "km/h");
+  if (Number(speedKmh) >= 150){
+    
+    console.log("Speed is below 150 km/h, using default zoom level:", defaultMapZoom);
+    return minZoom;
+
+  }else if (Number(speedKmh) <= 60){
+    console.log("Speed is below 60 km/h, using max zoom level:", maxZoom);
+    return maxZoom;
+
+  }else{
+    console.log("Speed is between 60 km/h, using max zoom level:", defaultMapZoom);
+    return defaultMapZoom;
+  }
+  
 }
 
 
@@ -476,7 +489,7 @@ async function fetchGameData(config) {
           infobox_warning_IsGameInRace_id,
           'fa-solid fa-satellite-dish fa-fw',
           'GPS',
-          'Waiting for  aaa data…'
+          'Waiting for position data…'
         );
       }
 
@@ -600,10 +613,14 @@ async function fetchGameData(config) {
     }
     lastPos = newPos;
 
-
-    const zoom = config.speedZoom ?
-      getZoomForSpeed(speed, config.minZoom, config.maxZoom) :
-      config.defaultMapZoom;
+    let zoom = config.defaultMapZoom;
+    console.log("Zoom level:", zoom, "Speed:", speed, "km/h");
+    if (data.IsGameInRace){
+      if (config.speedZoom ) {
+        zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom, config.defaultMapZoom);
+      }
+    }
+    console.log("Zoom level:", zoom, "Speed:", speed, "km/h");
 
     // Map-Kamera
 
