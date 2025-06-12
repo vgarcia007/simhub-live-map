@@ -53,7 +53,7 @@
 
             <div class="destination-entry" >
                 <div class="input-group mb-3">      
-                    <input type="text" id="search-input" class="form-control" placeholder="Find Place">
+                    <input type="text" id="search-input" class="form-control" placeholder="Find Place" value="{{ trackcode }}">
                     <button class="btn btn-secondary" id="search-button" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </div>
@@ -75,7 +75,8 @@
                         <option value="right" data-icon="fa-solid fa-diamond-turn-right">right</option>
                         <option value="landmark" data-icon="fa-solid fa-landmark">landmark</option>
                         <option value="route" data-icon="fa-solid fa-route">route</option>
-                        <option value="danger" data-icon="fa-solid fa-road-circle-exclamation">straight</option>
+                        <option value="straight" data-icon="fa-solid fa-road">straight</option>
+                        <option value="danger" data-icon="fa-solid fa-road-circle-exclamation">danger</option>
                     </select>
                 </div>
                 <div class="mb-3">

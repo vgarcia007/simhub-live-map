@@ -24,6 +24,7 @@ let directions = {
   'right': 'fa-solid fa-diamond-turn-right',
   'route': 'fa-solid fa-route',
   'landmark': 'fa-solid fa-landmark',
+  'straight': 'fa-solid fa-road',
   'danger': 'fa-solid fa-road-circle-exclamation',
 
 }
@@ -34,6 +35,7 @@ let lastGameName = null;
 let lastTrackCode = null;
 let transformCache = {};
 let map, marker;
+let poiEditorLink = document.getElementById('poiEditorLink');
 
 //let message = '';
 
@@ -525,6 +527,7 @@ async function fetchGameData(config) {
     // Load Trackinfo
     if (gameName !== lastGameName || trackCode !== lastTrackCode) {
       console.log("Loading TrackInfo for", gameName, trackCode);
+      poiEditorLink.href = `/poi/${gameName}/${trackCode}`;
       loadGeoJsonAndAddLayer(map, `/static/poi/${gameName}/${trackCode}.json`, 123456);
       
       

@@ -26,12 +26,22 @@ html, body {
   z-index: 21;
 }
 
+.poi-pin{
+  margin:10px;
+  margin-left:6px;
+}
 .box-header-poi{
   display: flex;
 align-items: center;
 font-weight: 500;
 font-size: 1.6rem;
 
+}
+.nib-title {
+  font-weight: 500;
+  font-size: 1.8rem;
+  color: #fff;
+  margin-left: 10px;
 }
  
 
@@ -40,7 +50,7 @@ font-size: 1.6rem;
   position: absolute;
   top: 50px;
   left: 50px;
-  width: 400px;
+  width: 450px;
   background-color: white;
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -86,6 +96,7 @@ font-size: 1.6rem;
 
 
 .destination-entry {
+  display: flex;
   padding: 16px 32px;
 }
 

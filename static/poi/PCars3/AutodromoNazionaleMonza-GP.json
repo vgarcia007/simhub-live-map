@@ -1,0 +1,226 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          9.280721671542693,
+          45.61725825473363
+        ],
+        "type": "Point"
+      },
+      "id": 0,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Rettilineo Box"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.281318503814305,
+          45.62150154512145
+        ],
+        "type": "Point"
+      },
+      "id": 1,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Rettilineo Box"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.281614283078227,
+          45.62349449268342
+        ],
+        "type": "Point"
+      },
+      "id": 2,
+      "properties": {
+        "direction": "route",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Prima Variante"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.282026450855,
+          45.62719602070064
+        ],
+        "type": "Point"
+      },
+      "id": 3,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Biassono"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.290019701473483,
+          45.63020781381684
+        ],
+        "type": "Point"
+      },
+      "id": 5,
+      "properties": {
+        "direction": "route",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Seconda Variante"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.294562684270147,
+          45.6312768045392
+        ],
+        "type": "Point"
+      },
+      "id": 6,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Lesmo 1"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.296968586672648,
+          45.62916558115205
+        ],
+        "type": "Point"
+      },
+      "id": 7,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Lesmo 2"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.294194750997747,
+          45.62727373725477
+        ],
+        "type": "Point"
+      },
+      "id": 8,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Serraglio"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.289429837083503,
+          45.624584680564055
+        ],
+        "type": "Point"
+      },
+      "id": 9,
+      "properties": {
+        "direction": "landmark",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Bridge"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.286767844087422,
+          45.623096306116366
+        ],
+        "type": "Point"
+      },
+      "id": 10,
+      "properties": {
+        "direction": "route",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Variante Ascari"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.284144633252197,
+          45.617944614577965
+        ],
+        "type": "Point"
+      },
+      "id": 11,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Paddock 2"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.28393809804166,
+          45.61274961965029
+        ],
+        "type": "Point"
+      },
+      "id": 12,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Parabolica"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          9.280767517861591,
+          45.61265625698141
+        ],
+        "type": "Point"
+      },
+      "id": 13,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Parabolica"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

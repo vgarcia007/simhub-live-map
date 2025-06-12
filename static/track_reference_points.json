@@ -200,6 +200,93 @@
           "lng": 149.55830582389385
         }
       ]
+    },
+    "AutodromoNazionaleMonza-GP": {
+      "yaw": 180,
+      "ref_points": [
+        {
+          "notes": "start pos 1",
+          "CoordinatesX": 40.386199951171875,
+          "CoordinatesY": 26.401691436767578,
+          "lat": 45.61893723927919,
+          "lng": 9.28114019538246
+        },
+        {
+          "notes": "first corner",
+          "CoordinatesX": 106.9542465209961,
+          "CoordinatesY": -594.7033081054688,
+          "lat": 45.624500173485025,
+          "lng": 9.281985330696354
+        },
+        {
+          "notes": "",
+          "CoordinatesX": 839.8980102539062,
+          "CoordinatesY": -1230.8443603515625,
+          "lat": 45.63023517336802,
+          "lng": 9.291391583205327
+        },
+        {
+          "notes": "under the bridge",
+          "CoordinatesX": 675.9147338867188,
+          "CoordinatesY": -625.6205444335938,
+          "lat": 45.62476750923723,
+          "lng": 9.289241246556236
+        }
+      ]
+    },
+    "Azure_Circuit-GP": {
+      "yaw": 60,
+      "ref_points": [
+        {
+          "notes": "start",
+          "CoordinatesX": 96.38067626953125,
+          "CoordinatesY": -538.7334594726562,
+          "lat": 43.73499720232147,
+          "lng": 7.421318309680499
+        },
+        {
+          "notes": "roundabout",
+          "CoordinatesX": 265.231201171875,
+          "CoordinatesY": -393.13677978515625,
+          "lat": 43.73691767694919,
+          "lng": 7.42177948576485
+        },
+        {
+          "notes": "princess",
+          "CoordinatesX": 188.88528442382812,
+          "CoordinatesY": 356.6527404785156,
+          "lat": 43.74027584976751,
+          "lng": 7.4296613941649055
+        },
+        {
+          "notes": "harbor",
+          "CoordinatesX": 20.300273895263672,
+          "CoordinatesY": -496.9102478027344,
+          "lat": 43.734629441695894,
+          "lng": 7.422368557462576
+        },
+        {
+          "notes": "taxis",
+          "CoordinatesX": 117.22215270996094,
+          "CoordinatesY": 128.10060119628906,
+          "lat": 43.73849608692495,
+          "lng": 7.42783727651137
+        },
+        {
+          "notes": "mirabeau",
+          "CoordinatesX": 300.6905517578125,
+          "CoordinatesY": 362.46832275390625,
+          "lat": 43.74107158174047,
+          "lng": 7.428924139178975
+        },
+        {
+          "notes": "schicane",
+          "CoordinatesX": 100.57073974609375,
+          "CoordinatesY": -104.17738342285156,
+          "lat": 43.737204960799836,
+          "lng": 7.4255899063732596
+        }
+      ]
     }
   }
 }
