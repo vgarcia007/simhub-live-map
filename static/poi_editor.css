@@ -1,0 +1,85 @@
+#map {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+}
+
+.navbar{
+
+  z-index: 10;
+}
+
+#editor-controls-box {
+  position: absolute;
+  top: 65px;
+  left: 5px;
+  width: 400px;
+  background-color: #2B3035;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  
+  color: white;
+  font-family: sans-serif;
+  z-index: 20;
+}
+
+.editor-box-header {
+
+
+  padding:16px;
+  color: white;
+}
+
+
+.entry-separator {
+  margin: 0 16px;
+  border: none;
+  border-top: 1px solid #e0e0e0;
+}
+.destination-entry {
+
+  align-items: center;
+  padding: 16px 32px;
+}
+
+.full,
+.ts-control,
+.searchField,
+.ts-dropdown{
+ background-color: #212529!important;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin: 0;
+ font-size: 1rem;
+}
+
+.ts-wrapper{
+    margin:0;
+    padding: 0;
+}
+
+.ts-control{
+    box-sizing: border-box;
+    margin: 0;
+    font-family: inherit;
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--bs-body-color);
+    appearance: none;
+    background-color: var(--bs-body-bg);
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    border-bottom-color: rgb(79, 90, 104);
+    box-shadow: rgba(13, 110, 253, 0.024) 0px 0px 0px 0.404678px;
+    border-left-color: rgb(79, 90, 104);
+    border-right-color: rgb(79, 90, 104);
+    border-top-color: rgb(79, 90, 104);
+}

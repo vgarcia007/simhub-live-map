@@ -33,9 +33,7 @@ font-weight: 500;
 font-size: 1.6rem;
 
 }
-.poi-pin {
-  margin: 7px;
-}
+ 
 
 /* Navigation Info Box */
 #nav-info-box {
@@ -88,8 +86,6 @@ font-size: 1.6rem;
 
 
 .destination-entry {
-  display: flex;
-  align-items: center;
   padding: 16px 32px;
 }
 

@@ -269,6 +269,28 @@ def fakedata():
         return {'error': str(e)}, 500
 
 
+@app.route('/poi/<game>/<trackcode>')
+def poi(game, trackcode):
+    if not user_config_active:
+        return redirect(url_for('get_config_user'))
+    return render_template('poi_editor.html', config=config, game=game, trackcode=trackcode)
+
+@app.route('/poi-editor/<game>/<trackcode>', methods=['GET', 'POST'])
+def poi_editor(game, trackcode):
+    if request.method == 'GET':
+        try:
+            with open(f'static/poi/{game}/{trackcode}.json', 'r') as file:
+                data = json.load(file)
+            return jsonify(data)
+        except FileNotFoundError:
+            return jsonify({"type": "FeatureCollection", "features": []})
+    elif request.method == 'POST':
+        data = request.json
+        with open(f'static/poi/{game}/{trackcode}.json', 'w') as file:
+            json.dump(data, file, indent=2)
+        return jsonify({"status": "success"})
+
+
 if __name__ == '__main__':
     
     debug = config.get('DEBUG', False)

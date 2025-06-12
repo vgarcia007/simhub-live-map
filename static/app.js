@@ -349,11 +349,14 @@ async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
       .filter(f => f.geometry.type === 'Point')
       .forEach(f => {
         const [lng, lat] = f.geometry.coordinates;
-        new mapboxgl.Marker()
+        const iconClass = f.properties.iconClass || 'fa-solid fa-map-marker-alt';
+        const el = document.createElement('div');
+        el.innerHTML = `<i class="${iconClass}"></i>`;
+        const icon = el.firstChild;
+        icon.style.fontSize = '24px';
+        icon.style.color    = f.properties.iconColor || '#ff0000';
+        new mapboxgl.Marker(el)
           .setLngLat([lng, lat])
-          .setPopup(
-            new mapboxgl.Popup().setText(f.properties.name || '')
-          )
           .addTo(map);
       });
   } catch (error) {
