@@ -1,14 +1,14 @@
 fetch('/config')
-  .then(response => response.json())
-  .then(config => {
-    mapboxgl.accessToken = config.mapboxToken;
-    initMap(config);
-    InfoBoxShowHide("show");
-    //InfoBoxSetTitle("Info");
-    InfoBoxEntryClear();
-    fetchGameData(config);
-  })
-  .catch(err => console.error("Error loading config:", err));
+    .then(response => response.json())
+    .then(config => {
+        mapboxgl.accessToken = config.mapboxToken;
+        initMap(config);
+        InfoBoxShowHide("show");
+        //InfoBoxSetTitle("Info");
+        InfoBoxEntryClear();
+        fetchGameData(config);
+    })
+    .catch(err => console.error("Error loading config:", err));
 
 
 let index;
@@ -20,11 +20,12 @@ let goodGeojson = null;
 
 
 let directions = {
-  'left': 'fa-solid fa-diamond-turn-right fa-flip-horizontal',
-  'right': 'fa-solid fa-diamond-turn-right',
-  'route': 'fa-solid fa-route',
-  'landmark': 'fa-solid fa-landmark',
-  'danger': 'fa-solid fa-road-circle-exclamation',
+    'left': 'fa-solid fa-diamond-turn-right fa-flip-horizontal',
+    'right': 'fa-solid fa-diamond-turn-right',
+    'route': 'fa-solid fa-route',
+    'landmark': 'fa-solid fa-landmark',
+    'straight': 'fa-solid fa-road',
+    'danger': 'fa-solid fa-road-circle-exclamation',
 
 }
 
@@ -34,6 +35,7 @@ let lastGameName = null;
 let lastTrackCode = null;
 let transformCache = {};
 let map, marker;
+let poiEditorLink = document.getElementById('poiEditorLink');
 
 //let message = '';
 
@@ -64,57 +66,58 @@ let animating = false;
  * @param {number} duration - The duration of the animation in milliseconds.
  */
 function animateMarkerSmooth(marker, from, to, duration) {
-  if (animating) return;
-  const startTime = performance.now();
-  const dLng = to.lng - from.lng;
-  const dLat = to.lat - from.lat;
+    if (animating) return;
+    const startTime = performance.now();
+    const dLng = to.lng - from.lng;
+    const dLat = to.lat - from.lat;
 
-  animating = true;
+    animating = true;
 
-  function step(now) {
-    const t = Math.min((now - startTime) / duration, 1);
-    const curLng = from.lng + dLng * t;
-    const curLat = from.lat + dLat * t;
-    marker.setLngLat([curLng, curLat]);
-    if (t < 1) {
-      requestAnimationFrame(step);
-    } else {
-      animating = false;
+    function step(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const curLng = from.lng + dLng * t;
+        const curLat = from.lat + dLat * t;
+        marker.setLngLat([curLng, curLat]);
+        if (t < 1) {
+            requestAnimationFrame(step);
+        } else {
+            animating = false;
+        }
     }
-  }
-  requestAnimationFrame(step);
+    requestAnimationFrame(step);
 }
+
 function animateMarkerSmoothTest(marker, from, to, duration) {
-  if (animating) return; // Verhindert parallele Animationen
+    if (animating) return; // Verhindert parallele Animationen
 
-  const startTime = performance.now();
-  const dLng = to.lng - from.lng;
-  const dLat = to.lat - from.lat;
+    const startTime = performance.now();
+    const dLng = to.lng - from.lng;
+    const dLat = to.lat - from.lat;
 
-  animating = true;
+    animating = true;
 
-  function step(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1); // Fortschritt zwischen 0 und 1
+    function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1); // Fortschritt zwischen 0 und 1
 
-    // Ease-In-Out-Interpolation für flüssigere Bewegung
-    const easedProgress = progress < 0.5
-      ? 2 * progress * progress
-      : -1 + (4 - 2 * progress) * progress;
+        // Ease-In-Out-Interpolation für flüssigere Bewegung
+        const easedProgress = progress < 0.5 ?
+            2 * progress * progress :
+            -1 + (4 - 2 * progress) * progress;
 
-    const currentLng = from.lng + dLng * easedProgress;
-    const currentLat = from.lat + dLat * easedProgress;
+        const currentLng = from.lng + dLng * easedProgress;
+        const currentLat = from.lat + dLat * easedProgress;
 
-    marker.setLngLat([currentLng, currentLat]);
+        marker.setLngLat([currentLng, currentLat]);
 
-    if (progress < 1) {
-      requestAnimationFrame(step);
-    } else {
-      animating = false; // Animation abgeschlossen
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            animating = false; // Animation abgeschlossen
+        }
     }
-  }
 
-  requestAnimationFrame(step);
+    requestAnimationFrame(step);
 }
 
 
@@ -126,13 +129,13 @@ function animateMarkerSmoothTest(marker, from, to, duration) {
  *                              'hide' to hide it, or logs a warning for invalid input.
  */
 function InfoBoxShowHide(visibility) {
-  if (visibility === 'show') {
-    infoBox.style.display = 'block';
-  } else if (visibility === 'hide') {
-    infoBox.style.display = 'none'; 
-  } else {
-    console.warn("Invalid visibility parameter. Use 'show' or 'hide'.");
-  }
+    if (visibility === 'show') {
+        infoBox.style.display = 'block';
+    } else if (visibility === 'hide') {
+        infoBox.style.display = 'none';
+    } else {
+        console.warn("Invalid visibility parameter. Use 'show' or 'hide'.");
+    }
 }
 
 
@@ -142,11 +145,11 @@ function InfoBoxShowHide(visibility) {
  * @param {string|null} [title=null] - The title to set. If null or not provided, defaults to 'Info'.
  */
 function InfoBoxSetTitle(title = null) {
-  if (title) {
-    infoBox.querySelector('.nib-title').textContent = title;
-  } else {
-    infoBox.querySelector('.nib-title').textContent = 'Info';
-  }
+    if (title) {
+        infoBox.querySelector('.nib-title').textContent = title;
+    } else {
+        infoBox.querySelector('.nib-title').textContent = 'Info';
+    }
 }
 
 
@@ -156,7 +159,7 @@ function InfoBoxSetTitle(title = null) {
  * This function is used to reset or remove all content within the `infoBoxEntries` element.
  */
 function InfoBoxEntryClear() {
-  infoBoxEntries.innerHTML = '';
+    infoBoxEntries.innerHTML = '';
 }
 
 
@@ -169,13 +172,13 @@ function InfoBoxEntryClear() {
  * @returns {string} The unique ID of the newly created entry element.
  */
 function InfoBoxEntryAdd(entry_icon = 'fa-solid fa-house', entry_name = null, entry_info = null) {
-  // check if infoBoxEntries.innerHTML is emty
-  let separator = '<hr class="entry-separator">';
-  if (infoBoxEntries.innerHTML.trim() === '') {
-    separator = '';
-  }
-  const id = 'nib-entry-' + Date.now() + Math.floor(Math.random() * 1000);
-  const entry = `<div id="${id}">
+    // check if infoBoxEntries.innerHTML is emty
+    let separator = '<hr class="entry-separator">';
+    if (infoBoxEntries.innerHTML.trim() === '') {
+        separator = '';
+    }
+    const id = 'nib-entry-' + Date.now() + Math.floor(Math.random() * 1000);
+    const entry = `<div id="${id}">
                         ${separator}
                     <div class="destination-entry">
                             <div class="entry-icon"><i class="${entry_icon}"></i></div>
@@ -185,8 +188,8 @@ function InfoBoxEntryAdd(entry_icon = 'fa-solid fa-house', entry_name = null, en
                             </div>
                         </div>
                     </div>`;
-  infoBoxEntries.insertAdjacentHTML('beforeend', entry);
-  return id;
+    infoBoxEntries.insertAdjacentHTML('beforeend', entry);
+    return id;
 }
 
 
@@ -199,22 +202,22 @@ function InfoBoxEntryAdd(entry_icon = 'fa-solid fa-house', entry_name = null, en
  * @param {string|null} [entry_info=null] - Additional information to display in the entry. If null, the info will be cleared.
  */
 function InfoBoxEntryUpdate(id, entry_icon = 'fa-solid fa-house', entry_name = null, entry_info = null) {
-  const entry = document.getElementById(id);
-  if (!entry) {
-    console.warn(`Entry with ID ${id} not found.`);
-    return;
-  }
-  entry.querySelector('.entry-icon i').className = entry_icon;
-  if (entry_name) {
-    entry.querySelector('.entry-name').innerHTML = entry_name;
-  } else {
-    entry.querySelector('.entry-name').innerHTML = '';
-  }
-  if (entry_info) {
-    entry.querySelector('.entry-info').innerHTML = entry_info;
-  } else {
-    entry.querySelector('.entry-info').innerHTML = '';
-  }
+    const entry = document.getElementById(id);
+    if (!entry) {
+        console.warn(`Entry with ID ${id} not found.`);
+        return;
+    }
+    entry.querySelector('.entry-icon i').className = entry_icon;
+    if (entry_name) {
+        entry.querySelector('.entry-name').innerHTML = entry_name;
+    } else {
+        entry.querySelector('.entry-name').innerHTML = '';
+    }
+    if (entry_info) {
+        entry.querySelector('.entry-info').innerHTML = entry_info;
+    } else {
+        entry.querySelector('.entry-info').innerHTML = '';
+    }
 }
 
 
@@ -226,12 +229,12 @@ function InfoBoxEntryUpdate(id, entry_icon = 'fa-solid fa-house', entry_name = n
  * @throws {void} - Logs a warning to the console if the element with the specified ID is not found.
  */
 function InfoBoxEntryDelete(id) {
-  const entry = document.getElementById(id);
-  if (entry) {
-    entry.remove();
-  } else {
-    console.warn(`Entry with ID ${id} not found.`);
-  }
+    const entry = document.getElementById(id);
+    if (entry) {
+        entry.remove();
+    } else {
+        console.warn(`Entry with ID ${id} not found.`);
+    }
 }
 
 
@@ -244,161 +247,137 @@ function InfoBoxEntryDelete(id) {
  * @returns {number} The calculated zoom level, rounded to one decimal place.
  */
 function getZoomForSpeed(speedKmh, minZoom, maxZoom, defaultMapZoom) {
-  console.log("Calculating zoom for speed:", speedKmh, "km/h");
-  if (Number(speedKmh) >= 150){
-    
-    console.log("Speed is below 150 km/h, using default zoom level:", defaultMapZoom);
-    return minZoom;
+    //console.log("Calculating zoom for speed:", speedKmh, "km/h");
+    if (Number(speedKmh) >= 150) {
 
-  }else if (Number(speedKmh) <= 60){
-    console.log("Speed is below 60 km/h, using max zoom level:", maxZoom);
-    return maxZoom;
+        //console.log("Speed is below 150 km/h, using default zoom level:", defaultMapZoom);
+        return minZoom;
 
-  }else{
-    console.log("Speed is between 60 km/h, using max zoom level:", defaultMapZoom);
-    return defaultMapZoom;
-  }
-  
-}
+    } else if (Number(speedKmh) <= 60) {
+        //console.log("Speed is below 60 km/h, using max zoom level:", maxZoom);
+        return maxZoom;
 
-
-function loadGeoJson(url) {
-  return fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        console.error(`Failed to load GeoJSON from ${url}:`, response.statusText);
-      }
-      return response.json();
-    })
-    .catch(error => {
-      console.error(`Error loading GeoJSON from ${url}:`, error);
-
-    }
-    );
-}
-
-async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
-  const stringLayerId = String(layerId); // layerId als String
-
-  let geojson;
-  // 1) GeoJSON laden und bei Fehler abbrechen
-  try {
-    geojson = await loadGeoJson(url);
-    console.log(`GeoJSON loaded from ${url}`);
-    goodGeojson = true;
-  } catch (error) {
-    console.error(`Failed to load GeoJSON from ${url}:`, error);
-    goodGeojson = null;
-    return; // Exit bevor irgendwas an der Karte passiert
-  }
-
-  // 2) Existenz und Inhalt prüfen
-  if (
-    !geojson ||
-    !Array.isArray(geojson.features) ||
-    geojson.features.length === 0
-  ) {
-    goodGeojson = null;
-    console.warn(`No features found in GeoJSON from ${url}`);
-    return;
-  }
-
-  // 3) Source hinzufügen bzw. updaten
-  try {
-    if (!map.getSource(stringLayerId)) {
-      map.addSource(stringLayerId, {
-        type: 'geojson',
-        data: geojson
-      });
     } else {
-      map.getSource(stringLayerId).setData(geojson);
+        //console.log("Speed is between 60 km/h, using max zoom level:", defaultMapZoom);
+        return defaultMapZoom;
     }
-  } catch (error) {
-    goodGeojson = null;
-    console.error(`Error adding/updating source '${stringLayerId}':`, error);
-    return;
-  }
 
-  // 4) Layer hinzufügen
-  try {
-    if (!map.getLayer(stringLayerId)) {
-      map.addLayer({
-        id: stringLayerId,
-        type: 'line',
-        source: stringLayerId,
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-color': layerOptions.color || '#888',
-          'line-width': layerOptions.width || 2
+}
+
+
+/**
+ * Loads a GeoJSON file from the specified URL.
+ *
+ * @param {string} url - The URL of the GeoJSON file to load.
+ * @returns {Promise<Object>} A promise that resolves to the parsed GeoJSON object.
+ * @throws Will log an error message to the console if the fetch fails or the response is not OK.
+ */
+function loadGeoJson(url) {
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                console.error(`Failed to load GeoJSON from ${url}:`, response.statusText);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error(`Error loading GeoJSON from ${url}:`, error);
+
+        });
+}
+
+/**
+ * Asynchronously loads a GeoJSON file from a given URL, adds it as a source to the map,
+ * and creates a corresponding layer with specified options. Additionally, builds a spatial
+ * index for point features using RBush.
+ *
+ * @async
+ * @function loadGeoJsonAndAddLayer
+ * @param {Object} map - The Mapbox GL map instance to which the layer will be added.
+ * @param {string} url - The URL of the GeoJSON file to load.
+ * @param {string|number} layerId - The unique identifier for the layer. It will be converted to a string.
+ * @param {Object} [layerOptions={}] - Optional configuration for the layer's appearance.
+ * @param {number} [layerOptions.circleRadius=6] - The radius of the circle markers.
+ * @param {string} [layerOptions.circleColor='#0A8042'] - The color of the circle markers.
+ * @param {number} [layerOptions.circleOpacity=0.8] - The opacity of the circle markers.
+ * @returns {Object|null} - Returns an RBush spatial index for point features if successful, or `null` if an error occurs.
+ * @throws {Error} - Throws an error if the GeoJSON fails to load or if there are issues adding/updating the source or layer.
+ */
+async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
+    const stringLayerId = String(layerId); // layerId als String
+
+    let geojson;
+
+    try {
+        geojson = await loadGeoJson(url);
+        console.log(`GeoJSON loaded from ${url}`);
+        goodGeojson = true;
+    } catch (error) {
+        console.error(`Failed to load GeoJSON from ${url}:`, error);
+        goodGeojson = null;
+        return; // Exit bevor irgendwas an der Karte passiert
+    }
+
+    if (
+        !geojson ||
+        !Array.isArray(geojson.features) ||
+        geojson.features.length === 0
+    ) {
+        goodGeojson = null;
+        console.warn(`No features found in GeoJSON from ${url}`);
+        return;
+    }
+
+    try {
+        if (!map.getSource(stringLayerId)) {
+            map.addSource(stringLayerId, {
+                type: 'geojson',
+                data: geojson
+            });
+        } else {
+            map.getSource(stringLayerId).setData(geojson);
         }
-      });
-      
+    } catch (error) {
+        goodGeojson = null;
+        console.error(`Error adding/updating source '${stringLayerId}':`, error);
+        return;
     }
-  } catch (error) {
-    goodGeojson = null; // Reset goodGeojson, da wir hier einen Fehler haben
-    console.error(`Error adding layer '${stringLayerId}':`, error);
-    return;
-  }
 
-  // 5) Marker setzen (nur Point-Geometrien)
-  try {
-    geojson.features
-      .filter(f => f.geometry.type === 'Point')
-      .forEach(f => {
-        const [lng, lat] = f.geometry.coordinates;
-        new mapboxgl.Marker()
-          .setLngLat([lng, lat])
-          .setPopup(
-            new mapboxgl.Popup().setText(f.properties.name || '')
-          )
-          .addTo(map);
-      });
-  } catch (error) {
-    console.error(`Error adding markers for '${stringLayerId}':`, error);
-    // Nicht return, da wir zumindest die Karte schon gezeichnet haben
-  }
-
-  // 6) Karte auf GeoJSON zentrieren
-  try {
-    const bounds = new mapboxgl.LngLatBounds();
-    geojson.features.forEach(feature => {
-      const geom = feature.geometry;
-      if (geom.type === 'Point') {
-        bounds.extend(geom.coordinates);
-      } else if (geom.type === 'LineString') {
-        geom.coordinates.forEach(coord => bounds.extend(coord));
-      } else if (geom.type === 'Polygon') {
-        geom.coordinates[0].forEach(coord => bounds.extend(coord));
-      }
-    });
-    if (!bounds.isEmpty()) {
-      map.fitBounds(bounds, { padding: 20 });
+    try {
+        if (!map.getLayer(stringLayerId)) {
+            map.addLayer({
+                id: stringLayerId,
+                type: 'circle',
+                source: stringLayerId,
+                paint: {
+                    'circle-radius': layerOptions.circleRadius || 6,
+                    'circle-color': layerOptions.circleColor || '#0A8042',
+                    'circle-opacity': layerOptions.circleOpacity || 0.8
+                }
+            });
+        }
+    } catch (error) {
+        goodGeojson = null;
+        console.error(`Error adding layer '${stringLayerId}':`, error);
+        return;
     }
-  } catch (error) {
-    console.error(`Error fitting bounds for '${stringLayerId}':`, error);
-  }
 
-  // 7) RBush-Index aufbauen
-  try {
-    const points = geojson.features
-      .filter(f => f.geometry.type === 'Point')
-      .map(f => ({
-        minX: f.geometry.coordinates[0],
-        minY: f.geometry.coordinates[1],
-        maxX: f.geometry.coordinates[0],
-        maxY: f.geometry.coordinates[1],
-        properties: f.properties
-      }));
-    index = new RBush();
-    index.load(points);
-    // optional: return index, wenn du ihn später nutzen möchtest
-    return index;
-  } catch (error) {
-    console.error(`Error building spatial index for '${stringLayerId}':`, error);
-  }
+    try {
+        const points = geojson.features
+            .filter(f => f.geometry.type === 'Point')
+            .map(f => ({
+                minX: f.geometry.coordinates[0],
+                minY: f.geometry.coordinates[1],
+                maxX: f.geometry.coordinates[0],
+                maxY: f.geometry.coordinates[1],
+                properties: f.properties
+            }));
+        index = new RBush();
+        index.load(points);
+        return index;
+    } catch (error) {
+        console.error(`Error building spatial index for '${stringLayerId}':`, error);
+    }
 }
 
 
@@ -417,37 +396,35 @@ async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
  */
 
 function initMap(CONFIG) {
-  if (CONFIG.defaultMapCenter && CONFIG.defaultMapZoom) {
-    mapboxgl.accessToken = CONFIG.mapboxToken;
-    map = new mapboxgl.Map({
-      container: 'map',
-      style: CONFIG.mapboxStyles[CONFIG.mapboxStyle] || 'mapbox://styles/mapbox/streets-v12',
-      center: CONFIG.defaultMapCenter,
-      zoom: CONFIG.defaultMapZoom,
-      pitch: 50,
-      bearing: 0,
-      antialias: true,
-      collectResourceTiming: false
-    });
+    if (CONFIG.defaultMapCenter && CONFIG.defaultMapZoom) {
+        mapboxgl.accessToken = CONFIG.mapboxToken;
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: CONFIG.mapboxStyles[CONFIG.mapboxStyle] || 'mapbox://styles/mapbox/streets-v12',
+            center: CONFIG.defaultMapCenter,
+            zoom: CONFIG.defaultMapZoom,
+            pitch: 50,
+            bearing: 0,
+            antialias: true,
+            collectResourceTiming: false
+        });
 
-    const markerElement = document.createElement('div');
-    markerElement.className = 'car-icon';
+        const markerElement = document.createElement('div');
+        markerElement.className = 'car-icon';
 
-    marker = new mapboxgl.Marker({
-        element: markerElement,
+        marker = new mapboxgl.Marker({
+                element: markerElement,
 
-      })
-      .setLngLat(CONFIG.defaultMapCenter)
-      .addTo(map);
-
-
-      
+            })
+            .setLngLat(CONFIG.defaultMapCenter)
+            .addTo(map);
 
 
 
-  } else {
-    console.warn("Default map center or zoom not set in config");
-  }
+
+    } else {
+        console.warn("Default map center or zoom not set in config");
+    }
 }
 
 
@@ -469,248 +446,247 @@ function initMap(CONFIG) {
  * @throws {Error} Throws an error if the transformation data is missing or if the API format is invalid.
  */
 async function fetchGameData(config) {
-  if (fetchGameData.fetchInProgress) return;
-  fetchGameData.fetchInProgress = true;
+    if (fetchGameData.fetchInProgress) return;
+    fetchGameData.fetchInProgress = true;
 
-  try {
-    const res = await fetch(config.mapAPIurl);
-    const data = await res.json();
+    try {
+        const res = await fetch(config.mapAPIurl);
+        const data = await res.json();
 
-    if (!data.IsGameInRace) {
-      // — GPS-Waiting —
-      if (!infobox_warning_IsGameInRace_id) {
-        infobox_warning_IsGameInRace_id = InfoBoxEntryAdd(
-          'fa-solid fa-satellite-dish fa-fw',
-          'GPS',
-          'Waiting for position data…'
-        );
-      } else {
-        InfoBoxEntryUpdate(
-          infobox_warning_IsGameInRace_id,
-          'fa-solid fa-satellite-dish fa-fw',
-          'GPS',
-          'Waiting for position data…'
-        );
-      }
+        if (!data.IsGameInRace) {
+            // — GPS-Waiting —
+            if (!infobox_warning_IsGameInRace_id) {
+                infobox_warning_IsGameInRace_id = InfoBoxEntryAdd(
+                    'fa-solid fa-satellite-dish fa-fw',
+                    'GPS',
+                    'Waiting for position data…'
+                );
+            } else {
+                InfoBoxEntryUpdate(
+                    infobox_warning_IsGameInRace_id,
+                    'fa-solid fa-satellite-dish fa-fw',
+                    'GPS',
+                    'Waiting for position data…'
+                );
+            }
 
-      if (infobox_warning_LapInfo_id) {
-        InfoBoxEntryDelete(infobox_warning_LapInfo_id);
-        infobox_warning_LapInfo_id = null;
-      }
-      //unload layer if it exists
-      if (map.getLayer('123456')) {
-        map.removeLayer('123456');
-      }
-      //hide the info box
-      poiInfoBox.style.display = 'none'; 
-      //goodGeojson = null;
-      lastPos = null;
+            if (infobox_warning_LapInfo_id) {
+                InfoBoxEntryDelete(infobox_warning_LapInfo_id);
+                infobox_warning_LapInfo_id = null;
+            }
+            //unload layer if it exists
+            if (map.getLayer('123456')) {
+                map.removeLayer('123456');
+            }
+            //hide the info box
+            poiInfoBox.style.display = 'none';
+            //goodGeojson = null;
+            lastPos = null;
 
-      return;
-    }
+            return;
+        }
 
-    if (infobox_warning_IsGameInRace_id) {
-      InfoBoxEntryDelete(infobox_warning_IsGameInRace_id);
-      infobox_warning_IsGameInRace_id = null;
-    }
+        if (infobox_warning_IsGameInRace_id) {
+            InfoBoxEntryDelete(infobox_warning_IsGameInRace_id);
+            infobox_warning_IsGameInRace_id = null;
+        }
 
-    const d = data.NewData.FeedbackData;
-    const gameName = data.GameName;
-    const trackCode = data.NewData.TrackCode;
-    const trackName = data.NewData.TrackName;
+        const d = data.NewData.FeedbackData;
+        const gameName = data.GameName;
+        const trackCode = data.NewData.TrackCode;
+        const trackName = data.NewData.TrackName;
 
-    // Load Trackinfo
-    if (gameName !== lastGameName || trackCode !== lastTrackCode) {
-      console.log("Loading TrackInfo for", gameName, trackCode);
-      loadGeoJsonAndAddLayer(map, `/static/poi/${gameName}/${trackCode}.json`, 123456);
-      
-      
-      if (infobox_warning_TrackInfo_id) {
-        InfoBoxEntryUpdate(
-          infobox_warning_TrackInfo_id,
-          'fa-solid fa-road fa-fw',
-          trackName,
-          gameName
-        );
-      } else {
-        infobox_warning_TrackInfo_id = InfoBoxEntryAdd(
-          'fa-solid fa-road fa-fw',
-          trackName,
-          gameName
-        );
-      }
+        // Load Trackinfo
+        if (gameName !== lastGameName || trackCode !== lastTrackCode) {
+            console.log("Loading TrackInfo for", gameName, trackCode);
+            poiEditorLink.href = `/poi/${gameName}/${trackCode}`;
+            loadGeoJsonAndAddLayer(map, `/static/poi/${gameName}/${trackCode}.json`, 123456);
 
-      // Transform-Cache
-      if (!transformCache[gameName]?.[trackCode]) {
-        const tfRes = await fetch("/static/track_transforms.json");
-        const tfJson = await tfRes.json();
-        transformCache[gameName] = transformCache[gameName] || {};
-        transformCache[gameName][trackCode] = tfJson[gameName]?.[trackCode] || null;
-      }
-      const coeffs = transformCache[gameName][trackCode];
 
-      if (!coeffs) {
-        // Missing Transform
-        if (!infobox_warning_NoTransform_id) {
-          infobox_warning_NoTransform_id = InfoBoxEntryAdd(
-            'fa-solid fa-road-circle-xmark fa-fw',
-            'Transform missing',
-            'Please create it:<br><a href="/helper">Click here</a>'
-          );
+            if (infobox_warning_TrackInfo_id) {
+                InfoBoxEntryUpdate(
+                    infobox_warning_TrackInfo_id,
+                    'fa-solid fa-road fa-fw',
+                    trackName,
+                    gameName
+                );
+            } else {
+                infobox_warning_TrackInfo_id = InfoBoxEntryAdd(
+                    'fa-solid fa-road fa-fw',
+                    trackName,
+                    gameName
+                );
+            }
+
+            // Transform-Cache
+            if (!transformCache[gameName]?.[trackCode]) {
+                const tfRes = await fetch("/static/track_transforms.json");
+                const tfJson = await tfRes.json();
+                transformCache[gameName] = transformCache[gameName] || {};
+                transformCache[gameName][trackCode] = tfJson[gameName]?.[trackCode] || null;
+            }
+            const coeffs = transformCache[gameName][trackCode];
+
+            if (!coeffs) {
+                // Missing Transform
+                if (!infobox_warning_NoTransform_id) {
+                    infobox_warning_NoTransform_id = InfoBoxEntryAdd(
+                        'fa-solid fa-road-circle-xmark fa-fw',
+                        'Transform missing',
+                        'Please create it:<br><a href="/helper">Click here</a>'
+                    );
+                } else {
+                    InfoBoxEntryUpdate(
+                        infobox_warning_NoTransform_id,
+                        'fa-solid fa-road-circle-xmark fa-fw',
+                        'Transform missing',
+                        'Please create it:<br><a href="/helper">Click here</a>'
+                    );
+                }
+                throw new Error("Transformation missing");
+            }
+            // Transform available -> Remove warning
+            if (infobox_warning_NoTransform_id) {
+                InfoBoxEntryDelete(infobox_warning_NoTransform_id);
+                infobox_warning_NoTransform_id = null;
+            }
+
+            // Set gameToLatLng
+            const c = coeffs;
+            gameToLatLng = (x, y) => [
+                c.lat[0] * x + c.lat[1] * y + c.lat[2],
+                c.lng[0] * x + c.lng[1] * y + c.lng[2],
+                c.yaw
+            ];
+
+            lastGameName = gameName;
+            lastTrackCode = trackCode;
+        }
+
+        if (!gameToLatLng) throw new Error("Transformation missing");
+        if (goodGeojson) {
+            poiInfoBox.style.display = 'block';
+        }
+
+        // revert erroneous API status
+        if (infobox_warning_Error_id) {
+            InfoBoxEntryDelete(infobox_warning_Error_id);
+            infobox_warning_Error_id = null;
+        }
+
+        // Marker & Camera
+        const [lat, lng, yaw_off] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
+        const yaw = d.OrientationYaw + yaw_off;
+        const speed = data.NewData.FilteredSpeedKmh;
+
+        const newPos = {
+            lng,
+            lat
+        };
+        if (!lastPos) {
+            marker.setLngLat([lng, lat]);
         } else {
-          InfoBoxEntryUpdate(
-            infobox_warning_NoTransform_id,
-            'fa-solid fa-road-circle-xmark fa-fw',
-            'Transform missing',
-            'Please create it:<br><a href="/helper">Click here</a>'
-          );
+            //animateMarkerSmooth(marker, lastPos, newPos, config.fetchIntervalMs);
+            animateMarkerSmoothTest(marker, lastPos, newPos, config.fetchIntervalMs);
         }
-        throw new Error("Transformation missing");
-      }
-      // Transform available -> Remove warning
-      if (infobox_warning_NoTransform_id) {
-        InfoBoxEntryDelete(infobox_warning_NoTransform_id);
-        infobox_warning_NoTransform_id = null;
-      }
+        lastPos = newPos;
 
-      // Set gameToLatLng
-      const c = coeffs;
-      gameToLatLng = (x, y) => [
-        c.lat[0] * x + c.lat[1] * y + c.lat[2],
-        c.lng[0] * x + c.lng[1] * y + c.lng[2],
-        c.yaw
-      ];
+        let zoom = config.defaultMapZoom;
+        //console.log("Zoom level:", zoom, "Speed:", speed, "km/h");
+        if (data.IsGameInRace) {
+            if (config.speedZoom) {
+                zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom, config.defaultMapZoom);
+            }
+        }
+        //console.log("Zoom level:", zoom, "Speed:", speed, "km/h");
 
-      lastGameName = gameName;
-      lastTrackCode = trackCode;
-    }
+        // Map-Kamera
 
-    if (!gameToLatLng) throw new Error("Transformation missing");
-    if(goodGeojson) {
-      poiInfoBox.style.display = 'block';
-    }
+        if (!window._mapInitialized) {
+            map.jumpTo({
+                center: [lng, lat],
+                zoom,
+                bearing: yaw
+            });
+            window._mapInitialized = true;
+        } else {
+            map.flyTo({
+                center: [lng, lat],
+                zoom,
+                bearing: yaw,
+                speed: 0.3, // slower is better for smoothness
+                curve: 0, // lower conflict overshoot
+                easing: t => t, // linear speed
+                essential: true, // this animation is essential for the user experience
+                maxDuration: config.fetchIntervalMs
+            });
+        }
+        //console.log(goodGeojson);
+        if (goodGeojson) {
 
-    // revert erroneous API status
-    if (infobox_warning_Error_id) {
-      InfoBoxEntryDelete(infobox_warning_Error_id);
-      infobox_warning_Error_id = null;
-    }
+            const nearest = findNearestMarker(lat, lng);
 
-    // Marker & Camera
-    const [lat, lng, yaw_off] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
-    const yaw = d.OrientationYaw + yaw_off;
-    const speed = data.NewData.FilteredSpeedKmh;
+            if (nearest) {
 
-    const newPos = {
-      lng,
-      lat
-    };
-    if (!lastPos) {
-      marker.setLngLat([lng, lat]);
-    } else {
-      //animateMarkerSmooth(marker, lastPos, newPos, config.fetchIntervalMs);
-      animateMarkerSmoothTest(marker, lastPos, newPos, config.fetchIntervalMs);
-    }
-    lastPos = newPos;
+                if (lastPoi && lastPoi.properties.name === nearest.properties.name) {
+                    //console.warn("Marker is the same as last POI, skipping update");
 
-    let zoom = config.defaultMapZoom;
-    console.log("Zoom level:", zoom, "Speed:", speed, "km/h");
-    if (data.IsGameInRace){
-      if (config.speedZoom ) {
-        zoom = getZoomForSpeed(speed, config.minZoom, config.maxZoom, config.defaultMapZoom);
-      }
-    }
-    console.log("Zoom level:", zoom, "Speed:", speed, "km/h");
+                } else {
+                    let direction = nearest.properties.direction;
+                    let html = '<i class="' + directions[direction] + ' fa-3x poi-pin"></i>'
+                    poiInfoIcon.innerHTML = html;
+                    poiInfo.innerHTML = nearest.properties.name;
+                    lastPoi = nearest;
 
-    // Map-Kamera
+                }
 
-    if (!window._mapInitialized) {
-      map.jumpTo({
-        center: [lng, lat],
-        zoom,
-        bearing: yaw
-      });
-      window._mapInitialized = true;
-    } else {
-      map.flyTo({
-        center: [lng, lat],
-        zoom,
-        bearing: yaw,
-        speed: 0.3, // slower is better for smoothness
-        curve: 0, // lower conflict overshoot
-        easing: t => t, // linear speed
-        essential: true, // this animation is essential for the user experience
-        maxDuration: config.fetchIntervalMs
-      });
-    }
-    console.log(goodGeojson);
-    if (goodGeojson) {
-      
-      const nearest = findNearestMarker(lat, lng);
-
-      if (nearest) {
-
-        if (lastPoi && lastPoi.properties.name === nearest.properties.name) {
-          //console.warn("Marker is the same as last POI, skipping update");
-
-        }else {         
-          let direction = nearest.properties.direction;
-          let html = '<i class="'+ directions[direction] +' fa-3x poi-pin"></i>'
-          poiInfoIcon.innerHTML = html; 
-          poiInfo.innerHTML = nearest.properties.name;
-          lastPoi = nearest;
-
+            } else {
+                //console.warn("No nearest marker found");
+            }
         }
 
-      } else {
-        console.warn("Kein nächster Marker gefunden");
-      }
+
+
+
+        // Here comes the "Always Add or Update" for LapInfo
+        const CurrentLapTime = data.NewData.CurrentLapTime;
+        const CurrentLap = data.NewData.CurrentLap;
+        const CurrentSectorIndex = data.NewData.CurrentSectorIndex;
+        distance = 'Lap ' + CurrentLap + ' · Sector ' + CurrentSectorIndex;
+
+        if (infobox_warning_LapInfo_id) {
+            InfoBoxEntryUpdate(infobox_warning_LapInfo_id, 'fa-solid fa-stopwatch fa-fw', time = String(CurrentLapTime), distance);
+        } else {
+            infobox_warning_LapInfo_id = InfoBoxEntryAdd('fa-solid fa-stopwatch fa-fw', time = String(CurrentLapTime), distance);
+        }
+
+    } catch (err) {
+        // API Error
+        if (err.message.includes("Invalid API format")) {
+            if (infobox_warning_Error_id) {
+                InfoBoxEntryUpdate(
+                    infobox_warning_Error_id,
+                    'fa-solid fa-triangle-exclamation fa-fw',
+                    'API',
+                    'Is SimHub and Game running?'
+                );
+            } else {
+                infobox_warning_Error_id = InfoBoxEntryAdd(
+                    'fa-solid fa-triangle-exclamation fa-fw',
+                    'API',
+                    'Is SimHub and Game running?'
+                );
+            }
+        }
+        // Transformation missing
+        if (err.message.includes("Transformation missing")) {
+            // i think this is already handled above. need to check
+        }
+
+    } finally {
+        fetchGameData.fetchInProgress = false;
+        setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
     }
-
-
-
-
-    
-
-    // Here comes the "Always Add or Update" for LapInfo
-    const CurrentLapTime = data.NewData.CurrentLapTime;
-    const CurrentLap = data.NewData.CurrentLap;
-    const CurrentSectorIndex = data.NewData.CurrentSectorIndex;
-    distance = 'Lap ' + CurrentLap + ' · Sector ' + CurrentSectorIndex;
-
-    if (infobox_warning_LapInfo_id) {
-      InfoBoxEntryUpdate(infobox_warning_LapInfo_id, 'fa-solid fa-stopwatch fa-fw', time = String(CurrentLapTime), distance);
-    } else {
-      infobox_warning_LapInfo_id = InfoBoxEntryAdd('fa-solid fa-stopwatch fa-fw', time = String(CurrentLapTime), distance);
-    }
-
-  } catch (err) {
-    // API Error
-    if (err.message.includes("Invalid API format")) {
-      if (infobox_warning_Error_id) {
-        InfoBoxEntryUpdate(
-          infobox_warning_Error_id,
-          'fa-solid fa-triangle-exclamation fa-fw',
-          'API',
-          'Is SimHub and Game running?'
-        );
-      } else {
-        infobox_warning_Error_id = InfoBoxEntryAdd(
-          'fa-solid fa-triangle-exclamation fa-fw',
-          'API',
-          'Is SimHub and Game running?'
-        );
-      }
-    }
-    // Transformation missing
-    if (err.message.includes("Transformation missing")) {
-      // i think this is already handled above. need to check
-    }
-
-  } finally {
-    fetchGameData.fetchInProgress = false;
-    setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
-  }
 }
 
 
@@ -724,67 +700,79 @@ const DARK_CSS = '/static/app-dark.css';
 const LIGHT_CSS = '';
 
 function setTheme(mode) {
-  if (mode === 'dark') {
-    themeLink.href = DARK_CSS;
-    themeIcon.classList.remove('fa-sun');
-    themeIcon.classList.add('fa-moon');
-  } else {
-    themeLink.href = LIGHT_CSS;
-    themeIcon.classList.remove('fa-moon');
-    themeIcon.classList.add('fa-sun');
-  }
-  localStorage.setItem('theme', mode);
+    if (mode === 'dark') {
+        themeLink.href = DARK_CSS;
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+    } else {
+        themeLink.href = LIGHT_CSS;
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+    }
+    localStorage.setItem('theme', mode);
 }
 
 function toggleTheme() {
-  const current = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
-  setTheme(current === 'dark' ? 'light' : 'dark');
+    const current = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
+    setTheme(current === 'dark' ? 'light' : 'dark');
 }
 
 (function init() {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'dark' || saved === 'light') {
-    setTheme(saved);
-  } else {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setTheme(prefersDark ? 'dark' : 'light');
-  }
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'light') {
+        setTheme(saved);
+    } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
+    }
 })();
 
 
-
-
-// Debugging in findNearestMarker hinzufügen
+/**
+ * Calculates the distance between two geographical points using the Haversine formula.
+ *
+ * @param {number} lat1 - Latitude of the first point in decimal degrees.
+ * @param {number} lon1 - Longitude of the first point in decimal degrees.
+ * @param {number} lat2 - Latitude of the second point in decimal degrees.
+ * @param {number} lon2 - Longitude of the second point in decimal degrees.
+ * @returns {number} The distance between the two points in meters.
+ */
 function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371e3;
-  const φ1 = lat1 * Math.PI / 180;
-  const φ2 = lat2 * Math.PI / 180;
-  const Δφ = (lat2 - lat1) * Math.PI / 180;
-  const Δλ = (lon2 - lon1) * Math.PI / 180;
-  const a =
-    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-    Math.cos(φ1) * Math.cos(φ2) *
-    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
+    const R = 6371e3;
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+    const a =
+        Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
 }
 
+
+/**
+ * Finds the nearest marker to the given latitude and longitude coordinates.
+ *
+ * @param {number} lat - The latitude of the point to search from.
+ * @param {number} lon - The longitude of the point to search from.
+ * @returns {Object|null} The nearest marker object, or null if the RBush index is not initialized.
+ */
 function findNearestMarker(lat, lon) {
-  if (!index) {
-    console.error("RBush-Index ist nicht initialisiert.");
-    return null;
-  }
-  // Alle Punkte aus dem Index holen
-  const allPoints = index.all();
-  let nearest = null;
-  let minDist = Infinity;
-  for (const pt of allPoints) {
-    // pt.minY = lat, pt.minX = lon
-    const dist = calculateDistance(lat, lon, pt.minY, pt.minX);
-    if (dist < minDist) {
-      minDist = dist;
-      nearest = pt;
+    if (!index) {
+        console.error("RBush index is not initialized.");
+        return null;
     }
-  }
-  return nearest;
+    const allPoints = index.all();
+    let nearest = null;
+    let minDist = Infinity;
+    for (const pt of allPoints) {
+        const dist = calculateDistance(lat, lon, pt.minY, pt.minX);
+        if (dist < minDist) {
+            minDist = dist;
+            nearest = pt;
+        }
+    }
+    return nearest;
 }
