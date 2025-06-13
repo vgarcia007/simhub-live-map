@@ -2,3 +2,4 @@
 *.min.css
 __pycache__/
 config-user.json
+static/track_transforms.json

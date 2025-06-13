@@ -5,7 +5,7 @@ import json
 from generate_transforms import process_tracks
 from waitress import serve
 import logging
-
+import os
 
 def minimize_json(data):
     """
@@ -163,6 +163,48 @@ def get_refpoint(game, track):
         return {'error': str(e)}, 500
 
 
+@app.route('/list-tracks', methods=['GET'])
+def list_tracks():
+    
+
+    root_dir = 'static/poi'
+    poi_dict = {}
+    
+    for entry in os.listdir(root_dir):
+        subdir_path = os.path.join(root_dir, entry)
+        if not os.path.isdir(subdir_path):
+            continue
+        
+        file_counts = {}
+        for fname in os.listdir(subdir_path):
+            if not fname.lower().endswith('.json'):
+                continue
+            
+            name = os.path.splitext(fname)[0]
+            full_path = os.path.join(subdir_path, fname)
+            
+            try:
+                with open(full_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                # GeoJSON-Features zählen
+                count = len(data.get('features', []))
+            except Exception as e:
+                # Bei Fehlern können wir None setzen oder z.B. 0
+                print(f"Fehler beim Laden von {full_path}: {e}")
+                count = None
+            
+            file_counts[name] = count
+        
+        poi_dict[entry] = file_counts
+    try:
+        with open('static/track_reference_points.json', 'r') as f:
+            refpoints = json.load(f)
+
+        return render_template('tracks.html', config=config, games=refpoints, poi_dict=poi_dict)
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+
 @app.route('/delete-track/<game>/<track>', methods=['GET'])
 def delete_track(game, track):
     try:
@@ -290,6 +332,9 @@ def poi_editor(game, trackcode):
             json.dump(data, file, indent=2)
         return jsonify({"status": "success"})
 
+@app.route('/favicon.ico')
+def favicon_redirect():
+    return redirect(url_for('static', filename='favicon/favicon.ico'), code=302)
 
 if __name__ == '__main__':
     

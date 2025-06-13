@@ -11,6 +11,17 @@ let first_load = true;
 
 const ref_points = []
 
+/**
+ * Asynchronously fetches data from a specified API and processes it to update the UI and internal state.
+ * Ensures that only one fetch operation is in progress at a time.
+ *
+ * @async
+ * @function runHelper
+ * @param {Object} config - Configuration object for the helper function.
+ * @param {string} config.mapAPIurl - The URL of the API to fetch data from.
+ * @param {number} config.fetchIntervalMs - The interval in milliseconds to wait before the next fetch.
+ * @throws {Error} Throws an error if the API response format is invalid.
+ */
 async function runHelper(config) {
     if (runHelper.fetchInProgress) return;
     runHelper.fetchInProgress = true;
@@ -56,6 +67,21 @@ async function runHelper(config) {
 }
 
 
+/**
+ * Loads reference points for a specific game and track from a server endpoint,
+ * updates the global `ref_points` array, and populates the UI with the loaded data.
+ *
+ * The function retrieves the game name and track code from the DOM elements
+ * with IDs "GameName" and "TrackCode", respectively. It then constructs a URL
+ * to fetch the reference points in JSON format. Once the data is fetched, it
+ * clears the `ref_points` array, populates it with the fetched data, updates
+ * the yaw value in the UI, and calls helper functions to build the JSON and
+ * list representations of the reference points.
+ *
+ * @function loadRefPoints
+ * @returns {void}
+ * @throws {Error} Logs an error message to the console if the fetch request fails.
+ */
 function loadRefPoints() {
     url = "/refpoints/<game>/<track>";
     const gameName = document.getElementById("GameName").value;
@@ -184,6 +210,13 @@ document.getElementById("generate").addEventListener("click", () => {
     document.getElementById("notes").value = ""; // Clear the notes input field
 });
 
+/**
+ * Builds a JSON object based on the provided reference points and user input from the DOM,
+ * and displays the resulting JSON string in the element with ID "result".
+ *
+ * @param {Array} ref_points - An array of reference points to include in the JSON object.
+ * @returns {void} This function does not return a value.
+ */
 function buildJSON(ref_points) {
     const trackCode = document.getElementById("TrackCode").value;
     const yaw = document.getElementById("yaw").value;
@@ -198,6 +231,17 @@ function buildJSON(ref_points) {
     document.getElementById("result").textContent = asString;
 }
 
+/**
+ * Builds and updates a list of reference points in the DOM.
+ * 
+ * This function dynamically creates and populates a list element with the provided
+ * reference points. Each list item includes a JSON representation of the point and
+ * a delete button. Clicking the delete button removes the corresponding point from
+ * the list and updates the DOM accordingly.
+ * 
+ * @param {Array<Object>} ref_points - An array of reference point objects to be displayed in the list.
+ * Each object is expected to be serializable to JSON.
+ */
 function buildList(ref_points) {
     console.log("Building list with reference points:", ref_points);
     const list = document.getElementById("ref_points_list");
@@ -228,70 +272,15 @@ function buildList(ref_points) {
     });
 }
 
-function listTracks() {
-    // fetch track reference points JSON
-    fetch('/static/track_reference_points.json')
-        .then(response => response.json())
-        .then(data => {
-            const trackList = document.getElementById("trackList");
-            trackList.innerHTML = ""; // Clear existing options
 
-            Object.keys(data).forEach(game => {
-                const gameOption = document.createElement("optgroup");
-                gameOption.label = game;
-
-                Object.keys(data[game]).forEach(track => {
-
-                    const option = document.createElement("option");
-                    option.value = `${game}/${track}`;
-                    // Add a delete button to each option (if needed)
-
-                    option.className = "track-option";
-                    option.textContent = `${game} - ${track}`;
-                    option.addEventListener("click", (event) => {
-                        event.preventDefault();
-                        const trackCode = `${game}/${track}`;
-                        const url = `/delete-track/${trackCode}`;
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(() => {
-
-                                const modalElement = document.getElementById('TrackListModal');
-                                const bsModal = bootstrap.Modal.getInstance(modalElement);
-                                if (bsModal) {
-                                    bsModal.hide();
-                                }
-                                //reload the window
-                                window.location.href = "/helper";
-
-                            })
-                            .catch(err => console.error("Error loading track data:", err));
-                    });
-                    gameOption.appendChild(option);
-                });
-
-                trackList.appendChild(gameOption);
-            });
-        })
-        .catch(err => console.error("Error loading track list:", err));
-}
-
-// eventlistener for tracks click
-document.getElementById("tracks").addEventListener("click", (event) => {
-
-    event.preventDefault();
-    listTracks();
-    // show modal with the id TrackListModal
-    const modalElement = document.getElementById('TrackListModal');
-    const bsModal = new bootstrap.Modal(modalElement, {
-        backdrop: 'static',
-        keyboard: true
-    });
-    bsModal.show();
-
-});
-
-
+/**
+ * Opens a new browser tab to search for a location on the specified map provider.
+ *
+ * @param {string} provider - The map provider to use for the search. Supported values are "google" and "bing".
+ * @param {string} term - The search term or location to look for on the map.
+ *
+ * @throws Will display an alert if the provider is unsupported or if the search term is empty.
+ */
 function searchMap(provider, term) {
     const encoded = encodeURIComponent(term);
 
@@ -316,6 +305,13 @@ function searchMap(provider, term) {
     }
 }
 
+/**
+ * Displays a Bootstrap modal with a customizable title and message.
+ * The modal is styled based on the title, showing an error or success icon if applicable.
+ *
+ * @param {string} title - The title of the modal. If "Error", an error icon is displayed. If "Success", a success icon is displayed.
+ * @param {string} message - The message to display in the modal body.
+ */
 function showAlertModal(title, message) {
     const ModalLabel = document.getElementById('alertModalLabel');
     if (title == "Error") {

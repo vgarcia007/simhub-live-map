@@ -13,7 +13,7 @@
     <link rel="icon" type="image/svg+xml" href="/static/favicon/favicon.svg" />
     <link rel="shortcut icon" href="/static/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="MyWebSite" />
+    <meta name="apple-mobile-web-app-title" content="navigation" />
     <link rel="manifest" href="/static/favicon/site.webmanifest" />
 
 </head>
@@ -32,6 +32,9 @@
                         <a class="nav-link" href="/helper"><i class="fa-solid fa-map-location-dot"></i> Mapping Helper</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/list-tracks"><i class="fa-solid fa-road-circle-exclamation"></i> Tracks</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link active" href="/config-user"><i class="fa-solid fa-gears"></i> Config</a>
                     </li>
                 </ul>
@@ -45,18 +48,14 @@
     </nav>
 
 
-    <main class="container mt-0 pt-4 bg01">
+    <main class="container mt-0 pt-4 pb-4 bg01">
         <div class="row">
             <div class="mb-3">
-                <label for="PROXY_TARGET_URL" class="form-label"><b>PROXY_TARGET_URL (SimHub API):</b></label>
+                <label for="PROXY_TARGET_URL" class="form-label"><b>SimHub API URL (PROXY_TARGET_URL):</b></label>
                 <input type="text" class="form-control" id="PROXY_TARGET_URL" value="{{config.PROXY_TARGET_URL}}">
                 <small class="text-muted">This is the IP address of the computer running SimHub. 8888 is the default Port, but can be configured in SimHub settings. (<a href="https://github.com/SHWotever/SimHub/wiki/Troubleshoot-Dashstudio-Web-access?utm_source=chatgpt.com#i-cant-access-the-dash" target="_blank">screenshot</a>)</small>
             </div>
-            <div class="mb-3">
-                <label for="mapAPIurl" class="form-label"><b>This App:</b></label>
-                <input type="text" class="form-control" id="mapAPIurl" value="{{config.mapAPIurl}}">
-                <small class="text-muted">IP address and route of the PC this app is running on. Normally, you don't need to change this.</small>
-            </div>
+            
             <div class="mb-3">
                 <label for="mapboxToken" class="form-label"><b>Mapbox Token:</b></label>
                 <input type="text" class="form-control" id="mapboxToken" value="{{config.mapboxToken}}">
@@ -64,7 +63,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="mapboxStyle" class="form-label"><b>mapboxStyle:</b></label>
+                <label for="mapboxStyle" class="form-label"><b>Map Style:</b></label>
                 <select class="form-select" id="mapboxStyle">
                     {% for style in config.mapboxStyles %}
                     <option value="{{style}}" {% if style == config.mapboxStyle %}selected{% endif %}>{{style}}</option>
@@ -75,7 +74,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="speedZoom" class="form-label"><b>speedZoom</b></label>
+                <label for="speedZoom" class="form-label"><b>Zoom out on higher speeds</b></label>
                 <select class="form-select" id="speedZoom">
                     <option value="1" {% if config.speedZoom %} selected {% endif %}>True</option>
                     <option value="0" {% if not config.speedZoom %} selected {% endif %}>False</option>
@@ -84,16 +83,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="DEBUG" class="form-label"><b>Debug Mode</b></label>
-                <select class="form-select" id="DEBUG">
-                    <option value="1" {% if config.DEBUG %} selected {% endif %}>True</option>
-                    <option value="0" {% if not config.DEBUG %} selected {% endif %}>False</option>
-                </select>
-                <small class="text-muted">Get Console Output in Terminal</small>
-            </div>
-
-            <div class="mb-3">
-                <label for="mapInterfaceScale" class="form-label"><b>mapInterfaceScale:</b></label>
+                <label for="mapInterfaceScale" class="form-label"><b>Scale Map Interface:</b></label>
                 <select class="form-select" id="mapInterfaceScale">
                     <option value="1.0" {% if "1.0" == config.mapInterfaceScale %}selected{% endif %}>1.0</option>
                     <option value="0.9" {% if "0.9" == config.mapInterfaceScale %}selected{% endif %}>0.9</option>
@@ -104,6 +94,25 @@
                 </select>
                 <small class="text-muted">If the Interface is to big, You can scale it down here. (May only work on mobile Browsers)</small>
                 
+            </div>
+
+            <hr>
+            <div class="mb-3">
+                <label for="mapAPIurl" class="form-label"><b>Data (mapAPIurl)</b></label>
+                <select class="form-select" id="mapAPIurl">
+                    <option value="/proxy" {% if "/proxy" == config.mapAPIurl %}selected{% endif %}>Live</option>
+                    <option value="/fakedata" {% if "/fakedata" == config.mapAPIurl %}selected{% endif %}>Fake (debug/dev)</option>
+                </select>
+                <small class="text-muted">Default is "Live". "Fake" is for development purposes only.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="DEBUG" class="form-label"><b>Debug Mode</b></label>
+                <select class="form-select" id="DEBUG">
+                    <option value="1" {% if config.DEBUG %} selected {% endif %}>True</option>
+                    <option value="0" {% if not config.DEBUG %} selected {% endif %}>False</option>
+                </select>
+                <small class="text-muted">Get Console Output in Terminal</small>
             </div>
 
 
@@ -117,20 +126,15 @@
 
 
     </main>
+    {% include 'footer.html' %}
 
-    <footer class="mt-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1">Navi for SimHub</p>
-        <ul class="list-inline">
-            <li class="list-inline-item"><i class="fa-brands fa-github"></i> <a href="https://github.com/vgarcia007/simhub-live-map">GitHub</a></li>
-        </ul>
-    </footer>
 
     <!-- Bootstrap Alert‐Modal -->
     <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="alertModalLabel">Hinweis</h5>
+                <h5 class="modal-title" id="alertModalLabel">Alert</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="alertModalBody">
