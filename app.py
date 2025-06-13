@@ -110,6 +110,13 @@ def index():
     return render_template('index.html', config=config)
 
 
+@app.route('/settings')
+def settings():
+    if not user_config_active:
+        return redirect(url_for('get_config_user'))
+    return render_template('settings.html', config=config)
+
+
 @app.route('/helper')
 def helper():
     if not user_config_active:
