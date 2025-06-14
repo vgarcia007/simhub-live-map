@@ -1,0 +1,515 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          7.421458553877926,
+          43.73703138441914
+        ],
+        "type": "Point"
+      },
+      "id": 0,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Sainte Devote"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.424191971267504,
+          43.737493779608485
+        ],
+        "type": "Point"
+      },
+      "id": 1,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Beau Rivage"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.427678230182835,
+          43.73841988181596
+        ],
+        "type": "Point"
+      },
+      "id": 2,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Massenet"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.4270754600460975,
+          43.73961200678758
+        ],
+        "type": "Point"
+      },
+      "id": 3,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Casino"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.428750794109135,
+          43.7410274730027
+        ],
+        "type": "Point"
+      },
+      "id": 4,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Mirabeau Haute"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.429609374450763,
+          43.74031618001163
+        ],
+        "type": "Point"
+      },
+      "id": 5,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Grand Hotel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.429460204051509,
+          43.741017798520886
+        ],
+        "type": "Point"
+      },
+      "id": 6,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Mirabeau Bas"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.429065466569227,
+          43.74092485270941
+        ],
+        "type": "Point"
+      },
+      "id": 7,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Mirabeau Haute"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.429190282616901,
+          43.74051795833245
+        ],
+        "type": "Point"
+      },
+      "id": 8,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Grand Hotel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.429476446240756,
+          43.74070491014632
+        ],
+        "type": "Point"
+      },
+      "id": 9,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Mirabeau Bas"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.4303501522221325,
+          43.74105373486677
+        ],
+        "type": "Point"
+      },
+      "id": 10,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Portier"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.425555753541232,
+          43.737196517684424
+        ],
+        "type": "Point"
+      },
+      "id": 11,
+      "properties": {
+        "direction": "route",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Nouvelle Chicane"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.422370776530528,
+          43.7366541703434
+        ],
+        "type": "Point"
+      },
+      "id": 12,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Tabac"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.422071270471548,
+          43.73532988895687
+        ],
+        "type": "Point"
+      },
+      "id": 13,
+      "properties": {
+        "direction": "route",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Louis Chiron"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.422547724076395,
+          43.73421751066772
+        ],
+        "type": "Point"
+      },
+      "id": 14,
+      "properties": {
+        "direction": "route",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Piscine"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.423593095125966,
+          43.732554639491724
+        ],
+        "type": "Point"
+      },
+      "id": 15,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Rascasse"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.422491469130563,
+          43.732570559626
+        ],
+        "type": "Point"
+      },
+      "id": 16,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Antony Noghes"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.421344955816835,
+          43.73527672301665
+        ],
+        "type": "Point"
+      },
+      "id": 17,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Start Finish"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.421561656118598,
+          43.73404013149536
+        ],
+        "type": "Point"
+      },
+      "id": 18,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Start Finish"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.422214140493111,
+          43.737106326238006
+        ],
+        "type": "Point"
+      },
+      "id": 19,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Beau Rivage"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.425419798861867,
+          43.737685405014446
+        ],
+        "type": "Point"
+      },
+      "id": 20,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Beau Rivage"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.428160823158777,
+          43.74072246755304
+        ],
+        "type": "Point"
+      },
+      "id": 21,
+      "properties": {
+        "direction": "straight",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Spelugues"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.43028479860962,
+          43.74026959123182
+        ],
+        "type": "Point"
+      },
+      "id": 22,
+      "properties": {
+        "direction": "landmark",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Tunnel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.430105067730182,
+          43.73936506201068
+        ],
+        "type": "Point"
+      },
+      "id": 23,
+      "properties": {
+        "direction": "landmark",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Tunnel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.428476773940503,
+          43.737919640197816
+        ],
+        "type": "Point"
+      },
+      "id": 24,
+      "properties": {
+        "direction": "landmark",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Tunnel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.429482247317907,
+          43.73855248463278
+        ],
+        "type": "Point"
+      },
+      "id": 25,
+      "properties": {
+        "direction": "landmark",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Tunnel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.428900396285485,
+          43.73821681039374
+        ],
+        "type": "Point"
+      },
+      "id": 26,
+      "properties": {
+        "direction": "landmark",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Tunnel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.427701453315052,
+          43.737594277261195
+        ],
+        "type": "Point"
+      },
+      "id": 27,
+      "properties": {
+        "direction": "landmark",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Tunnel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          7.42733750368123,
+          43.738103769425464
+        ],
+        "type": "Point"
+      },
+      "id": 28,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Massenet"
+      },
+      "type": "Feature"
+    },
+    {
+      "type": "Feature",
+      "id": 29,
+      "properties": {
+        "name": "Rascasse",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.423006824685075,
+          43.73334222483709
+        ]
+      }
+    }
+  ],
+  "type": "FeatureCollection"
+}
