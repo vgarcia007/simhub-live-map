@@ -1,0 +1,226 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          0.26163074875529446,
+          51.36078875191532
+        ],
+        "type": "Point"
+      },
+      "id": 0,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Paddock Hill Bend"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.2647619973457438,
+          51.35888513501166
+        ],
+        "type": "Point"
+      },
+      "id": 1,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Druids"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.2633707620086625,
+          51.35886245503471
+        ],
+        "type": "Point"
+      },
+      "id": 2,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Graham Hill Bend"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.2600046531059377,
+          51.35926125050153
+        ],
+        "type": "Point"
+      },
+      "id": 3,
+      "properties": {
+        "direction": "left",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Surtees"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.26722427324617115,
+          51.356056981638744
+        ],
+        "type": "Point"
+      },
+      "id": 4,
+      "properties": {
+        "direction": "right",
+        "hidden": false,
+        "markerIcon": "",
+        "name": "Hawthon Bend"
+      },
+      "type": "Feature"
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "properties": {
+        "name": "Derek Minbter Straight",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.2676388358593158,
+          51.35389774701966
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "properties": {
+        "name": "Westfield Bend",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.2673073183746908,
+          51.35253720847794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 8,
+      "properties": {
+        "name": "Dingle Dell",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.2647579442510448,
+          51.35246630829991
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 9,
+      "properties": {
+        "name": "Sheene Curve",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.26187689943452597,
+          51.35376276641725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 10,
+      "properties": {
+        "name": "Stirlings",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.26266622584734023,
+          51.3560450326074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 11,
+      "properties": {
+        "name": "Clearways",
+        "direction": "",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.25972203170664443,
+          51.356799190426074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 12,
+      "properties": {
+        "name": "Clark Curve",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.25611480573118683,
+          51.35779485822678
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 13,
+      "properties": {
+        "name": "Brabham Straight",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.2582365598495926,
+          51.359808348159504
+        ]
+      }
+    }
+  ],
+  "type": "FeatureCollection"
+}
