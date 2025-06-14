@@ -1,5 +1,5 @@
-# SimHub Live Map for Real Tracks
-
+# NAVI FOR SIMHUB
+![alt text](static/logo/NFSH_Logo_02_black.png)  
 This project provides a live map view similar to a navigation system and uses the SimHub JSON API to display the current position of the car on real-world race tracks. It is a proof of concept, currently tested with Forza Motorsport 8 and the Nordschleife and other Tracks. It should work for every other game supported by simhub that outputs X and Y Coordinates.
 
 ## Features
@@ -7,6 +7,8 @@ This project provides a live map view similar to a navigation system and uses th
 - Live updating of the car position on a map
 - Realistic navigation-like view
 - Uses real GPS coordinates for track mapping
+- Mapping Helper to set reference points for new tracks
+- POI Editor for corner names and landmarks
 
 ## How does it work?
 
