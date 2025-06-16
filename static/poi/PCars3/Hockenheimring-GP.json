@@ -1,0 +1,226 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "id": 0,
+      "properties": {
+        "name": "Start - Finish",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.56696734961858,
+          49.32627460422111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 1,
+      "properties": {
+        "name": "Nordkurve",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.56475191504822,
+          49.329156701522635
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "properties": {
+        "name": "Einfahrt Parabolika",
+        "direction": "route",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.567451966388006,
+          49.332754852532645
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "properties": {
+        "name": "Parabolika",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.570390845485719,
+          49.33242321001475
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "properties": {
+        "name": "Spitzkehre",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.581695744560108,
+          49.33200625581412
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "properties": {
+        "name": "Corner 6",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.582330363012147,
+          49.33152311812671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "properties": {
+        "name": "Corner 7",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.576679274050662,
+          49.33050232619581
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "properties": {
+        "name": "Corner 8",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.575554248334925,
+          49.329763505833085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 8,
+      "properties": {
+        "name": "Mobil 1 Kurve",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.572845533411254,
+          49.327434181306614
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 9,
+      "properties": {
+        "name": "Sachskurve",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.56925410624143,
+          49.32784027109881
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 10,
+      "properties": {
+        "name": "Corner 11",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.56741079544696,
+          49.32782899090162
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 11,
+      "properties": {
+        "name": "Corner 12",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.56813773491524,
+          49.32730445888646
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 12,
+      "properties": {
+        "name": "S\u00fcdkurve",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.569106987539811,
+          49.32671787883089
+        ]
+      }
+    }
+  ],
+  "type": "FeatureCollection"
+}

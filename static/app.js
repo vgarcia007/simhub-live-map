@@ -638,7 +638,7 @@ async function fetchGameData(config) {
 
             if (nearest) {
 
-                if (lastPoi && lastPoi.properties.name === nearest.properties.name) {
+                if (lastPoi && lastPoi.properties.name === nearest.properties.name && lastPoi.properties.direction === nearest.properties.direction) {
                     //console.warn("Marker is the same as last POI, skipping update");
 
                 } else {

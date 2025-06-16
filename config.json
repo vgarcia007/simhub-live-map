@@ -3,7 +3,7 @@
     "mapAPIurl": "http://localhost:5000/proxy",
     "defaultMapCenter": [50.34, 6.94],
     "defaultMapZoom": 17,
-    "maxPoiDistance": 50,
+    "maxPoiDistance": 25,
     "speedZoom": false,
     "mapboxToken": "",
     "mapboxStyle": "satellite",

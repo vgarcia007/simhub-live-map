@@ -31,12 +31,15 @@ function initEditor(config) {
     // helper: render all markers from geojsonData
     // Hilfsfunktion: Meter in Pixel am aktuellen Breitengrad und Zoom umrechnen
     function metersToPixelsAtLat(meters, lat, zoom) {
-        const earthCircumference = 40075017;
+        const earthCircumference = 40075016.686; // in meters
         const latitudeRadians = lat * Math.PI / 180;
-        return meters / (earthCircumference * Math.cos(latitudeRadians) / Math.pow(2, zoom + 8));
+        const metersPerPixel = (earthCircumference * Math.cos(latitudeRadians)) / Math.pow(2, zoom + 8);
+        // Add 20 meters to compensate for the observed offset
+        return (meters*2) / metersPerPixel;
     }
 
     function renderMarkers() {
+        console.log('Rendering markers...');
         for (let mid in markers) {
             markers[mid].remove();
         }

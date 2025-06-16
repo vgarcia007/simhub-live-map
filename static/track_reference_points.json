@@ -287,6 +287,39 @@
           "lng": 7.4255899063732596
         }
       ]
+    },
+    "Hockenheimring-GP": {
+      "yaw": 180,
+      "ref_points": [
+        {
+          "notes": "start finish",
+          "CoordinatesX": -616.0576171875,
+          "CoordinatesY": 221.2674560546875,
+          "lat": 49.327736,
+          "lng": 8.565805
+        },
+        {
+          "notes": "first corner curbs",
+          "CoordinatesX": -726.9553833007812,
+          "CoordinatesY": -20.250324249267578,
+          "lat": 49.329895,
+          "lng": 8.564286
+        },
+        {
+          "notes": "bridge 1",
+          "CoordinatesX": -512.0033569335938,
+          "CoordinatesY": -322.0538635253906,
+          "lat": 49.33261,
+          "lng": 8.567202
+        },
+        {
+          "notes": "hairpin",
+          "CoordinatesX": 725.9706420898438,
+          "CoordinatesY": -302.7127990722656,
+          "lat": 49.332517,
+          "lng": 8.58427
+        }
+      ]
     }
   }
 }
