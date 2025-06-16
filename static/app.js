@@ -346,14 +346,24 @@ async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
     try {
         if (!map.getLayer(stringLayerId)) {
             map.addLayer({
-                id: stringLayerId,
-                type: 'circle',
-                source: stringLayerId,
-                paint: {
-                    'circle-radius': layerOptions.circleRadius || 6,
-                    'circle-color': layerOptions.circleColor || '#0A8042',
-                    'circle-opacity': layerOptions.circleOpacity || 0.8
-                }
+            id: stringLayerId,
+            type: 'circle',
+            source: stringLayerId,
+            paint: {
+                'circle-radius': layerOptions.circleRadius || 6,
+                'circle-color': [
+                'case',
+                ['has', 'color'], // Check if the feature has a 'color' property
+                ['get', 'color'], // Use the 'color' property value
+                layerOptions.circleColor || '#0A8042' // Default color if 'color' property is missing
+                ],
+                'circle-opacity': [
+                'case',
+                ['==', ['get', 'hidden'], true], // Check if 'hidden' property is true
+                0, // Make the marker invisible
+                layerOptions.circleOpacity || 0.8 // Default opacity if 'hidden' is false
+                ]
+            }
             });
         }
     } catch (error) {
@@ -624,7 +634,7 @@ async function fetchGameData(config) {
         //console.log(goodGeojson);
         if (goodGeojson) {
 
-            const nearest = findNearestMarker(lat, lng);
+            const nearest = findNearestMarker(lat, lng, config.maxPoiDistance);
 
             if (nearest) {
 
@@ -759,7 +769,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
  * @param {number} lon - The longitude of the point to search from.
  * @returns {Object|null} The nearest marker object, or null if the RBush index is not initialized.
  */
-function findNearestMarker(lat, lon) {
+function findNearestMarker(lat, lon, maxPoiDistance) {
     if (!index) {
         console.error("RBush index is not initialized.");
         return null;
@@ -772,7 +782,15 @@ function findNearestMarker(lat, lon) {
         if (dist < minDist) {
             minDist = dist;
             nearest = pt;
+            
         }
+    }
+    if (!nearest) {
+        return null;
+    }
+    console.log("minDist:", minDist, "maxPoiDistance:", maxPoiDistance);
+    if (minDist > maxPoiDistance) {
+        return null;
     }
     return nearest;
 }

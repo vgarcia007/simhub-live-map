@@ -1,5 +1,7 @@
 let game, trackcode;
 
+
+
 fetch('/config')
     .then(res => res.json())
     .then(config => {
@@ -8,7 +10,6 @@ fetch('/config')
         initEditor(config);
     })
     .catch(err => console.error("Error loading config:", err));
-
 
 function initEditor(config) {
     mapboxgl.accessToken = config.mapboxToken;
@@ -28,48 +29,83 @@ function initEditor(config) {
     let selectedId = null; // currently selected feature
 
     // helper: render all markers from geojsonData
+    // Hilfsfunktion: Meter in Pixel am aktuellen Breitengrad und Zoom umrechnen
+    function metersToPixelsAtLat(meters, lat, zoom) {
+        const earthCircumference = 40075017;
+        const latitudeRadians = lat * Math.PI / 180;
+        return meters / (earthCircumference * Math.cos(latitudeRadians) / Math.pow(2, zoom + 8));
+    }
+
     function renderMarkers() {
-        // remove old markers
         for (let mid in markers) {
             markers[mid].remove();
         }
         markers = {};
 
-        // create a new marker for each feature
         geojsonData.features.forEach(feature => {
-            const el = document.createElement('div');
-            // style as small red circle
-            el.style.width = '12px';
-            el.style.height = '12px';
-            el.style.backgroundColor = '#B42222';
-            el.style.borderRadius = '50%';
-            el.style.cursor = 'pointer';
+            const [lng, lat] = feature.geometry.coordinates;
+            const zoom = map.getZoom();
+            const pxRadius = metersToPixelsAtLat(config.maxPoiDistance, lat, zoom);
 
-            // click on marker = select feature
-            el.addEventListener('click', e => {
+            const markerRadius = 6;
+            const size = Math.ceil(pxRadius * 2 + markerRadius * 2);
+
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("width", size);
+            svg.setAttribute("height", size);
+            svg.style.overflow = "visible";
+            svg.style.pointerEvents = "auto";
+            svg.style.cursor = "pointer";
+
+            const center = size / 2;
+
+            // Transparent circle
+            const circle = document.createElementNS(svgNS, "circle");
+            circle.setAttribute("cx", center);
+            circle.setAttribute("cy", center);
+            circle.setAttribute("r", pxRadius);
+            circle.setAttribute("fill", "#B4222233");
+            circle.setAttribute("stroke", "#B42222");
+            circle.setAttribute("stroke-width", "1");
+            svg.appendChild(circle);
+
+            // Red marker circle
+            const markerCircle = document.createElementNS(svgNS, "circle");
+            markerCircle.setAttribute("cx", center);
+            markerCircle.setAttribute("cy", center);
+            markerCircle.setAttribute("r", markerRadius);
+            markerCircle.setAttribute("fill", "#B42222");
+            svg.appendChild(markerCircle);
+
+            svg.addEventListener('click', e => {
                 e.stopPropagation();
                 if (selectedId !== null) saveFromForm();
                 selectFeature(feature.id);
             });
 
             const marker = new mapboxgl.Marker({
-                    element: el,
-                    draggable: true
+                    element: svg,
+                    draggable: true,
+                    anchor: 'center'
                 })
                 .setLngLat(feature.geometry.coordinates)
                 .addTo(map);
 
-            // dragend: update coords in geojsonData + refresh layer
             marker.on('dragend', () => {
                 const lngLat = marker.getLngLat();
                 feature.geometry.coordinates = [lngLat.lng, lngLat.lat];
                 map.getSource('geojson').setData(geojsonData);
-                // if this feature is selected, also update the form coords if you show them
             });
 
             markers[feature.id] = marker;
         });
+        
+        map.on('zoom', renderMarkers);
     }
+
+
+    map.on('zoom', renderMarkers);
 
     /**
      * Zooms/fits the map to show all current markers.
@@ -186,7 +222,7 @@ function initEditor(config) {
                 name: '',
                 direction: '',
                 markerIcon: '',
-                hidden: false
+                hidden: true
             },
             geometry: {
                 type: 'Point',
@@ -196,6 +232,7 @@ function initEditor(config) {
         geojsonData.features.push(newF);
         map.getSource('geojson').setData(geojsonData);
         renderMarkers();
+        deselectFeature();
     });
 
     document.getElementById('save-geojson').addEventListener('click', () => {
@@ -234,10 +271,12 @@ function initEditor(config) {
         document.getElementById('point-direction').value = feature.properties.direction;
         const direction_select = document.getElementById('point-direction');
         const ts = direction_select.tomselect;
-        ts.setValue(feature.properties.direction);
+        console.log('Selected feature:', feature);
         document.getElementById('point-hidden').checked = feature.properties.hidden;
         document.getElementById('point-icon').value = feature.properties.markerIcon;
         document.getElementById('point-properties').style.display = 'block';
+        ts.setValue(feature.properties.direction);
+        
     }
 
     function deselectFeature() {

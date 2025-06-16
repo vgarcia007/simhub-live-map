@@ -3,1045 +3,1173 @@
     {
       "geometry": {
         "coordinates": [
-          6.948965031884427,
-          50.33911563916851
+          6.949041656389966,
+          50.338843982455785
         ],
         "type": "Point"
       },
+      "id": 0,
       "properties": {
         "direction": "left",
-        "name": "Sabine-Schmitz-Kurve",
-        "hidden": false,
-        "markerIcon": ""
+        "hidden": true,
+        "markerIcon": "undefined",
+        "name": "Sabine-Schmitz-Kurve"
       },
-      "type": "Feature",
-      "id": 0
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.947314802643149,
-          50.33876303921491
+          6.947507569156244,
+          50.338776391685485
         ],
         "type": "Point"
       },
+      "id": 1,
       "properties": {
         "direction": "right",
         "name": "Hatzenbogen",
-        "hidden": false,
-        "markerIcon": ""
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 1
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.943027367350794,
-          50.33785924332972
+          6.943535481862426,
+          50.33751370802952
         ],
         "type": "Point"
       },
+      "id": 2,
       "properties": {
-        "direction": "route",
-        "name": "Hatzenbach"
+        "direction": "left",
+        "name": "Hatzenbach",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 2
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.9358446336896975,
-          50.34012187276036
+          6.935216723276284,
+          50.340075247636946
         ],
         "type": "Point"
       },
       "id": 3,
       "properties": {
-        "direction": "route",
-        "name": "Hocheichen"
+        "direction": "right",
+        "name": "Hocheichen",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
       "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.936659474312961,
-          50.33966012315585
+          6.9300955383851885,
+          50.3426414468417
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "route",
-        "name": "Hatzenbach"
-      },
-      "type": "Feature",
-      "id": 4
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.9434034334741455,
-          50.33776248285426
-        ],
-        "type": "Point"
-      },
-      "id": 5,
+      "id": 7,
       "properties": {
         "direction": "right",
-        "name": "Hatzenbogen"
+        "name": "Quiddelbacher H\u00f6he",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
       "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.9308396625093565,
-          50.34246834831839
+          6.928338460897862,
+          50.34367728365771
         ],
         "type": "Point"
       },
-      "id": 6,
+      "id": 8,
       "properties": {
-        "direction": "route",
-        "name": "Hocheichen"
+        "direction": "straight",
+        "name": "Quiddelbacher H\u00f6he",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
       "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.929825047688325,
-          50.34296717803463
+          6.927175778829792,
+          50.344581104396326
         ],
         "type": "Point"
       },
+      "id": 9,
       "properties": {
-        "direction": "route",
-        "name": "Quiddelbacher H\u00f6he"
+        "direction": "right",
+        "name": "Flugplatz",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 7
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.927096887800076,
-          50.3448783137832
+          6.9261300661445375,
+          50.35262165035908
         ],
         "type": "Point"
       },
+      "id": 11,
       "properties": {
-        "direction": "route",
-        "name": "Quiddelbacher H\u00f6he"
+        "direction": "straight",
+        "name": "Schwedenkreuz",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 8
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.926857893800417,
-          50.345097494601646
+          6.924263502267081,
+          50.35535135403984
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "route",
-        "name": "Flugplatz"
-      },
-      "type": "Feature",
-      "id": 9
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.927112990072004,
-          50.35042059605544
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Flugplatz"
-      },
-      "type": "Feature",
-      "id": 10
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.927094607066834,
-          50.35091710794998
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Schwedenkreuz"
-      },
-      "type": "Feature",
-      "id": 11
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.924555174110452,
-          50.35545710170598
-        ],
-        "type": "Point"
-      },
+      "id": 12,
       "properties": {
         "direction": "left",
-        "name": "Schwedenkreuz"
+        "name": "Schwedenkreuz",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 12
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.922511624832879,
-          50.35697802429118
+          6.922053398912823,
+          50.35692505285465
         ],
         "type": "Point"
       },
+      "id": 13,
       "properties": {
         "direction": "right",
-        "name": "Aremberg"
+        "name": "Aremberg",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 13
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.920477324503281,
-          50.35824822029923
+          6.9210386813726075,
+          50.358469842004155
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "right",
-        "name": "Aremberg"
-      },
-      "type": "Feature",
-      "id": 14
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.920902633355951,
-          50.358421485790785
-        ],
-        "type": "Point"
-      },
+      "id": 15,
       "properties": {
         "direction": "landmark",
-        "name": "Postbr\u00fccke"
+        "name": "Postbr\u00fccke",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 15
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.922480887853595,
-          50.358777822451486
+          6.922622113750009,
+          50.35891667621479
         ],
         "type": "Point"
       },
+      "id": 16,
+      "properties": {
+        "direction": "straight",
+        "name": "Fuchsr\u00f6hre",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.928979467803259,
+          50.36221912366554
+        ],
+        "type": "Point"
+      },
+      "id": 17,
       "properties": {
         "direction": "route",
-        "name": "Fuchsr\u00f6hre"
+        "name": "Fuchsr\u00f6hre",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 16
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.93031038964358,
-          50.36349390827658
+          6.9303806041043,
+          50.36472627171764
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "route",
-        "name": "Fuchsr\u00f6hre"
-      },
-      "type": "Feature",
-      "id": 17
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.9306894598019255,
-          50.36412869731359
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Adenauer Forst"
-      },
-      "type": "Feature",
-      "id": 18
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.932015874095612,
-          50.36735648252494
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Adenauer Forst"
-      },
-      "type": "Feature",
-      "id": 19
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.932844889884535,
-          50.367734413650595
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Metzgesfeld"
-      },
-      "type": "Feature",
-      "id": 20
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.937582749636789,
-          50.37252971063165
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Metzgesfeld"
-      },
-      "type": "Feature",
-      "id": 21
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.937320603090313,
-          50.373172765199115
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "left",
-        "name": "Kallenhard"
-      },
-      "type": "Feature",
-      "id": 22
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.934581840986937,
-          50.37393344960583
-        ],
-        "type": "Point"
-      },
+      "id": 18,
       "properties": {
         "direction": "right",
-        "name": "Kallenhard"
+        "name": "Adenauer Forst",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 23
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.934731996512653,
-          50.37479231278883
+          6.932101001122987,
+          50.36753147776233
         ],
         "type": "Point"
       },
+      "id": 20,
       "properties": {
-        "direction": "right",
-        "name": "Kallenhard"
+        "direction": "straight",
+        "name": "Metzgesfeld",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 24
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.935831348875979,
-          50.37519435546426
+          6.937315209983524,
+          50.37280900073458
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "left",
-        "name": "Spiegelkurve"
-      },
-      "type": "Feature",
-      "id": 25
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.937430401480782,
-          50.37670443751128
-        ],
-        "type": "Point"
-      },
+      "id": 22,
       "properties": {
         "direction": "left",
-        "name": "Spiegelkurve"
+        "name": "Kallenhard",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 26
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.937953170436032,
-          50.37718490777428
+          6.9351278182409715,
+          50.375149250560185
         ],
         "type": "Point"
       },
+      "id": 25,
+      "properties": {
+        "direction": "left",
+        "name": "Spiegelkurve",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.937272017536145,
+          50.37704506973691
+        ],
+        "type": "Point"
+      },
+      "id": 27,
       "properties": {
         "direction": "right",
-        "name": "Dreifach-Rechts"
+        "name": "Dreifach-Rechts",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 27
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.940067309590916,
-          50.37753300053808
+          6.940579454632626,
+          50.37748075289784
         ],
         "type": "Point"
       },
+      "id": 29,
+      "properties": {
+        "direction": "right",
+        "name": "Wehrseifen",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.942553294531336,
+          50.376325145760575
+        ],
+        "type": "Point"
+      },
+      "id": 30,
+      "properties": {
+        "direction": "left",
+        "name": "Wehrseifen",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.943291057757506,
+          50.3761848201481
+        ],
+        "type": "Point"
+      },
+      "id": 31,
+      "properties": {
+        "direction": "right",
+        "name": "Wehrseifen",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.945064276469111,
+          50.376754377653015
+        ],
+        "type": "Point"
+      },
+      "id": 32,
+      "properties": {
+        "direction": "right",
+        "name": "Breidscheid",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.948403627229908,
+          50.376663583518194
+        ],
+        "type": "Point"
+      },
+      "id": 33,
+      "properties": {
+        "direction": "left",
+        "name": "Breidscheid",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.9503876304456185,
+          50.37783918200023
+        ],
+        "type": "Point"
+      },
+      "id": 34,
+      "properties": {
+        "direction": "right",
+        "name": "Ex-M\u00fchle",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.951461914223671,
+          50.3786893525959
+        ],
+        "type": "Point"
+      },
+      "id": 35,
+      "properties": {
+        "direction": "straight",
+        "name": "Ex-M\u00fchle",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.955781118790043,
+          50.37944458809247
+        ],
+        "type": "Point"
+      },
+      "id": 36,
+      "properties": {
+        "direction": "left",
+        "name": "Lauda-Links",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.9590579411127464,
+          50.380361020740054
+        ],
+        "type": "Point"
+      },
+      "id": 38,
+      "properties": {
+        "direction": "right",
+        "name": "Bergwerk",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.961374777111303,
+          50.37988642845775
+        ],
+        "type": "Point"
+      },
+      "id": 39,
+      "properties": {
+        "direction": "straight",
+        "name": "Bergwerk",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.961294461172969,
+          50.37790811874373
+        ],
+        "type": "Point"
+      },
+      "id": 40,
+      "properties": {
+        "direction": "left",
+        "name": "Senkenlinks",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.967778861240134,
+          50.374467255961974
+        ],
+        "type": "Point"
+      },
+      "id": 41,
+      "properties": {
+        "direction": "straight",
+        "name": "Kesselchen",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.974185505741502,
+          50.37398193523845
+        ],
+        "type": "Point"
+      },
+      "id": 42,
       "properties": {
         "direction": "route",
-        "name": "Wehrseifen"
+        "name": "Kesselchen",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 28
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.94191237649278,
-          50.376724048637755
+          6.977654288572182,
+          50.37274782028763
         ],
         "type": "Point"
       },
+      "id": 43,
+      "properties": {
+        "direction": "left",
+        "name": "Mutkurve",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.983077722324197,
+          50.373295091865
+        ],
+        "type": "Point"
+      },
+      "id": 44,
       "properties": {
         "direction": "right",
-        "name": "Wehrseifen"
+        "name": "Klostertal",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 29
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.942465896562368,
-          50.37614061415965
+          6.987800051736315,
+          50.37448904460342
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "left",
-        "name": "Wehrseifen"
-      },
-      "type": "Feature",
-      "id": 30
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.9434729955779915,
-          50.37614061415945
-        ],
-        "type": "Point"
-      },
+      "id": 45,
       "properties": {
         "direction": "right",
-        "name": "Wehrseifen"
+        "name": "Klostertal",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 31
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.944818356858036,
-          50.376606381757256
+          6.986512201853145,
+          50.37261930573828
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "route",
-        "name": "Breidscheid"
-      },
-      "type": "Feature",
-      "id": 32
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.948454676207092,
-          50.37650832580087
-        ],
-        "type": "Point"
-      },
+      "id": 46,
       "properties": {
         "direction": "left",
-        "name": "Breidscheid"
+        "name": "Karussell",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 33
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.950650448873972,
-          50.377842307277575
+          6.986764594535714,
+          50.37202906382058
         ],
         "type": "Point"
       },
+      "id": 47,
       "properties": {
         "direction": "right",
-        "name": "Ex-M\u00fchle"
+        "name": "Hohe Acht",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 34
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.953447169851586,
-          50.37894041857581
+          6.990137817505683,
+          50.373251138144354
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "route",
-        "name": "Ex-M\u00fchle"
-      },
-      "type": "Feature",
-      "id": 35
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.955989643466694,
-          50.37927205792934
-        ],
-        "type": "Point"
-      },
+      "id": 48,
       "properties": {
         "direction": "left",
-        "name": "Lauda-Links"
+        "name": "Hohe Acht",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 36
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.959133065391541,
-          50.38022274455818
+          6.9938917178007785,
+          50.375222492098715
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "left",
-        "name": "Lauda-Links"
-      },
-      "type": "Feature",
-      "id": 37
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.9599304775738915,
-          50.38057648355496
-        ],
-        "type": "Point"
-      },
+      "id": 49,
       "properties": {
         "direction": "right",
-        "name": "Bergwerk"
+        "name": "Hohe Acht",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 38
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.9617639581340995,
-          50.379684006914914
+          6.998662342659429,
+          50.37623687176176
         ],
         "type": "Point"
       },
+      "id": 50,
       "properties": {
         "direction": "route",
-        "name": "Bergwerk"
+        "name": "Wippermann",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 39
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.961929640111663,
-          50.377206872668864
+          7.002716771743479,
+          50.37449708247925
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "left",
-        "name": "Senkenlinks"
-      },
-      "type": "Feature",
-      "id": 40
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.967214145323794,
-          50.374178728283084
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Kesselchen"
-      },
-      "type": "Feature",
-      "id": 41
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.976112356984743,
-          50.373012306084405
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Kesselchen"
-      },
-      "type": "Feature",
-      "id": 42
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.97838087339494,
-          50.37228327764748
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "left",
-        "name": "Mutkurve"
-      },
-      "type": "Feature",
-      "id": 43
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.98559088679562,
-          50.37404414256875
-        ],
-        "type": "Point"
-      },
+      "id": 51,
       "properties": {
         "direction": "right",
-        "name": "Klostertal"
+        "name": "Eschbach",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 44
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.98789457400585,
-          50.37346093340091
+          7.0041655582993485,
+          50.37100369630659
         ],
         "type": "Point"
       },
+      "id": 52,
       "properties": {
         "direction": "right",
-        "name": "Klostertal"
+        "name": "Br\u00fcnchen",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 45
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.985186422631358,
-          50.371677614735574
+          7.000686962326483,
+          50.367646584153164
         ],
         "type": "Point"
       },
+      "id": 53,
       "properties": {
         "direction": "left",
-        "name": "Karussell"
+        "name": "Sprungh\u00fcgel",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 46
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.988562819150616,
-          50.37273191185707
+          6.999607609599195,
+          50.36505580983115
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "route",
-        "name": "Hohe Acht"
-      },
-      "type": "Feature",
-      "id": 47
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.993208532236139,
-          50.37380253186075
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "left",
-        "name": "Hohe Acht"
-      },
-      "type": "Feature",
-      "id": 48
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.994206068992099,
-          50.37581090193706
-        ],
-        "type": "Point"
-      },
+      "id": 54,
       "properties": {
         "direction": "right",
-        "name": "Hohe Acht"
+        "name": "Pflanzgarten",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 49
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.999213312326958,
-          50.375885746383716
+          6.997767707312903,
+          50.36295344409055
         ],
         "type": "Point"
       },
-      "properties": {
-        "direction": "route",
-        "name": "Wippermann"
-      },
-      "type": "Feature",
-      "id": 50
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.002184931287104,
-          50.37193221452887
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Eschbach"
-      },
-      "type": "Feature",
-      "id": 51
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.00621419740861,
-          50.369861302053266
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "landmark",
-        "name": "Br\u00fcnchen"
-      },
-      "type": "Feature",
-      "id": 52
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.998938046560795,
-          50.36661752266633
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "left",
-        "name": "Pflanzgarten"
-      },
-      "type": "Feature",
-      "id": 53
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.999224094999164,
-          50.36424931174122
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "right",
-        "name": "Pflanzgarten"
-      },
-      "type": "Feature",
-      "id": 54
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.996876949684207,
-          50.363026537831615
-        ],
-        "type": "Point"
-      },
+      "id": 55,
       "properties": {
         "direction": "danger",
         "name": "Sprungh\u00fcgel"
       },
-      "type": "Feature",
-      "id": 55
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.993160636270943,
-          50.36003185643236
+          6.99460107105088,
+          50.36079285533077
         ],
         "type": "Point"
       },
+      "id": 56,
       "properties": {
         "direction": "route",
-        "name": "Steffan-Bellof-S"
+        "name": "Steffan-Bellof-S",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 56
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.987116737088655,
-          50.35832230775392
+          6.98914746046367,
+          50.35858666419665
         ],
         "type": "Point"
       },
+      "id": 57,
       "properties": {
         "direction": "right",
-        "name": "Schwalbenschwanz"
+        "name": "Schwalbenschwanz",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 57
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.985237196843855,
-          50.35870952109468
+          6.985030692457769,
+          50.35847597244751
         ],
         "type": "Point"
       },
+      "id": 58,
       "properties": {
         "direction": "left",
-        "name": "Schwalbenschwanz"
+        "name": "Schwalbenschwanz",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 58
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.9814193807224285,
-          50.35842223407931
+          6.982060234632087,
+          50.358345821613796
         ],
         "type": "Point"
       },
+      "id": 59,
       "properties": {
         "direction": "left",
-        "name": "Schwalbenschwanz"
+        "hidden": true,
+        "markerIcon": "undefined",
+        "name": "Kleines Karussel"
       },
-      "type": "Feature",
-      "id": 59
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.983083556980915,
-          50.356361211038575
+          6.982423014903873,
+          50.35683132247368
         ],
         "type": "Point"
       },
+      "id": 60,
       "properties": {
         "direction": "right",
-        "name": "Galgenkopf"
+        "name": "Galgenkopf",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 60
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.986968523003526,
-          50.35459607917346
+          6.986242593931735,
+          50.35493539947521
         ],
         "type": "Point"
       },
+      "id": 61,
       "properties": {
         "direction": "right",
-        "name": "Galgenkopf"
+        "name": "Galgenkopf",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 61
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.981435389577683,
-          50.35245529927619
+          6.982967353613077,
+          50.352590462820615
         ],
         "type": "Point"
       },
+      "id": 62,
+      "properties": {
+        "direction": "straight",
+        "name": "D\u00f6ttinger H\u00f6he",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.968572614761371,
+          50.34697403830447
+        ],
+        "type": "Point"
+      },
+      "id": 63,
+      "properties": {
+        "direction": "straight",
+        "name": "Antoniusbuche",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.962624730856362,
+          50.344575336240325
+        ],
+        "type": "Point"
+      },
+      "id": 64,
+      "properties": {
+        "direction": "left",
+        "name": "Antonius Buche",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.957682231586148,
+          50.34198324793991
+        ],
+        "type": "Point"
+      },
+      "id": 65,
+      "properties": {
+        "direction": "straight",
+        "name": "Tiergarten",
+        "hidden": true,
+        "markerIcon": "undefined"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.954231101512477,
+          50.33910422403741
+        ],
+        "type": "Point"
+      },
+      "id": 66,
       "properties": {
         "direction": "route",
-        "name": "D\u00f6ttinger H\u00f6he"
+        "name": "Hohenrain",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 62
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.969456815305193,
-          50.34806076593432
+          6.951746227132531,
+          50.33794303962921
         ],
         "type": "Point"
       },
+      "id": 67,
       "properties": {
-        "direction": "route",
-        "name": "In der Stroth"
+        "direction": "right",
+        "name": "Finish ahead",
+        "hidden": true,
+        "markerIcon": "undefined"
       },
-      "type": "Feature",
-      "id": 63
+      "type": "Feature"
     },
     {
       "geometry": {
         "coordinates": [
-          6.959773831811702,
-          50.343891215882564
+          6.95035789720211,
+          50.337976043845146
         ],
         "type": "Point"
       },
+      "id": 68,
       "properties": {
-        "direction": "landmark",
-        "name": "Antonius Buche"
-      },
-      "type": "Feature",
-      "id": 64
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.956623982265597,
-          50.34153496338536
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Tiergarten"
-      },
-      "type": "Feature",
-      "id": 65
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.9545915696919,
-          50.339667447374524
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
-        "name": "Hohenrain"
-      },
-      "type": "Feature",
-      "id": 66
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.952035522969737,
-          50.337979805208164
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "landmark",
-        "name": "Marshals Lager dfsdf",
-        "hidden": false,
-        "markerIcon": ""
-      },
-      "type": "Feature",
-      "id": 67
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          6.949808039578045,
-          50.3385177458602
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "direction": "route",
+        "direction": "right",
         "name": "Start - Finish",
-        "hidden": false,
-        "markerIcon": ""
+        "hidden": true,
+        "markerIcon": "undefined"
       },
+      "type": "Feature"
+    },
+    {
       "type": "Feature",
-      "id": 68
+      "id": 69,
+      "properties": {
+        "name": "Hatzenbach",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.939501787585328,
+          50.33799780570604
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 70,
+      "properties": {
+        "name": "Hatzenbach",
+        "direction": "route",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.938038905507199,
+          50.33831542985112
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 71,
+      "properties": {
+        "name": "Hocheichen",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.933489590216112,
+          50.34066192321302
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 72,
+      "properties": {
+        "name": "Hocheichen",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.932532299695367,
+          50.341536989562
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 73,
+      "properties": {
+        "name": "Flugplatz",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.926148503210214,
+          50.34720697386825
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 74,
+      "properties": {
+        "name": "Adenauer Forst",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.931121744177489,
+          50.36574288183894
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 75,
+      "properties": {
+        "name": "Adenauer Forst",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.931438851600973,
+          50.366539605487304
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 76,
+      "properties": {
+        "name": "Metzgesfeld",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.936991629576738,
+          50.370596595860064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 77,
+      "properties": {
+        "name": "Kallenhard",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.936558041511432,
+          50.373304302549826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 78,
+      "properties": {
+        "name": "Eschbach",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.003202747016758,
+          50.37268551728775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 79,
+      "properties": {
+        "name": "Br\u00fcnchen",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.005436243783862,
+          50.37002849962266
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 81,
+      "properties": {
+        "name": "Eiskurve",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.003656548468854,
+          50.36873236263685
+        ]
+      }
     }
   ],
   "type": "FeatureCollection"

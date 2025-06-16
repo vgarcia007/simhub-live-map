@@ -3,8 +3,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.421458553877926,
-          43.73703138441914
+          7.421167249450633,
+          43.73609550140904
         ],
         "type": "Point"
       },
@@ -20,42 +20,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.424191971267504,
-          43.737493779608485
-        ],
-        "type": "Point"
-      },
-      "id": 1,
-      "properties": {
-        "direction": "straight",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Beau Rivage"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.427678230182835,
-          43.73841988181596
-        ],
-        "type": "Point"
-      },
-      "id": 2,
-      "properties": {
-        "direction": "left",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Massenet"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.4270754600460975,
-          43.73961200678758
+          7.42742149177306,
+          43.73919820349795
         ],
         "type": "Point"
       },
@@ -71,8 +37,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.428750794109135,
-          43.7410274730027
+          7.428323739107782,
+          43.740792992977475
         ],
         "type": "Point"
       },
@@ -88,59 +54,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.429609374450763,
-          43.74031618001163
-        ],
-        "type": "Point"
-      },
-      "id": 5,
-      "properties": {
-        "direction": "left",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Grand Hotel"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.429460204051509,
-          43.741017798520886
-        ],
-        "type": "Point"
-      },
-      "id": 6,
-      "properties": {
-        "direction": "left",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Mirabeau Bas"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.429065466569227,
-          43.74092485270941
-        ],
-        "type": "Point"
-      },
-      "id": 7,
-      "properties": {
-        "direction": "right",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Mirabeau Haute"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.429190282616901,
-          43.74051795833245
+          7.429062349380757,
+          43.740456236804505
         ],
         "type": "Point"
       },
@@ -156,8 +71,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.429476446240756,
-          43.74070491014632
+          7.429707736997386,
+          43.740603891667405
         ],
         "type": "Point"
       },
@@ -173,8 +88,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.4303501522221325,
-          43.74105373486677
+          7.429955135584294,
+          43.74107275820327
         ],
         "type": "Point"
       },
@@ -190,8 +105,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.425555753541232,
-          43.737196517684424
+          7.4263174989368395,
+          43.73730626220356
         ],
         "type": "Point"
       },
@@ -207,8 +122,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.422370776530528,
-          43.7366541703434
+          7.423292359400165,
+          43.736836547672766
         ],
         "type": "Point"
       },
@@ -224,8 +139,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.422071270471548,
-          43.73532988895687
+          7.421847068573612,
+          43.73579749754856
         ],
         "type": "Point"
       },
@@ -241,8 +156,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.422547724076395,
-          43.73421751066772
+          7.422363376960476,
+          43.73454620534372
         ],
         "type": "Point"
       },
@@ -258,25 +173,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.423593095125966,
-          43.732554639491724
-        ],
-        "type": "Point"
-      },
-      "id": 15,
-      "properties": {
-        "direction": "right",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Rascasse"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.422491469130563,
-          43.732570559626
+          7.422977316470423,
+          43.73238906392805
         ],
         "type": "Point"
       },
@@ -292,8 +190,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.421344955816835,
-          43.73527672301665
+          7.421180796215168,
+          43.735008363600656
         ],
         "type": "Point"
       },
@@ -309,8 +207,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.421561656118598,
-          43.73404013149536
+          7.421903651580976,
+          43.732991562797736
         ],
         "type": "Point"
       },
@@ -326,8 +224,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.422214140493111,
-          43.737106326238006
+          7.422253888194689,
+          43.737148982040225
         ],
         "type": "Point"
       },
@@ -343,25 +241,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.425419798861867,
-          43.737685405014446
-        ],
-        "type": "Point"
-      },
-      "id": 20,
-      "properties": {
-        "direction": "straight",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Beau Rivage"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.428160823158777,
-          43.74072246755304
+          7.427503959651943,
+          43.73997534631525
         ],
         "type": "Point"
       },
@@ -377,8 +258,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.43028479860962,
-          43.74026959123182
+          7.430394913272266,
+          43.74063846079045
         ],
         "type": "Point"
       },
@@ -394,93 +275,8 @@
     {
       "geometry": {
         "coordinates": [
-          7.430105067730182,
-          43.73936506201068
-        ],
-        "type": "Point"
-      },
-      "id": 23,
-      "properties": {
-        "direction": "landmark",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Tunnel"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.428476773940503,
-          43.737919640197816
-        ],
-        "type": "Point"
-      },
-      "id": 24,
-      "properties": {
-        "direction": "landmark",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Tunnel"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.429482247317907,
-          43.73855248463278
-        ],
-        "type": "Point"
-      },
-      "id": 25,
-      "properties": {
-        "direction": "landmark",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Tunnel"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.428900396285485,
-          43.73821681039374
-        ],
-        "type": "Point"
-      },
-      "id": 26,
-      "properties": {
-        "direction": "landmark",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Tunnel"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.427701453315052,
-          43.737594277261195
-        ],
-        "type": "Point"
-      },
-      "id": 27,
-      "properties": {
-        "direction": "landmark",
-        "hidden": false,
-        "markerIcon": "",
-        "name": "Tunnel"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          7.42733750368123,
-          43.738103769425464
+          7.426492849291236,
+          43.73789258057022
         ],
         "type": "Point"
       },
@@ -494,21 +290,21 @@
       "type": "Feature"
     },
     {
-      "type": "Feature",
+      "geometry": {
+        "coordinates": [
+          7.423086930394675,
+          43.73316301905629
+        ],
+        "type": "Point"
+      },
       "id": 29,
       "properties": {
-        "name": "Rascasse",
         "direction": "right",
+        "hidden": false,
         "markerIcon": "",
-        "hidden": false
+        "name": "Rascasse"
       },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          7.423006824685075,
-          43.73334222483709
-        ]
-      }
+      "type": "Feature"
     }
   ],
   "type": "FeatureCollection"

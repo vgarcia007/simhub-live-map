@@ -15,6 +15,7 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/poi_editor.css">
+    
 </head>
 <body>
 
@@ -58,15 +59,16 @@
         <div class="nib-entries" >
 
             <div class="destination-entry" >
-                <div class="input-group mb-3">      
+                <div class="input-group">      
                     <input type="text" id="search-input" class="form-control" placeholder="Find Place" value="{{ trackcode }}">
                     <button class="btn btn-secondary" id="search-button" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </div>
-            <hr class="entry-separator">
-            <div class="destination-entry" >
-                <button class="btn btn-success" type="button" id="add-point"><i class="fa-solid fa-plus fa-fw"></i> Add POI</button>
+            
+            <div class="destination-entry mb-3" >
+                <button class="btn btn-success" type="button" id="add-point"><i class="fa-solid fa-plus fa-fw"></i> Add new POI</button>
             </div>
+            <hr class="entry-separator">
 
             <div class="destination-entry" id="point-properties" style="display: none;">
                 <div class="mb-3">
@@ -93,18 +95,18 @@
                         <label class="form-check-label" for="point-hidden">Hide Marker</label>
                     </div>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 d-none">
                     <label for="point-icon" class="form-label"><b>Marker Icon on Map</b></label>
                     <input type="text" class="form-control" id="point-icon">
                     <small class="text-muted">*optional</small>
                 </div>
                 <div class="mb-0">
-                    <button class="btn btn-danger" type="button" id="delete-point"><i class="fa-solid fa-trash-can fa-fw"></i> Delete this POI</button>
+                    <button class="btn btn-sm btn-danger" type="button" id="delete-point"><i class="fa-solid fa-trash-can fa-fw"></i> Delete selected POI</button>
                 </div>
                 
             </div>
             <hr class="entry-separator">
-            <div class="destination-entry" >
+            <div class="destination-entry mt-3 mb-3" >
                 <button class="btn btn-success" type="button" id="save-geojson"><i class="fa-solid fa-floppy-disk fa-fw"></i> Save all</button>
             </div>
 
