@@ -93,12 +93,19 @@
                         <label class="form-check-label" for="point-hidden">Hide Marker</label>
                     </div>
                 </div>
-                <div class="mb-3 d-none">
-                    <label for="point-icon" class="form-label"><b>Marker Icon on Map</b></label>
-                    <input type="text" class="form-control" id="point-icon">
-                    <small class="text-muted">*optional</small>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" value="pacenote" type="radio" name="type" id="type1" checked>
+                    <label class="form-check-label" for="type1">
+                        Navigation Cue (Pacenote)
+                    </label>
+                    </div>
+                    <div class="form-check">
+                    <input class="form-check-input" value="poi" type="radio" name="type" id="type2">
+                    <label class="form-check-label" for="type2">
+                        POI Marker (Landmark / Location)
+                    </label>
                 </div>
-                <div class="mb-0">
+                <div class="mb-0 mt-3">
                     <button class="btn btn-sm btn-danger" type="button" id="delete-point"><i class="fa-solid fa-trash-can fa-fw"></i> Delete selected POI</button>
                 </div>
                 

@@ -10,10 +10,11 @@
       },
       "id": 0,
       "properties": {
-        "direction": "straight",
+        "icon": "straight",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Rettilineo Box"
+
+        "name": "Rettilineo Box",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -27,10 +28,11 @@
       },
       "id": 1,
       "properties": {
-        "direction": "straight",
+        "icon": "straight",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Rettilineo Box"
+
+        "name": "Rettilineo Box",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -44,10 +46,11 @@
       },
       "id": 2,
       "properties": {
-        "direction": "route",
+        "icon": "route",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Prima Variante"
+
+        "name": "Prima Variante",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -61,10 +64,11 @@
       },
       "id": 3,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Biassono"
+
+        "name": "Biassono",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -78,10 +82,11 @@
       },
       "id": 5,
       "properties": {
-        "direction": "route",
+        "icon": "route",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Seconda Variante"
+
+        "name": "Seconda Variante",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -95,10 +100,11 @@
       },
       "id": 6,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Lesmo 1"
+
+        "name": "Lesmo 1",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -112,10 +118,11 @@
       },
       "id": 7,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Lesmo 2"
+
+        "name": "Lesmo 2",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -129,10 +136,11 @@
       },
       "id": 8,
       "properties": {
-        "direction": "left",
+        "icon": "left",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Serraglio"
+
+        "name": "Serraglio",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -146,10 +154,11 @@
       },
       "id": 9,
       "properties": {
-        "direction": "landmark",
+        "icon": "landmark",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Bridge"
+
+        "name": "Bridge",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -163,10 +172,11 @@
       },
       "id": 10,
       "properties": {
-        "direction": "route",
+        "icon": "route",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Variante Ascari"
+
+        "name": "Variante Ascari",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -180,10 +190,11 @@
       },
       "id": 11,
       "properties": {
-        "direction": "straight",
+        "icon": "straight",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Paddock 2"
+
+        "name": "Paddock 2",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -197,10 +208,11 @@
       },
       "id": 12,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Parabolica"
+
+        "name": "Parabolica",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -214,10 +226,11 @@
       },
       "id": 13,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Parabolica"
+
+        "name": "Parabolica",
+        "type": "pacenote"
       },
       "type": "Feature"
     }

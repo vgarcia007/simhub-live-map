@@ -5,9 +5,10 @@
       "id": 0,
       "properties": {
         "name": "Start - Finish",
-        "direction": "straight",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "straight",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -22,9 +23,10 @@
       "id": 1,
       "properties": {
         "name": "Nordkurve",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -39,9 +41,10 @@
       "id": 2,
       "properties": {
         "name": "Einfahrt Parabolika",
-        "direction": "route",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "route",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -56,9 +59,10 @@
       "id": 3,
       "properties": {
         "name": "Parabolika",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -73,9 +77,10 @@
       "id": 4,
       "properties": {
         "name": "Spitzkehre",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -90,9 +95,10 @@
       "id": 5,
       "properties": {
         "name": "Corner 6",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -107,9 +113,10 @@
       "id": 6,
       "properties": {
         "name": "Corner 7",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -124,9 +131,10 @@
       "id": 7,
       "properties": {
         "name": "Corner 8",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -141,9 +149,10 @@
       "id": 8,
       "properties": {
         "name": "Mobil 1 Kurve",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -158,9 +167,10 @@
       "id": 9,
       "properties": {
         "name": "Sachskurve",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -175,9 +185,10 @@
       "id": 10,
       "properties": {
         "name": "Corner 11",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -192,9 +203,10 @@
       "id": 11,
       "properties": {
         "name": "Corner 12",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -209,9 +221,10 @@
       "id": 12,
       "properties": {
         "name": "S\u00fcdkurve",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",

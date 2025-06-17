@@ -28,6 +28,9 @@ let poiInfo = document.getElementById('poiInfo');
 let poiInfoIcon = document.getElementById('poiInfoIcon');
 let goodGeojson = null;
 
+let isUserPanning = false;
+
+let currentPoiinfoBox = null;
 let lastPoi = null;
 let gameToLatLng = null;
 let lastGameName = null;
@@ -192,6 +195,31 @@ function InfoBoxEntryAdd(entry_icon = 'fa-solid fa-house', entry_name = null, en
 }
 
 
+function PoiInfoBoxEntryAdd(entry_icon = '', entry_name = null, entry_info = null) {
+    // check if infoBoxEntries.innerHTML is emty
+    let separator = '<hr class="entry-separator">';
+    if (infoBoxEntries.innerHTML.trim() === '') {
+        separator = '';
+    }
+    const id = 'nib-entry-' + Date.now() + Math.floor(Math.random() * 1000);
+    const entry = `<div id="${id}">
+                        ${separator}
+                    <div class="destination-entry">
+                            <div class="entry-icon">${entry_icon}</div>
+                            <div class="entry-text">
+                                <div class="entry-name link-dark">${entry_name}</div>
+                                <!-- Placeholder image for the entry 
+                                <img class="img-fluid" src="https://placehold.co/200" alt="pic" style="max-width: 200px; height: auto;">
+                                <div class="entry-info">${entry_info}</div>
+                                -->
+                            </div>
+                        </div>
+                    </div>`;
+    infoBoxEntries.insertAdjacentHTML('beforeend', entry);
+    return id;
+}
+
+
 /**
  * Updates the content of an information box entry in the DOM.
  *
@@ -343,27 +371,69 @@ async function loadGeoJsonAndAddLayer(map, url, layerId, layerOptions = {}) {
     }
 
     try {
+        const iconsToAdd = new Set();
+        geojson.features.forEach(f => {
+        const { icon, hidden } = f.properties ?? {};
+        // Nur Icons sammeln, die überhaupt sichtbar sein könnten
+        if (icon && hidden === false) iconsToAdd.add(icon);
+        });
+
+        // ---------- 2) Icons dem Style hinzufügen -----------------------
+        iconsToAdd.forEach(iconName => {
+        if (!map.hasImage(iconName)) {          // Mapbox verlangt EINEN Aufruf pro ID
+            /* Canvas-Glyph aus Material Symbols erzeugen */
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 64;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.font = '64px Material Symbols Outlined';
+            ctx.fillText(directions[iconName], 0, 64);
+            map.addImage(iconName, ctx.getImageData(0, 0, 64, 64));
+        }
+        });
+
+        // ---------- 3) Layer anlegen, falls noch nicht vorhanden ---------
         if (!map.getLayer(stringLayerId)) {
-            map.addLayer({
-            id: stringLayerId,
-            type: 'circle',
+        map.addLayer({
+            id:     stringLayerId,
+            type:   'symbol',
             source: stringLayerId,
-            paint: {
-                'circle-radius': layerOptions.circleRadius || 6,
-                'circle-color': [
+            layout: {
+            /* Expression:
+                - wenn hidden == true  → leere ID  → Icon unsichtbar
+                - sonst                → Iconname aus Eigenschaft 'icon'         */
+            'icon-image': [
                 'case',
-                ['has', 'color'], // Check if the feature has a 'color' property
-                ['get', 'color'], // Use the 'color' property value
-                layerOptions.circleColor || '#0A8042' // Default color if 'color' property is missing
-                ],
-                'circle-opacity': [
-                'case',
-                ['==', ['get', 'hidden'], true], // Check if 'hidden' property is true
-                0, // Make the marker invisible
-                layerOptions.circleOpacity || 0.8 // Default opacity if 'hidden' is false
-                ]
+                ['boolean', ['get', 'hidden'], false],   // Test
+                '',                                      // unsichtbar
+                ['get', 'icon']                          // normales Icon
+            ],
+            'icon-size':           1,
+            'icon-allow-overlap':  true
+            },
+            paint: {}
+        });
+
+        // ---------- 4) Events nur EINMAL registrieren ------------------
+        map.on('mouseenter', stringLayerId,
+                () => map.getCanvas().style.cursor = 'pointer');
+        map.on('mouseleave', stringLayerId,
+                () => map.getCanvas().style.cursor = '');
+        map.on('click', stringLayerId, e => {
+            const props = e.features?.[0]?.properties;
+            if (props) {
+                if(currentPoiinfoBox) {
+                    InfoBoxEntryDelete(currentPoiinfoBox);
+                    currentPoiinfoBox = null;
+                }
+                currentPoiinfoBox = PoiInfoBoxEntryAdd(
+                    props.icon ? `<span class="material-symbols-outlined">${directions[props.icon]}</span>` : '',
+                    props.name || 'No Name',
+                    JSON.stringify(props)
+                );
             }
-            });
+        });
         }
     } catch (error) {
         goodGeojson = null;
@@ -429,13 +499,55 @@ function initMap(CONFIG) {
             .addTo(map);
 
 
+        map.on('dragstart', () => {
+            isUserPanning = true;
+            showFollowButton(); // Button einblenden
+        });
 
+        // eventlister for map click
+        map.on('click', () => {
+            if(currentPoiinfoBox) {
+                    InfoBoxEntryDelete(currentPoiinfoBox);
+                    currentPoiinfoBox = null;
+                }
+        });
+
+        map.on('style.load', () => {
+        map.setFog({
+            // [min, max] Entfernung (km) in der die Vernebelung von 0 → 100 % übergeht
+            range: [0.5, 10],       
+
+            color:       '#BADAFF', // Untere Atmosphäre / direkt am Horizont
+            'high-color':'#3475F4', // Weiter oben (Himmelsschimmer)
+            'horizon-blend': 0.4,   // 0 = harter Übergang, 1 = sehr weich
+
+            'space-color': '#102040', // Farbe über der Atmosphäre
+            'star-intensity': 0.0     // Sterne aus
+        });
+        });
 
     } else {
         console.warn("Default map center or zoom not set in config");
     }
 }
 
+
+function showFollowButton() {
+    const button = document.getElementById('followButton');
+    button.style.display = 'flex';
+
+}
+
+function hideFollowButton() {
+    const button = document.getElementById('followButton');
+    button.style.display = 'none';
+}
+
+// Event listener for the follow button
+document.getElementById('followButton').addEventListener('click', () => {
+    isUserPanning = false;
+    hideFollowButton();
+});
 
 /**
  * Fetches game data from the specified API and updates the map, markers, and UI elements accordingly.
@@ -618,10 +730,11 @@ async function fetchGameData(config) {
                 bearing: yaw
             });
             window._mapInitialized = true;
-        } else {
+        } else if (!isUserPanning){
             map.flyTo({
                 center: [lng, lat],
                 zoom,
+                pitch: 50,
                 bearing: yaw,
                 speed: 0.3, // slower is better for smoothness
                 curve: 0, // lower conflict overshoot
@@ -637,12 +750,12 @@ async function fetchGameData(config) {
 
             if (nearest) {
 
-                if (lastPoi && lastPoi.properties.name === nearest.properties.name && lastPoi.properties.direction === nearest.properties.direction) {
+                if (lastPoi && lastPoi.properties.name === nearest.properties.name && lastPoi.properties.icon === nearest.properties.icon) {
                     //console.warn("Marker is the same as last POI, skipping update");
 
-                } else {
-                    let direction = nearest.properties.direction;
-                    let html = '<span class="material-symbols-outlined">' + directions[direction] + '</span>'
+                } else if(nearest.properties.type === 'pacenote'){
+                    let icon = nearest.properties.icon;
+                    let html = '<span class="material-symbols-outlined">' + directions[icon] + '</span>'
                     poiInfoIcon.innerHTML = html;
                     poiInfo.innerHTML = nearest.properties.name;
                     lastPoi = nearest;

@@ -4,6 +4,7 @@
   --font-size-poiInfoIcon: calc(5rem * var(--ui-scale-factor));
   --font-size-box-header: calc(1.8rem * var(--ui-scale-factor));
   --font-size-entry-icon: calc(2rem * var(--ui-scale-factor));
+  --font-size-entry-icon-material: calc(3rem * var(--ui-scale-factor));
   --font-size-entry-name: calc(1.6rem * var(--ui-scale-factor));
   --font-size-entry-info: calc(1.3rem * var(--ui-scale-factor));
   --font-size-bottom-toolbar: calc(1.5rem * var(--ui-scale-factor));
@@ -120,6 +121,13 @@ html, body {
   margin-right: 18px;
 }
 
+.entry-icon .material-symbols-outlined,
+.entry-icon .material-symbols-rounded {
+  font-size: var(--font-size-entry-icon-material)!important;
+  margin-left: -7px;
+
+}
+
 .entry-text {
   display: flex;
   flex-direction: column;
@@ -176,4 +184,19 @@ html, body {
 .material-symbol {
   font-family: "Material Symbols Outlined";
   font-style: normal;
+}
+
+#followButton {
+  position: absolute;
+  bottom: 100px;
+  right: 100px;
+  z-index: 30;
+  background-color: white;
+  color: #2374CE;
+  border-radius: 50%;
+  width: calc(50px * var(--ui-scale-factor));
+  height: calc(50px * var(--ui-scale-factor));
+  display: none;
+  align-items: center;
+  justify-content: center;
 }

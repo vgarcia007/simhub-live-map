@@ -10,10 +10,10 @@
       },
       "id": 0,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Paddock Hill Bend"
+        "icon": "right",
+        "name": "Paddock Hill Bend",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -27,10 +27,10 @@
       },
       "id": 1,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Druids"
+        "icon": "right",
+        "name": "Druids",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -44,10 +44,10 @@
       },
       "id": 2,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Graham Hill Bend"
+        "icon": "left",
+        "name": "Graham Hill Bend",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -61,10 +61,10 @@
       },
       "id": 3,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Surtees"
+        "icon": "left",
+        "name": "Surtees",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -78,10 +78,10 @@
       },
       "id": 4,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Hawthon Bend"
+        "icon": "right",
+        "name": "Hawthon Bend",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -95,10 +95,10 @@
       },
       "id": 6,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Derek Minbter Straight"
+        "icon": "straight",
+        "name": "Derek Minbter Straight",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -112,10 +112,10 @@
       },
       "id": 7,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Westfield Bend"
+        "icon": "right",
+        "name": "Westfield Bend",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -129,10 +129,10 @@
       },
       "id": 8,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Dingle Dell"
+        "icon": "straight",
+        "name": "Dingle Dell",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -146,10 +146,10 @@
       },
       "id": 9,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Sheene Curve"
+        "icon": "right",
+        "name": "Sheene Curve",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -163,10 +163,10 @@
       },
       "id": 10,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Stirlings"
+        "icon": "left",
+        "name": "Stirlings",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -180,10 +180,10 @@
       },
       "id": 11,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Clearways"
+        "icon": "straight",
+        "name": "Clearways",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -197,10 +197,10 @@
       },
       "id": 12,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Clark Curve"
+        "icon": "right",
+        "name": "Clark Curve",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -214,61 +214,97 @@
       },
       "id": 13,
       "properties": {
-        "direction": "straight",
         "hidden": true,
+        "icon": "straight",
+        "name": "Brabham Straight",
+        "type": "pacenote"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.26239671048131186,
+          51.359995968979035
+        ],
+        "type": "Point"
+      },
+      "id": 14,
+      "properties": {
+        "hidden": true,
+        "icon": "straight",
+        "name": "Cooper Straight",
+        "type": "pacenote"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.2589711241516568,
+          51.35801089602947
+        ],
+        "type": "Point"
+      },
+      "id": 15,
+      "properties": {
+        "hidden": true,
+        "icon": "straight",
+        "name": "Pilgrims Drop",
+        "type": "pacenote"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.2629756533601437,
+          51.35722997919265
+        ],
+        "type": "Point"
+      },
+      "id": 16,
+      "properties": {
+        "hidden": true,
+        "icon": "straight",
+        "name": "Hawthorn Hill",
+        "type": "pacenote"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.26442556145983076,
+          51.355093114536146
+        ],
+        "type": "Point"
+      },
+      "id": 17,
+      "properties": {
+        "hidden": false,
+        "icon": "landscape",
         "markerIcon": "",
-        "name": "Brabham Straight"
+        "name": "Grove Wood",
+        "type": "poi"
       },
       "type": "Feature"
     },
     {
       "type": "Feature",
-      "id": 14,
+      "id": 18,
       "properties": {
-        "name": "Cooper Straight",
-        "direction": "straight",
+        "name": "Paddock",
+        "icon": "local_parking",
         "markerIcon": "",
-        "hidden": true
+        "hidden": false,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          0.26239671048131186,
-          51.359995968979035
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 15,
-      "properties": {
-        "name": "Pilgrims Drop",
-        "direction": "straight",
-        "markerIcon": "",
-        "hidden": true
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          0.2589711241516568,
-          51.35801089602947
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 16,
-      "properties": {
-        "name": "Hawthorn Hill",
-        "direction": "straight",
-        "markerIcon": "",
-        "hidden": true
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          0.2629756533601437,
-          51.35722997919265
+          0.2663267621932732,
+          51.36021704162749
         ]
       }
     }

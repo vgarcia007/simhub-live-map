@@ -26,3 +26,9 @@
 .link-dark:active {
     color: #ddd!important;
 }
+
+#followButton {
+  background-color: #333333;
+  color: #2374CE;
+
+}

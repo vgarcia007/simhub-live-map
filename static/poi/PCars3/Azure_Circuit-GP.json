@@ -10,10 +10,11 @@
       },
       "id": 0,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Sainte Devote"
+
+        "name": "Sainte Devote",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -27,10 +28,11 @@
       },
       "id": 3,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Casino"
+
+        "name": "Casino",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -44,10 +46,11 @@
       },
       "id": 4,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Mirabeau Haute"
+
+        "name": "Mirabeau Haute",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -61,10 +64,11 @@
       },
       "id": 8,
       "properties": {
-        "direction": "left",
+        "icon": "left",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Grand Hotel"
+
+        "name": "Grand Hotel",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -78,10 +82,11 @@
       },
       "id": 9,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Mirabeau Bas"
+
+        "name": "Mirabeau Bas",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -95,10 +100,11 @@
       },
       "id": 10,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Portier"
+
+        "name": "Portier",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -112,10 +118,11 @@
       },
       "id": 11,
       "properties": {
-        "direction": "route",
+        "icon": "route",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Nouvelle Chicane"
+
+        "name": "Nouvelle Chicane",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -129,10 +136,11 @@
       },
       "id": 12,
       "properties": {
-        "direction": "left",
+        "icon": "left",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Tabac"
+
+        "name": "Tabac",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -146,10 +154,11 @@
       },
       "id": 13,
       "properties": {
-        "direction": "route",
+        "icon": "route",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Louis Chiron"
+
+        "name": "Louis Chiron",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -163,10 +172,11 @@
       },
       "id": 14,
       "properties": {
-        "direction": "route",
+        "icon": "route",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Piscine"
+
+        "name": "Piscine",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -180,10 +190,11 @@
       },
       "id": 16,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Antony Noghes"
+
+        "name": "Antony Noghes",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -197,10 +208,11 @@
       },
       "id": 17,
       "properties": {
-        "direction": "straight",
+        "icon": "straight",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Start Finish"
+
+        "name": "Start Finish",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -214,10 +226,11 @@
       },
       "id": 18,
       "properties": {
-        "direction": "straight",
+        "icon": "straight",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Start Finish"
+
+        "name": "Start Finish",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -231,10 +244,11 @@
       },
       "id": 19,
       "properties": {
-        "direction": "straight",
+        "icon": "straight",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Beau Rivage"
+
+        "name": "Beau Rivage",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -248,10 +262,11 @@
       },
       "id": 21,
       "properties": {
-        "direction": "straight",
+        "icon": "straight",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Spelugues"
+
+        "name": "Spelugues",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -265,10 +280,11 @@
       },
       "id": 22,
       "properties": {
-        "direction": "landmark",
+        "icon": "landmark",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Tunnel"
+
+        "name": "Tunnel",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -282,10 +298,11 @@
       },
       "id": 28,
       "properties": {
-        "direction": "left",
+        "icon": "left",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Massenet"
+
+        "name": "Massenet",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -299,10 +316,11 @@
       },
       "id": 29,
       "properties": {
-        "direction": "right",
+        "icon": "right",
         "hidden": false,
-        "markerIcon": "",
-        "name": "Rascasse"
+
+        "name": "Rascasse",
+        "type": "pacenote"
       },
       "type": "Feature"
     }

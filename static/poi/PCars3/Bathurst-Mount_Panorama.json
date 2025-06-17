@@ -5,9 +5,10 @@
       "id": 0,
       "properties": {
         "name": "Main Straight",
-        "direction": "straight",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "straight",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -22,9 +23,10 @@
       "id": 1,
       "properties": {
         "name": "Hell Corner",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -39,9 +41,10 @@
       "id": 2,
       "properties": {
         "name": "Mountain Straight",
-        "direction": "straight",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "straight",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -56,9 +59,10 @@
       "id": 3,
       "properties": {
         "name": "Griffins Bend",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -73,9 +77,10 @@
       "id": 4,
       "properties": {
         "name": "Corner 3",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -90,9 +95,10 @@
       "id": 5,
       "properties": {
         "name": "Corner 4",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -107,9 +113,10 @@
       "id": 6,
       "properties": {
         "name": "Corner 5",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -124,9 +131,10 @@
       "id": 7,
       "properties": {
         "name": "Frog Hollow",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -141,9 +149,10 @@
       "id": 8,
       "properties": {
         "name": "Sulman Park",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -158,9 +167,10 @@
       "id": 9,
       "properties": {
         "name": "Mc Phillamy Park",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -175,9 +185,10 @@
       "id": 10,
       "properties": {
         "name": "Brocks Skyline",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -192,9 +203,10 @@
       "id": 11,
       "properties": {
         "name": "The Esses",
-        "direction": "route",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "route",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -209,9 +221,10 @@
       "id": 12,
       "properties": {
         "name": "Corner 16",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -226,9 +239,10 @@
       "id": 13,
       "properties": {
         "name": "Corner 18",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -243,9 +257,10 @@
       "id": 14,
       "properties": {
         "name": "Forrests Elbow",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -260,9 +275,10 @@
       "id": 15,
       "properties": {
         "name": "Corner 19",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -277,9 +293,10 @@
       "id": 16,
       "properties": {
         "name": "Conrod Straight",
-        "direction": "straight",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "straight",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -294,9 +311,10 @@
       "id": 17,
       "properties": {
         "name": "The Chase",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -311,9 +329,10 @@
       "id": 18,
       "properties": {
         "name": "The Chase",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -328,9 +347,10 @@
       "id": 19,
       "properties": {
         "name": "The Chase",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "right",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -345,9 +365,10 @@
       "id": 20,
       "properties": {
         "name": "Conrods Straight",
-        "direction": "straight",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "straight",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",
@@ -362,9 +383,10 @@
       "id": 21,
       "properties": {
         "name": "Murrays Corner",
-        "direction": "left",
-        "markerIcon": "",
-        "hidden": true
+        "icon": "left",
+
+        "hidden": true,
+        "type": "pacenote"
       },
       "geometry": {
         "type": "Point",

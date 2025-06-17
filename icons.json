@@ -13,10 +13,12 @@
     "fork_right": "fork_right",
     "turn_sharp_right": "turn_sharp_right",
     "roundabout_right": "roundabout_right",
+
     "ramp_right": "ramp_right", 
+    "alt_route": "alt_route",
 
     "route": "conversion_path",
-    "landmark": "local_see",
+    "landmark": "bookmark_flag",
     "straight": "straight",
     "road": "road",
     "unpaved_road": "unpaved_road",
@@ -24,6 +26,19 @@
     "sports_score": "sports_score",
     "danger": "warning",
     "landscape": "landscape",
+    "forest": "forest",
     "altitude": "altitude",
-    "speed_camera": "speed_camera"
+    "speed_camera": "speed_camera",
+    "local_parking": "local_parking",
+    "garage_door": "garage_door",
+    "local_gas_station": "local_gas_station",
+
+    "north": "north",
+    "north_east": "north_east",
+    "east": "east",
+    "south_east": "south_east",
+    "south": "south",
+    "south_west": "south_west",
+    "west": "west",
+    "north_west": "north_west"
 }
