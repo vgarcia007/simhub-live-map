@@ -1,6 +1,7 @@
 {
-    "PROXY_TARGET_URL": "http://192.168.188.102:8888/api/getgamedata",
-    "mapAPIurl": "http://localhost:5000/proxy",
+    "SimHubIP":"localhost",
+    "SimHubPort": 8888,
+    "mapAPIurl": "/proxy",
     "defaultMapCenter": [50.34, 6.94],
     "defaultMapZoom": 17,
     "maxPoiDistance": 25,
@@ -21,6 +22,6 @@
     "maxZoom": 17,
     "fetchIntervalMs": 100,
     "DEBUG": false,
-    "mapInterfaceScale": "0.8"
+    "mapInterfaceScale": "1.0"
 
 }

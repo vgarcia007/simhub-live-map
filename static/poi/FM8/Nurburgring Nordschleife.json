@@ -3,17 +3,17 @@
     {
       "geometry": {
         "coordinates": [
-          6.949041656389966,
-          50.338843982455785
+          6.949094265250409,
+          50.33882324174874
         ],
         "type": "Point"
       },
       "id": 0,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Sabine-Schmitz-Kurve"
+        "icon": "left",
+        "name": "Sabine-Schmitz-Kurve",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -27,10 +27,10 @@
       },
       "id": 1,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Hatzenbogen"
+        "icon": "turn_slight_right",
+        "name": "Hatzenbogen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -44,10 +44,10 @@
       },
       "id": 2,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Hatzenbach"
+        "icon": "turn_slight_left",
+        "name": "Hatzenbach",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -61,10 +61,10 @@
       },
       "id": 3,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Hocheichen"
+        "icon": "right",
+        "name": "Hocheichen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -78,10 +78,10 @@
       },
       "id": 7,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Quiddelbacher H\u00f6he"
+        "icon": "turn_slight_right",
+        "name": "Quiddelbacher H\u00f6he",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -95,10 +95,10 @@
       },
       "id": 8,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Quiddelbacher H\u00f6he"
+        "icon": "straight",
+        "name": "Quiddelbacher H\u00f6he",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -112,10 +112,10 @@
       },
       "id": 9,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Flugplatz"
+        "icon": "right",
+        "name": "Flugplatz",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -129,10 +129,10 @@
       },
       "id": 11,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Schwedenkreuz"
+        "icon": "straight",
+        "name": "Schwedenkreuz",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -146,10 +146,10 @@
       },
       "id": 12,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Schwedenkreuz"
+        "icon": "turn_slight_left",
+        "name": "Schwedenkreuz",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -163,10 +163,10 @@
       },
       "id": 13,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Aremberg"
+        "icon": "right",
+        "name": "Aremberg",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -180,10 +180,10 @@
       },
       "id": 15,
       "properties": {
-        "direction": "landmark",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Postbr\u00fccke"
+        "icon": "landmark",
+        "name": "Postbr\u00fccke",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -197,10 +197,10 @@
       },
       "id": 16,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Fuchsr\u00f6hre"
+        "icon": "straight",
+        "name": "Fuchsr\u00f6hre",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -214,10 +214,10 @@
       },
       "id": 17,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Fuchsr\u00f6hre"
+        "icon": "left",
+        "name": "Fuchsr\u00f6hre",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -231,10 +231,10 @@
       },
       "id": 18,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Adenauer Forst"
+        "icon": "right",
+        "name": "Adenauer Forst",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -248,10 +248,10 @@
       },
       "id": 20,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Metzgesfeld"
+        "icon": "straight",
+        "name": "Metzgesfeld",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -265,10 +265,10 @@
       },
       "id": 22,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Kallenhard"
+        "icon": "left",
+        "name": "Kallenhard",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -282,10 +282,10 @@
       },
       "id": 25,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Spiegelkurve"
+        "icon": "left",
+        "name": "Spiegelkurve",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -299,10 +299,10 @@
       },
       "id": 27,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Dreifach-Rechts"
+        "icon": "right",
+        "name": "Dreifach-Rechts",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -316,10 +316,10 @@
       },
       "id": 29,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Wehrseifen"
+        "icon": "right",
+        "name": "Wehrseifen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -333,10 +333,10 @@
       },
       "id": 30,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Wehrseifen"
+        "icon": "left",
+        "name": "Wehrseifen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -350,10 +350,10 @@
       },
       "id": 31,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Wehrseifen"
+        "icon": "right",
+        "name": "Wehrseifen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -367,10 +367,10 @@
       },
       "id": 32,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Breidscheid"
+        "icon": "right",
+        "name": "Breidscheid",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -384,10 +384,10 @@
       },
       "id": 33,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Breidscheid"
+        "icon": "left",
+        "name": "Breidscheid",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -401,10 +401,10 @@
       },
       "id": 34,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Ex-M\u00fchle"
+        "icon": "right",
+        "name": "Ex-M\u00fchle",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -418,10 +418,10 @@
       },
       "id": 35,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Ex-M\u00fchle"
+        "icon": "straight",
+        "name": "Ex-M\u00fchle",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -435,10 +435,10 @@
       },
       "id": 36,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Lauda-Links"
+        "icon": "left",
+        "name": "Lauda-Links",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -452,10 +452,10 @@
       },
       "id": 38,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Bergwerk"
+        "icon": "right",
+        "name": "Bergwerk",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -469,10 +469,10 @@
       },
       "id": 39,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Bergwerk"
+        "icon": "straight",
+        "name": "Bergwerk",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -486,10 +486,10 @@
       },
       "id": 40,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Senkenlinks"
+        "icon": "left",
+        "name": "Senkenlinks",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -503,10 +503,10 @@
       },
       "id": 41,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Kesselchen"
+        "icon": "straight",
+        "name": "Kesselchen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -520,10 +520,10 @@
       },
       "id": 42,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Kesselchen"
+        "icon": "straight",
+        "name": "Kesselchen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -537,10 +537,10 @@
       },
       "id": 43,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Mutkurve"
+        "icon": "left",
+        "name": "Mutkurve",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -554,10 +554,10 @@
       },
       "id": 44,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Klostertal"
+        "icon": "right",
+        "name": "Klostertal",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -571,10 +571,10 @@
       },
       "id": 45,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Klostertal"
+        "icon": "right",
+        "name": "Klostertal",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -588,10 +588,10 @@
       },
       "id": 46,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Karussell"
+        "icon": "left",
+        "name": "Karussell",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -605,10 +605,10 @@
       },
       "id": 47,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Hohe Acht"
+        "icon": "right",
+        "name": "Hohe Acht",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -622,10 +622,10 @@
       },
       "id": 48,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Hohe Acht"
+        "icon": "left",
+        "name": "Hohe Acht",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -639,10 +639,10 @@
       },
       "id": 49,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Hohe Acht"
+        "icon": "right",
+        "name": "Hohe Acht",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -656,10 +656,10 @@
       },
       "id": 50,
       "properties": {
-        "direction": "route",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Wippermann"
+        "icon": "route",
+        "name": "Wippermann",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -673,10 +673,10 @@
       },
       "id": 51,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Eschbach"
+        "icon": "right",
+        "name": "Eschbach",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -690,10 +690,10 @@
       },
       "id": 52,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Br\u00fcnchen"
+        "icon": "right",
+        "name": "Br\u00fcnchen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -707,10 +707,10 @@
       },
       "id": 53,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Pflanzgarten"
+        "icon": "left",
+        "name": "Pflanzgarten",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -724,10 +724,10 @@
       },
       "id": 54,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Pflanzgarten"
+        "icon": "right",
+        "name": "Pflanzgarten",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -741,10 +741,10 @@
       },
       "id": 55,
       "properties": {
-        "direction": "danger",
-        "name": "Sprungh\u00fcgel",
         "hidden": true,
-        "markerIcon": "undefined"
+        "icon": "danger",
+        "name": "Sprungh\u00fcgel",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -758,10 +758,10 @@
       },
       "id": 56,
       "properties": {
-        "direction": "route",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Steffan-Bellof-S"
+        "icon": "route",
+        "name": "Steffan-Bellof-S",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -775,10 +775,10 @@
       },
       "id": 57,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Schwalbenschwanz"
+        "icon": "right",
+        "name": "Schwalbenschwanz",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -792,10 +792,10 @@
       },
       "id": 58,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Schwalbenschwanz"
+        "icon": "left",
+        "name": "Schwalbenschwanz",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -809,10 +809,10 @@
       },
       "id": 59,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Kleines Karussel"
+        "icon": "left",
+        "name": "Kleines Karussel",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -826,10 +826,10 @@
       },
       "id": 60,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Galgenkopf"
+        "icon": "right",
+        "name": "Galgenkopf",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -843,10 +843,10 @@
       },
       "id": 61,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Galgenkopf"
+        "icon": "right",
+        "name": "Galgenkopf",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -860,10 +860,10 @@
       },
       "id": 62,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "D\u00f6ttinger H\u00f6he"
+        "icon": "straight",
+        "name": "D\u00f6ttinger H\u00f6he",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -877,10 +877,10 @@
       },
       "id": 63,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Antoniusbuche"
+        "icon": "straight",
+        "name": "Antoniusbuche",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -894,10 +894,10 @@
       },
       "id": 64,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Antoniusbuche"
+        "icon": "left",
+        "name": "Antoniusbuche",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -911,10 +911,10 @@
       },
       "id": 65,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Tiergarten"
+        "icon": "straight",
+        "name": "Tiergarten",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -928,10 +928,10 @@
       },
       "id": 66,
       "properties": {
-        "direction": "route",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Hohenrain"
+        "icon": "route",
+        "name": "Hohenrain",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -945,10 +945,10 @@
       },
       "id": 67,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Finish ahead"
+        "icon": "right",
+        "name": "Finish ahead",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -962,10 +962,10 @@
       },
       "id": 68,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "undefined",
-        "name": "Start - Finish"
+        "icon": "right",
+        "name": "Start - Finish",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -979,10 +979,10 @@
       },
       "id": 69,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Hatzenbach"
+        "icon": "right",
+        "name": "Hatzenbach",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -996,10 +996,10 @@
       },
       "id": 70,
       "properties": {
-        "direction": "route",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Hatzenbach"
+        "icon": "route",
+        "name": "Hatzenbach",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1013,10 +1013,10 @@
       },
       "id": 71,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Hocheichen"
+        "icon": "left",
+        "name": "Hocheichen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1030,10 +1030,10 @@
       },
       "id": 72,
       "properties": {
-        "direction": "straight",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Hocheichen"
+        "icon": "straight",
+        "name": "Hocheichen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1047,10 +1047,10 @@
       },
       "id": 73,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Flugplatz"
+        "icon": "turn_slight_left",
+        "name": "Flugplatz",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1064,10 +1064,10 @@
       },
       "id": 74,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Adenauer Forst"
+        "icon": "left",
+        "name": "Adenauer Forst",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1081,10 +1081,10 @@
       },
       "id": 75,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Adenauer Forst"
+        "icon": "right",
+        "name": "Adenauer Forst",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1098,10 +1098,10 @@
       },
       "id": 76,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Metzgesfeld"
+        "icon": "left",
+        "name": "Metzgesfeld",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1115,10 +1115,10 @@
       },
       "id": 77,
       "properties": {
-        "direction": "right",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Kallenhard"
+        "icon": "right",
+        "name": "Kallenhard",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1132,10 +1132,10 @@
       },
       "id": 78,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Eschbach"
+        "icon": "left",
+        "name": "Eschbach",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1149,10 +1149,10 @@
       },
       "id": 79,
       "properties": {
-        "direction": "landmark",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Br\u00fcnchen"
+        "icon": "landmark",
+        "name": "Br\u00fcnchen",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
@@ -1166,29 +1166,46 @@
       },
       "id": 81,
       "properties": {
-        "direction": "left",
         "hidden": true,
-        "markerIcon": "",
-        "name": "Eiskurve"
+        "icon": "left",
+        "name": "Eiskurve",
+        "type": "pacenote"
       },
       "type": "Feature"
     },
     {
-      "type": "Feature",
-      "id": 82,
-      "properties": {
-        "name": "Br\u00fcnchen",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
-      },
       "geometry": {
-        "type": "Point",
         "coordinates": [
           7.005485852166231,
           50.36969732538407
-        ]
-      }
+        ],
+        "type": "Point"
+      },
+      "id": 82,
+      "properties": {
+        "hidden": true,
+        "icon": "right",
+        "name": "Br\u00fcnchen",
+        "type": "pacenote"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.948265725739731,
+          50.33919946272732
+        ],
+        "type": "Point"
+      },
+      "id": 83,
+      "properties": {
+        "hidden": false,
+        "icon": "landmark",
+        "name": "Nordkehre",
+        "type": "poi"
+      },
+      "type": "Feature"
     }
   ],
   "type": "FeatureCollection"

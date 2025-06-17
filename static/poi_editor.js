@@ -11,6 +11,27 @@ fetch('/config')
     })
     .catch(err => console.error("Error loading config:", err));
 
+
+function getSelectedRadioValue(name) {
+    const radios = document.getElementsByName(name);
+    for (const radio of radios) {
+        if (radio.checked) {
+            return radio.value;
+        }
+    }
+    return null;
+}
+
+function setSelectedRadioValue(name, value) {
+    const radios = document.getElementsByName(name);
+    for (const radio of radios) {
+        if (radio.value === value) {
+            radio.checked = true;
+            break;
+        }
+    }
+}
+
 function initEditor(config) {
     mapboxgl.accessToken = config.mapboxToken;
     const map = new mapboxgl.Map({
@@ -64,22 +85,42 @@ function initEditor(config) {
             const center = size / 2;
 
             // Transparent circle
-            const circle = document.createElementNS(svgNS, "circle");
-            circle.setAttribute("cx", center);
-            circle.setAttribute("cy", center);
-            circle.setAttribute("r", pxRadius);
-            circle.setAttribute("fill", "#B4222233");
-            circle.setAttribute("stroke", "#B42222");
-            circle.setAttribute("stroke-width", "1");
-            svg.appendChild(circle);
+            if(feature.properties.type !== 'poi' ){
+                const circle = document.createElementNS(svgNS, "circle");
+                circle.setAttribute("cx", center);
+                circle.setAttribute("cy", center);
+                circle.setAttribute("r", pxRadius);
+                circle.setAttribute("fill", "#B4222233");
+                circle.setAttribute("stroke", "#B42222");
+                circle.setAttribute("stroke-width", "1");
+                svg.appendChild(circle);
 
-            // Red marker circle
-            const markerCircle = document.createElementNS(svgNS, "circle");
-            markerCircle.setAttribute("cx", center);
-            markerCircle.setAttribute("cy", center);
-            markerCircle.setAttribute("r", markerRadius);
-            markerCircle.setAttribute("fill", "#B42222");
-            svg.appendChild(markerCircle);
+                // Red marker circle
+                const markerCircle = document.createElementNS(svgNS, "circle");
+                markerCircle.setAttribute("cx", center);
+                markerCircle.setAttribute("cy", center);
+                markerCircle.setAttribute("r", markerRadius);
+                markerCircle.setAttribute("fill", "#B42222");
+                svg.appendChild(markerCircle);
+
+            }else{
+                const circle = document.createElementNS(svgNS, "circle");
+                circle.setAttribute("cx", center);
+                circle.setAttribute("cy", center);
+                circle.setAttribute("r", pxRadius);
+                circle.setAttribute("fill", "#fcff0022");
+                circle.setAttribute("stroke", "#fcff00");
+                circle.setAttribute("stroke-width", "1");
+                svg.appendChild(circle);
+
+                // Red marker circle
+                const markerCircle = document.createElementNS(svgNS, "circle");
+                markerCircle.setAttribute("cx", center);
+                markerCircle.setAttribute("cy", center);
+                markerCircle.setAttribute("r", markerRadius);
+                markerCircle.setAttribute("fill", "#fcff00");
+                svg.appendChild(markerCircle);
+            }
 
             svg.addEventListener('click', e => {
                 e.stopPropagation();
@@ -173,6 +214,7 @@ function initEditor(config) {
                 },
                 body: JSON.stringify(geojsonData)
             });
+            renderMarkers();
             if (!res.ok) console.error('Error saving GeoJSON data');
         } catch (e) {
             console.error('Error saving GeoJSON data:', e);
@@ -223,7 +265,7 @@ function initEditor(config) {
             id: idCounter++,
             properties: {
                 name: '',
-                direction: '',
+                icon: '',
                 markerIcon: '',
                 hidden: true
             },
@@ -271,20 +313,22 @@ function initEditor(config) {
         const feature = geojsonData.features.find(f => f.id === id);
         if (!feature) return;
         document.getElementById('point-name').value = feature.properties.name;
-        document.getElementById('point-direction').value = feature.properties.direction;
-        const direction_select = document.getElementById('point-direction');
-        const ts = direction_select.tomselect;
+        document.getElementById('point-direction').value = feature.properties.icon;
+        const icon_select = document.getElementById('point-direction');
+        const ts = icon_select.tomselect;
         console.log('Selected feature:', feature);
         document.getElementById('point-hidden').checked = feature.properties.hidden;
-        document.getElementById('point-icon').value = feature.properties.markerIcon;
         document.getElementById('point-properties').style.display = 'block';
-        ts.setValue(feature.properties.direction);
+        setSelectedRadioValue('type', feature.properties.type);
+        ts.setValue(feature.properties.icon);
+        renderMarkers();
         
     }
 
     function deselectFeature() {
         selectedId = null;
         document.getElementById('point-properties').style.display = 'none';
+        renderMarkers();
     }
 
     // save form fields back into geojsonData & update layer
@@ -293,14 +337,15 @@ function initEditor(config) {
         const f = geojsonData.features.find(f => f.id === selectedId);
         if (!f) return;
         f.properties.name = document.getElementById('point-name').value;
-        f.properties.direction = document.getElementById('point-direction').value;
+        f.properties.icon = document.getElementById('point-direction').value;
         f.properties.hidden = document.getElementById('point-hidden').checked;
-        f.properties.markerIcon = document.getElementById('point-icon').value;
+        f.properties.type      = getSelectedRadioValue('type');
         map.getSource('geojson').setData(geojsonData);
+        renderMarkers();
     }
 
     // instant-update on input
-    ['point-name', 'point-direction', 'point-icon'].forEach(id =>
+    ['point-name', 'point-direction'].forEach(id =>
         document.getElementById(id).addEventListener('input', saveFromForm)
     );
     document.getElementById('point-hidden')
@@ -336,17 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
             option: function(data, escape) {
                 // data.text ist der sichtbare Text, data.$option ist das <option>-Element
                 const icon = data.$option.getAttribute('data-icon');
-                return `<div class="d-flex align-items-center">
-                        <i class="${escape(icon)} me-2"></i>
-                        <span>${escape(data.text)}</span>
-                    </div>`;
+                return `<div class="d-flex align-items-center"><span class="material-symbols-outlined">${escape(icon)}</span> ${escape(data.text)}</div>`;
             },
             item: function(data, escape) {
                 const icon = data.$option.getAttribute('data-icon');
-                return `<div class="d-flex align-items-center">
-                        <i class="${escape(icon)} me-1"></i>
-                        <span>${escape(data.text)}</span>
-                    </div>`;
+                return `<div class="d-flex align-items-center"><span class="material-symbols-outlined">${escape(icon)}</span> ${escape(data.text)}</div>`;
             }
         }
     });

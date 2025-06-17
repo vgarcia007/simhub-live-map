@@ -16,7 +16,8 @@ document.getElementById("save").addEventListener("click", (event) => {
 
 function getConfig() {
 
-    const PROXY_TARGET_URL = document.getElementById("PROXY_TARGET_URL").value;
+    const SimHubIP = document.getElementById("SimHubIP").value;
+    const SimHubPort = document.getElementById("SimHubPort").value;
     const mapAPIurl = document.getElementById("mapAPIurl").value;
     const mapboxToken = document.getElementById("mapboxToken").value;
     const mapboxStyle = document.getElementById("mapboxStyle").value;
@@ -25,7 +26,8 @@ function getConfig() {
     const mapInterfaceScale = document.getElementById("mapInterfaceScale").value;
 
     new_conf = {
-        "PROXY_TARGET_URL": PROXY_TARGET_URL,
+        "SimHubIP": SimHubIP,
+        "SimHubPort": SimHubPort,
         "mapAPIurl": mapAPIurl,
         "mapboxToken": mapboxToken,
         "mapboxStyle": mapboxStyle,
