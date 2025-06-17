@@ -1,0 +1,379 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "id": 0,
+      "properties": {
+        "name": "Main Straight",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.56031922966355,
+          -33.43957409771263
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 1,
+      "properties": {
+        "name": "Hell Corner",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.55717087197218,
+          -33.4391333208934
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "properties": {
+        "name": "Mountain Straight",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.55555925189333,
+          -33.43952013345557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "properties": {
+        "name": "Griffins Bend",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.5539464159197,
+          -33.44735875156637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "properties": {
+        "name": "Corner 3",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.55094627251935,
+          -33.448339727697395
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "properties": {
+        "name": "Corner 4",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.54925380193492,
+          -33.44788999121029
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "properties": {
+        "name": "Corner 5",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.54886304345075,
+          -33.44858430801559
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "properties": {
+        "name": "Frog Hollow",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.54948289865797,
+          -33.449721545868826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 8,
+      "properties": {
+        "name": "Sulman Park",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.54858748219607,
+          -33.451081403827956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 9,
+      "properties": {
+        "name": "Mc Phillamy Park",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.5469950226671,
+          -33.45238790677351
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 10,
+      "properties": {
+        "name": "Brocks Skyline",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.5476880937381,
+          -33.45480500070667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 11,
+      "properties": {
+        "name": "The Esses",
+        "direction": "route",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.55109800024707,
+          -33.45573018487415
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 12,
+      "properties": {
+        "name": "Corner 16",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.5543554333853,
+          -33.45675943993434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 13,
+      "properties": {
+        "name": "Corner 18",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.5554782090543,
+          -33.457418620705
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 14,
+      "properties": {
+        "name": "Forrests Elbow",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.55615741902795,
+          -33.45792745857368
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 15,
+      "properties": {
+        "name": "Corner 19",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.55761286897092,
+          -33.457418620705
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 16,
+      "properties": {
+        "name": "Conrod Straight",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.55811188037939,
+          -33.456100254153654
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 17,
+      "properties": {
+        "name": "The Chase",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.559636848783,
+          -33.447858125558255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 18,
+      "properties": {
+        "name": "The Chase",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.56067645588558,
+          -33.44541770617073
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 19,
+      "properties": {
+        "name": "The Chase",
+        "direction": "right",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.56082893159424,
+          -33.44441144690525
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 20,
+      "properties": {
+        "name": "Conrods Straight",
+        "direction": "straight",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.56044081155835,
+          -33.44333577490417
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 21,
+      "properties": {
+        "name": "Murrays Corner",
+        "direction": "left",
+        "markerIcon": "",
+        "hidden": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          149.56095368439424,
+          -33.440802694363455
+        ]
+      }
+    }
+  ],
+  "type": "FeatureCollection"
+}

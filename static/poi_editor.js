@@ -336,17 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
             option: function(data, escape) {
                 // data.text ist der sichtbare Text, data.$option ist das <option>-Element
                 const icon = data.$option.getAttribute('data-icon');
-                return `<div class="d-flex align-items-center">
-                        <i class="${escape(icon)} me-2"></i>
-                        <span>${escape(data.text)}</span>
-                    </div>`;
+                return `<div class="d-flex align-items-center"><span class="material-symbols-outlined">${escape(icon)}</span>  ${escape(data.text)}</div>`;
             },
             item: function(data, escape) {
                 const icon = data.$option.getAttribute('data-icon');
-                return `<div class="d-flex align-items-center">
-                        <i class="${escape(icon)} me-1"></i>
-                        <span>${escape(data.text)}</span>
-                    </div>`;
+                return `<div class="d-flex align-items-center"><span class="material-symbols-outlined">${escape(icon)}</span>  ${escape(data.text)}</div>`;
             }
         }
     });

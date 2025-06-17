@@ -1,0 +1,29 @@
+{
+    "left": "turn_left",
+    "turn_slight_left": "turn_slight_left",
+    "u_turn_left": "u_turn_left",
+    "fork_left": "fork_left",
+    "turn_sharp_left": "turn_sharp_left",
+    "roundabout_left": "roundabout_left",
+    "ramp_left": "ramp_left",
+
+    "right": "turn_right",
+    "turn_slight_right": "turn_slight_right",
+    "u_turn_right": "u_turn_right",
+    "fork_right": "fork_right",
+    "turn_sharp_right": "turn_sharp_right",
+    "roundabout_right": "roundabout_right",
+    "ramp_right": "ramp_right", 
+
+    "route": "conversion_path",
+    "landmark": "local_see",
+    "straight": "straight",
+    "road": "road",
+    "unpaved_road": "unpaved_road",
+
+    "sports_score": "sports_score",
+    "danger": "warning",
+    "landscape": "landscape",
+    "altitude": "altitude",
+    "speed_camera": "speed_camera"
+}

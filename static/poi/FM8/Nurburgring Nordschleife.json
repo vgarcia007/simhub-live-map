@@ -27,7 +27,7 @@
       },
       "id": 1,
       "properties": {
-        "direction": "right",
+        "direction": "turn_slight_right",
         "hidden": true,
         "markerIcon": "undefined",
         "name": "Hatzenbogen"
@@ -44,7 +44,7 @@
       },
       "id": 2,
       "properties": {
-        "direction": "left",
+        "direction": "turn_slight_left",
         "hidden": true,
         "markerIcon": "undefined",
         "name": "Hatzenbach"
@@ -78,7 +78,7 @@
       },
       "id": 7,
       "properties": {
-        "direction": "right",
+        "direction": "turn_slight_right",
         "hidden": true,
         "markerIcon": "undefined",
         "name": "Quiddelbacher H\u00f6he"
@@ -146,7 +146,7 @@
       },
       "id": 12,
       "properties": {
-        "direction": "left",
+        "direction": "turn_slight_left",
         "hidden": true,
         "markerIcon": "undefined",
         "name": "Schwedenkreuz"
@@ -742,9 +742,9 @@
       "id": 55,
       "properties": {
         "direction": "danger",
-        "name": "Sprungh\u00fcgel",
         "hidden": true,
-        "markerIcon": "undefined"
+        "markerIcon": "undefined",
+        "name": "Sprungh\u00fcgel"
       },
       "type": "Feature"
     },
@@ -1047,7 +1047,7 @@
       },
       "id": 73,
       "properties": {
-        "direction": "left",
+        "direction": "turn_slight_left",
         "hidden": true,
         "markerIcon": "",
         "name": "Flugplatz"
@@ -1174,21 +1174,21 @@
       "type": "Feature"
     },
     {
-      "type": "Feature",
-      "id": 82,
-      "properties": {
-        "name": "Br\u00fcnchen",
-        "direction": "right",
-        "markerIcon": "",
-        "hidden": true
-      },
       "geometry": {
-        "type": "Point",
         "coordinates": [
           7.005485852166231,
           50.36969732538407
-        ]
-      }
+        ],
+        "type": "Point"
+      },
+      "id": 82,
+      "properties": {
+        "direction": "right",
+        "hidden": true,
+        "markerIcon": "",
+        "name": "Br\u00fcnchen"
+      },
+      "type": "Feature"
     }
   ],
   "type": "FeatureCollection"

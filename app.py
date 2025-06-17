@@ -93,7 +93,13 @@ def load_config():
         print("No user config found, using default config.")
 
     # Update the proxy URL
-    PROXY_TARGET_URL = config.get('PROXY_TARGET_URL', 'http://192.168.188.102:8888/api/getgamedata')
+    SimHubIP = config.get('SimHubIP', 'localhost')
+    SimHubPort = config.get('SimHubPort', '8888')
+    try:
+        PROXY_TARGET_URL = f"http://{SimHubIP}:{SimHubPort}/api/getgamedata"
+        requests.utils.urlparse(PROXY_TARGET_URL)  # Validate URL format
+    except Exception as e:
+        raise ValueError(f"Invalid PROXY_TARGET_URL: {PROXY_TARGET_URL}. Error: {e}")
     return config
 
 # Initialize configuration
@@ -156,6 +162,17 @@ def get_config_user():
 def get_config():
     return jsonify(config)
 
+@app.route('/icons')
+def icons():
+    ##load icons from icons.json
+    try:
+        with open('icons.json', 'r') as f:
+            icons = json.load(f)
+    except FileNotFoundError:
+        return {'error': 'Icons file not found'}, 404
+    except json.JSONDecodeError:
+        return {'error': 'Error decoding icons file'}, 500
+    return jsonify(icons)
 
 @app.route('/refpoints/<game>/<track>')
 def get_refpoint(game, track):
@@ -322,7 +339,11 @@ def fakedata():
 def poi(game, trackcode):
     if not user_config_active:
         return redirect(url_for('get_config_user'))
-    return render_template('poi_editor.html', config=config, game=game, trackcode=trackcode)
+    
+    with open('icons.json', 'r') as f:
+        icons = json.load(f)
+    print(icons)
+    return render_template('poi_editor.html', config=config, game=game, trackcode=trackcode, directions=icons)
 
 @app.route('/poi-editor/<game>/<trackcode>', methods=['GET', 'POST'])
 def poi_editor(game, trackcode):

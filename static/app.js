@@ -11,23 +11,22 @@ fetch('/config')
     .catch(err => console.error("Error loading config:", err));
 
 
+let directions = null;
+
+fetch('/icons')
+    .then(response => response.json())
+    .then(icons => {
+        directions = icons;
+    })
+    .catch(err => console.error("Error loading icons:", err));
+
+
 let index;
 let points;
 let poiInfoBox = document.getElementById('poi-info-box');
 let poiInfo = document.getElementById('poiInfo');
 let poiInfoIcon = document.getElementById('poiInfoIcon');
 let goodGeojson = null;
-
-
-let directions = {
-    'left': 'fa-solid fa-diamond-turn-right fa-flip-horizontal',
-    'right': 'fa-solid fa-diamond-turn-right',
-    'route': 'fa-solid fa-route',
-    'landmark': 'fa-solid fa-landmark',
-    'straight': 'fa-solid fa-road',
-    'danger': 'fa-solid fa-road-circle-exclamation',
-
-}
 
 let lastPoi = null;
 let gameToLatLng = null;
@@ -643,7 +642,7 @@ async function fetchGameData(config) {
 
                 } else {
                     let direction = nearest.properties.direction;
-                    let html = '<i class="' + directions[direction] + ' fa-3x poi-pin"></i>'
+                    let html = '<span class="material-symbols-outlined">' + directions[direction] + '</span>'
                     poiInfoIcon.innerHTML = html;
                     poiInfo.innerHTML = nearest.properties.name;
                     lastPoi = nearest;
