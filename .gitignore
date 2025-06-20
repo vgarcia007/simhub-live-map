@@ -3,3 +3,5 @@
 __pycache__/
 config-user.json
 static/track_transforms.json
+/static/track_transforms.json
+nfsh.log
