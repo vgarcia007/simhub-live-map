@@ -6,6 +6,7 @@ from generate_transforms import process_tracks
 from waitress import serve
 import logging
 import os
+import time
 
 def minimize_json(data):
     """
@@ -113,7 +114,8 @@ load_config()
 def index():
     if not user_config_active:
         return redirect(url_for('get_config_user'))
-    return render_template('index.html', config=config)
+    current_time = int(time.time())
+    return render_template('index.html', config=config, timestamp=current_time)
 
 
 @app.route('/settings')

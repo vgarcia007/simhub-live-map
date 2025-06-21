@@ -23,6 +23,57 @@
         }
       ]
     },
+    "Nurburgring Endurance": {
+      "yaw": 0,
+      "ref_points": [
+        {
+          "CoordinatesX": 845.2489013671875,
+          "CoordinatesY": -1175.4990234375,
+          "lat": 50.338832,
+          "lng": 6.94901
+        },
+        {
+          "CoordinatesX": -1072.189697265625,
+          "CoordinatesY": -3434.1201171875,
+          "lat": 50.358592,
+          "lng": 6.921315
+        },
+        {
+          "CoordinatesX": 3568.911376953125,
+          "CoordinatesY": -4827.6171875,
+          "lat": 50.372251,
+          "lng": 6.985946
+        },
+        {
+          "notes": "",
+          "CoordinatesX": 168.28836059570312,
+          "CoordinatesY": 91.4364013671875,
+          "lat": 50.327061,
+          "lng": 6.939955
+        },
+        {
+          "notes": "",
+          "CoordinatesX": -115.9037094116211,
+          "CoordinatesY": 315.9631652832031,
+          "lat": 50.324932,
+          "lng": 6.936022
+        },
+        {
+          "notes": "",
+          "CoordinatesX": 629.5546875,
+          "CoordinatesY": -957.2963256835938,
+          "lat": 50.336752,
+          "lng": 6.94616
+        },
+        {
+          "notes": "",
+          "CoordinatesX": 766.1206665039062,
+          "CoordinatesY": -1235.92431640625,
+          "lat": 50.339286,
+          "lng": 6.947941
+        }
+      ]
+    },
     "Brands Hatch GP": {
       "yaw": 150,
       "ref_points": [
@@ -46,6 +97,126 @@
           "CoordinatesY": -144.44879150390625,
           "lat": 51.355359,
           "lng": 0.262491
+        }
+      ]
+    },
+    "Nurburgring Sprint": {
+      "yaw": 0,
+      "ref_points": [
+        {
+          "notes": "start pos 1",
+          "CoordinatesX": 572.8195190429688,
+          "CoordinatesY": -664.1678466796875,
+          "lat": 50.33401530692828,
+          "lng": 6.945369895876288
+        },
+        {
+          "notes": "first corner",
+          "CoordinatesX": 263.39471435546875,
+          "CoordinatesY": -425.77777099609375,
+          "lat": 50.331797685791074,
+          "lng": 6.941083065490013
+        },
+        {
+          "notes": "t\u00fcv sign 1",
+          "CoordinatesX": 134.9546356201172,
+          "CoordinatesY": -246.45098876953125,
+          "lat": 50.33004777961994,
+          "lng": 6.939332899505663
+        },
+        {
+          "notes": "",
+          "CoordinatesX": 60.15654373168945,
+          "CoordinatesY": -154.1137237548828,
+          "lat": 50.329281812477355,
+          "lng": 6.938283474565108
+        },
+        {
+          "notes": "",
+          "CoordinatesX": 619.2392578125,
+          "CoordinatesY": -959.5489501953125,
+          "lat": 50.33676432773346,
+          "lng": 6.945976263791719
+        },
+        {
+          "notes": "bmw sin finish straight",
+          "CoordinatesX": 699.0149536132812,
+          "CoordinatesY": -790.9203491210938,
+          "lat": 50.33524107720063,
+          "lng": 6.947159026816279
+        }
+      ]
+    },
+    "Nurburgring GP": {
+      "yaw": 0,
+      "ref_points": [
+        {
+          "notes": "start pos 1",
+          "CoordinatesX": 572.8195190429688,
+          "CoordinatesY": -664.1678466796875,
+          "lat": 50.33401530692828,
+          "lng": 6.945369895876288
+        },
+        {
+          "notes": "first corner",
+          "CoordinatesX": 263.39471435546875,
+          "CoordinatesY": -425.77777099609375,
+          "lat": 50.331797685791074,
+          "lng": 6.941083065490013
+        },
+        {
+          "notes": "t\u00fcv sign 1",
+          "CoordinatesX": 134.9546356201172,
+          "CoordinatesY": -246.45098876953125,
+          "lat": 50.33004777961994,
+          "lng": 6.939332899505663
+        },
+        {
+          "notes": "",
+          "CoordinatesX": 60.15654373168945,
+          "CoordinatesY": -154.1137237548828,
+          "lat": 50.329281812477355,
+          "lng": 6.938283474565108
+        },
+        {
+          "notes": "",
+          "CoordinatesX": 619.2392578125,
+          "CoordinatesY": -959.5489501953125,
+          "lat": 50.33676432773346,
+          "lng": 6.945976263791719
+        },
+        {
+          "notes": "bmw sin finish straight",
+          "CoordinatesX": 699.0149536132812,
+          "CoordinatesY": -790.9203491210938,
+          "lat": 50.33524107720063,
+          "lng": 6.947159026816279
+        }
+      ]
+    },
+    "Spa Francorchamps Full": {
+      "yaw": 140,
+      "ref_points": [
+        {
+          "notes": "start",
+          "CoordinatesX": -239.5006866455078,
+          "CoordinatesY": 783.0321655273438,
+          "lat": 50.444246369442226,
+          "lng": 5.965003638346901
+        },
+        {
+          "notes": "",
+          "CoordinatesX": -410.2521057128906,
+          "CoordinatesY": 603.9779663085938,
+          "lat": 50.44398521188568,
+          "lng": 5.96848997668125
+        },
+        {
+          "notes": "",
+          "CoordinatesX": -3.300978660583496,
+          "CoordinatesY": 329.6976318359375,
+          "lat": 50.4397665481954,
+          "lng": 5.966614928886675
         }
       ]
     }

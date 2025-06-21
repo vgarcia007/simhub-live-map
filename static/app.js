@@ -641,12 +641,13 @@ async function fetchGameData(config) {
 
             // Transform-Cache
             if (!transformCache[gameName]?.[trackCode]) {
-                const tfRes = await fetch("/static/track_transforms.json");
+                const tfRes = await fetch("/static/track_transforms.json", { cache: "no-store" });
                 const tfJson = await tfRes.json();
                 transformCache[gameName] = transformCache[gameName] || {};
                 transformCache[gameName][trackCode] = tfJson[gameName]?.[trackCode] || null;
             }
             const coeffs = transformCache[gameName][trackCode];
+            console.log("Transform Coefficients:", coeffs);
 
             if (!coeffs) {
                 // Missing Transform
