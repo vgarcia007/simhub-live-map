@@ -23,6 +23,10 @@ def minimize_json(data):
         small_data['IsGameInRace'] = data['IsGameInRace']
     except KeyError:
         small_data['IsGameInRace'] = False
+    try:
+        small_data['GameRunning'] = data['GameRunning']
+    except KeyError:
+        small_data['GameRunning'] = False
     if data['NewData'] is not None:
         try:
             small_data['NewData']['TrackName'] = data['NewData']['TrackName']
@@ -46,6 +50,18 @@ def minimize_json(data):
             pass
         try:
             small_data['NewData']['FeedbackData']['OrientationYaw'] = data['NewData']['FeedbackData']['OrientationYaw']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['CarCoordinates'] = data['NewData']['CarCoordinates']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['OrientationYaw'] = data['NewData']['OrientationYaw']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['SpeedKmh'] = data['NewData']['SpeedKmh']
         except KeyError:
             pass
         try:
@@ -117,6 +133,20 @@ def index():
     current_time = int(time.time())
     return render_template('index.html', config=config, timestamp=current_time)
 
+
+@app.route('/horizon')
+def horizon():
+    if not user_config_active:
+        return redirect(url_for('get_config_user'))
+    current_time = int(time.time())
+    return render_template('horizon.html', config=config, timestamp=current_time)
+
+@app.route('/horizon-gl')
+def horizon_gl():
+    if not user_config_active:
+        return redirect(url_for('get_config_user'))
+    current_time = int(time.time())
+    return render_template('horizon-gl.html', config=config, timestamp=current_time)
 
 @app.route('/settings')
 def settings():
@@ -324,6 +354,16 @@ def proxy():
     except Exception as e:
         return {'error': str(e)}, 500
 
+# Route to handle CORS requests
+@app.route('/proxy/unminimized')
+def proxy_unminimized():
+    try:
+        print(f"Fetching data from {PROXY_TARGET_URL}")
+        response = requests.get(PROXY_TARGET_URL)
+        data = response.json()
+        return jsonify(data)
+    except Exception as e:
+        return {'error': str(e)}, 500
 
 # Route to serve fake game data
 @app.route('/fakedata')
