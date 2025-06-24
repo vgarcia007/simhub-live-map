@@ -20,20 +20,20 @@ var suspendAutoMove = function(evt) {
     }
 };
 
-$("#centerButton").click(function() {
-    $("#centerButton").hide();
-    suspendTimer = 0;
-});
+// $("#centerButton").click(function() {
+//     $("#centerButton").hide();
+//     suspendTimer = 0;
+// });
 
-$("#menuButton").click(function() {
-    document.getElementById("maps").classList.remove("show");
-    document.getElementById("menu").classList.toggle("show");
-});
+// $("#menuButton").click(function() {
+//     document.getElementById("maps").classList.remove("show");
+//     document.getElementById("menu").classList.toggle("show");
+// });
 
-$("#mapButton").click(function() {
-    document.getElementById("menu").classList.remove("show");
-    document.getElementById("maps").classList.toggle("show");
-});
+// $("#mapButton").click(function() {
+//     document.getElementById("menu").classList.remove("show");
+//     document.getElementById("maps").classList.toggle("show");
+// });
 
 var suspendAutoZoom = function(evt) {
     if (g_map != null) {
@@ -299,9 +299,9 @@ function buildMap(TileMapInfo, mapsource) {
     const closeButton = document.querySelector("dialog button");
     const dialogContent = document.querySelector("dialog p");
 
-    closeButton.addEventListener("click", () => {
-        document.getElementById("dialog-modal").close();
-    });
+    //closeButton.addEventListener("click", () => {
+    //    document.getElementById("dialog-modal").close();
+    //});
     g_map.on('click', function(evt) {
         const feature = g_map.forEachFeatureAtPixel(evt.pixel, function(feature) {
             console.log(feature.values_['name']);

@@ -3,10 +3,43 @@ import requests
 from flask_cors import CORS
 import json
 from generate_transforms import process_tracks
+from update_addons import update_addons
+
 from waitress import serve
 import logging
 import os
 import time
+import requests
+
+
+
+def load_config():
+    global config, user_config_active, PROXY_TARGET_URL
+    
+    # Load configuration from config.json
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+
+    # Check if we have a config-user.json file
+    try:
+        with open('config-user.json', 'r') as f:
+            user_config = json.load(f)
+            config.update(user_config)
+            user_config_active = True
+    except FileNotFoundError:
+        user_config_active = False
+        print("No user config found, using default config.")
+
+    # Update the proxy URL
+    SimHubIP = config.get('SimHubIP', 'localhost')
+    SimHubPort = config.get('SimHubPort', '8888')
+    try:
+        PROXY_TARGET_URL = f"http://{SimHubIP}:{SimHubPort}/api/getgamedata"
+        requests.utils.urlparse(PROXY_TARGET_URL)  # Validate URL format
+    except Exception as e:
+        raise ValueError(f"Invalid PROXY_TARGET_URL: {PROXY_TARGET_URL}. Error: {e}")
+    return config
+
 
 def minimize_json(data):
     """
@@ -81,43 +114,12 @@ def minimize_json(data):
     
     return small_data
 
-
 process_tracks("static/track_reference_points.json", "static/track_transforms.json")
-
+update_addons("https://garcias-garage.de/files-other/nfsh-addons/version.json", "static/addons")
 
 app = Flask(__name__)
 CORS(app)  
 
-
-
-
-# Create a function to load configuration
-def load_config():
-    global config, user_config_active, PROXY_TARGET_URL
-    
-    # Load configuration from config.json
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-
-    # Check if we have a config-user.json file
-    try:
-        with open('config-user.json', 'r') as f:
-            user_config = json.load(f)
-            config.update(user_config)
-            user_config_active = True
-    except FileNotFoundError:
-        user_config_active = False
-        print("No user config found, using default config.")
-
-    # Update the proxy URL
-    SimHubIP = config.get('SimHubIP', 'localhost')
-    SimHubPort = config.get('SimHubPort', '8888')
-    try:
-        PROXY_TARGET_URL = f"http://{SimHubIP}:{SimHubPort}/api/getgamedata"
-        requests.utils.urlparse(PROXY_TARGET_URL)  # Validate URL format
-    except Exception as e:
-        raise ValueError(f"Invalid PROXY_TARGET_URL: {PROXY_TARGET_URL}. Error: {e}")
-    return config
 
 # Initialize configuration
 config = {}
@@ -140,6 +142,14 @@ def horizon():
         return redirect(url_for('get_config_user'))
     current_time = int(time.time())
     return render_template('horizon.html', config=config, timestamp=current_time)
+
+
+@app.route('/horizon2')
+def horizon2():
+    if not user_config_active:
+        return redirect(url_for('get_config_user'))
+    current_time = int(time.time())
+    return render_template('horizon2.html', config=config, timestamp=current_time)
 
 
 @app.route('/settings')

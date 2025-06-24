@@ -26,7 +26,7 @@ def process_tracks(input_file, output_file):
 
     with open(output_file, 'w') as f:
         json.dump(result, f, indent=2)
-        print(f"✅ Transformations saved to {output_file}")
+        print(f"🗺️ ✅ Transformations saved to {output_file}")
 
 if __name__ == "__main__":
     process_tracks("static/track_reference_points.json", "static/track_transforms.json")
