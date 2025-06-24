@@ -141,12 +141,6 @@ def horizon():
     current_time = int(time.time())
     return render_template('horizon.html', config=config, timestamp=current_time)
 
-@app.route('/horizon-gl')
-def horizon_gl():
-    if not user_config_active:
-        return redirect(url_for('get_config_user'))
-    current_time = int(time.time())
-    return render_template('horizon-gl.html', config=config, timestamp=current_time)
 
 @app.route('/settings')
 def settings():

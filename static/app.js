@@ -2,13 +2,12 @@ fetch('/config')
     .then(response => response.json())
     .then(config => {
         mapboxgl.accessToken = config.mapboxToken;
-        initMap(config);
-        InfoBoxShowHide("show");
-        //InfoBoxSetTitle("Info");
-        InfoBoxEntryClear();
-        fetchGameData(config);
+        switch_logic(config);
+
     })
     .catch(err => console.error("Error loading config:", err));
+
+
 
 
 let directions = null;
@@ -54,6 +53,28 @@ let infobox_warning_Error_id = null;
 let lastPos = null;
 let animating = false;
 
+
+async function switch_logic(config) {
+
+    const res = await fetch(config.mapAPIurl);
+    console.log("API Response Status:", res.status); // Debugging
+    const data = await res.json();
+    console.log("API Response Data:", data); // Debugging
+
+    if (data.GameName === 'FH4' || data.GameName === 'FH5') {
+        console.log("Switching logic for Forza Horizon");
+        // jum to other route /horizon
+        window.location.href = "/horizon";
+    }
+    else {
+        console.log("Default logic for other games");
+        initMap(config);
+        InfoBoxShowHide("show");
+        //InfoBoxSetTitle("Info");
+        InfoBoxEntryClear();
+        fetchGameData(config);
+    }
+}
 
 /**
  * Animates a map marker smoothly from a starting position to a target position over a specified duration.
@@ -567,6 +588,7 @@ document.getElementById('followButton').addEventListener('click', () => {
  * @throws {Error} Throws an error if the transformation data is missing or if the API format is invalid.
  */
 async function fetchGameData(config) {
+    var exit_loop = false;
     if (fetchGameData.fetchInProgress) return;
     fetchGameData.fetchInProgress = true;
 
@@ -604,6 +626,13 @@ async function fetchGameData(config) {
             //goodGeojson = null;
             lastPos = null;
 
+            return;
+        }
+
+        if (data.GameName === 'FH4' || data.GameName === 'FH5') {
+            // Special handling for FH4 and FH5
+            exit_loop = true; // exit the loop
+            console.log("Switching logic for FH4 or FH5 from within fetchGameData");
             return;
         }
 
@@ -808,7 +837,13 @@ async function fetchGameData(config) {
 
     } finally {
         fetchGameData.fetchInProgress = false;
-        setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
+        if (exit_loop) {
+            console.log("Exiting fetchGameData loop for FH4 or FH5");
+            switch_logic(config);
+        } else {
+            setTimeout(() => fetchGameData(config), config.fetchIntervalMs);
+        }
+
     }
 }
 
@@ -901,7 +936,7 @@ function findNearestMarker(lat, lon, maxPoiDistance) {
     if (!nearest) {
         return null;
     }
-    console.log("minDist:", minDist, "maxPoiDistance:", maxPoiDistance);
+    //console.log("minDist:", minDist, "maxPoiDistance:", maxPoiDistance);
     if (minDist > maxPoiDistance) {
         return null;
     }
