@@ -35,16 +35,13 @@
             </a>    
         </div>
         <div class="nib-entries collapse show" id="nib-entries">
-            <div class="destination-entry">
-                <div class="entry-icon"><i class="fa-solid fa-house"></i></div>
-                <div class="entry-text">
-                    <div class="entry-name link-dark">Loading</div>
-                    <div class="entry-info">...</div>
-                </div>
-            </div>
         </div>
     </div>
     
+    <button class="btn btn-dark" id="followButton">
+        <i class="fa-solid fa-location-crosshairs fa-2x fa-fw"></i>
+    </button>
+
     <button class="btn btn-dark" id="followButton">
         <i class="fa-solid fa-location-crosshairs fa-2x fa-fw"></i>
     </button>
@@ -107,7 +104,7 @@
         </a>
         </div>
     </div>
-	<button id="centerButton" class="centerButton" style="display:none"><div><img src="/static/marker-new.png" height="40px" /></div><div style="margin-bottom: 4px;">Center</div></button>
+	
     <button id="downloadMapProress" class="centerButton" style="display:none"><div><img src="/static/marker-new.png" height="40px" /></div><div id="progressValue" style="margin-bottom: 4px;">0%</div></button>
 
     <script src="https://cdn.jsdelivr.net/npm/ol@v10.6.1/dist/ol.js"></script>

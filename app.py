@@ -141,7 +141,7 @@ def horizon():
     if not user_config_active:
         return redirect(url_for('get_config_user'))
     current_time = int(time.time())
-    return render_template('horizon.html', config=config, timestamp=current_time)
+    return render_template('horizon2.html', config=config, timestamp=current_time)
 
 
 @app.route('/horizon2')

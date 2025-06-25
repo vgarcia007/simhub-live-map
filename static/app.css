@@ -115,6 +115,16 @@ html, body {
   padding: 16px 32px;
 }
 
+.nib-entries {
+  overflow-y: scroll;
+  max-height: calc(100vh - 250px);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.nib-entries::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 .entry-icon {
   font-size: var(--font-size-entry-icon);
   color: #444;
@@ -199,4 +209,8 @@ html, body {
   display: none;
   align-items: center;
   justify-content: center;
+}
+
+.horizon-layer-toggle{
+  cursor: pointer;
 }

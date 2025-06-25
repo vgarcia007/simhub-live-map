@@ -1,9 +1,11 @@
 let mapAPIurl;
+let fetchIntervalMs;
 var g_map = null;
 var refreshInterval = 0;
 var suspendTimer = 0;
 var suspendZoomTimer = 0;
 var menu_items = [];
+var menu_icons = [];
 var sources = [];
 var sourceref = {};
 var layers = [];
@@ -15,15 +17,19 @@ var suspendAutoMove = function(evt) {
     if (g_map != null) {
         clearTimeout(suspendTimer);
         suspendTimer = 1;
-        $("#centerButton").show();
+        $("#followButton").show();
         g_map.getView().setRotation(0);
     }
 };
 
-// $("#centerButton").click(function() {
-//     $("#centerButton").hide();
-//     suspendTimer = 0;
-// });
+let nav_info_box = document.getElementById("nav-info-box");
+
+let nav_setting_box = document.getElementById("nav-setting-box");
+
+$("#followButton").click(function() {
+     $("#followButton").hide();
+     suspendTimer = 0;
+ });
 
 // $("#menuButton").click(function() {
 //     document.getElementById("maps").classList.remove("show");
@@ -50,29 +56,41 @@ $("#map").on('drag', suspendAutoMove);
 $("#map").on('wheel', suspendAutoZoom);
 
 function menuClick(name) {
+    console.log("Menu click: " + name);
     if (name == "hideall") {
-        for (layer of layers) {
-            layer.setVisible(false);
-            document.getElementById(layer.get("name")).classList.add("dropdown-content-deselect");
-            console.log(layer.get("name"));
+        for (let i = 0; i < layers.length; i++) {
+            if (menu_items.includes(layers[i].get("name"))) {
+                layers[i].setVisible(false);
+                let el = document.getElementById(layers[i].get("name"));
+                if (el) el.classList.add("dropdown-content-deselect");
+            }
         }
+        return;
     }
     if (name == "showall") {
-        for (layer of layers) {
-            layer.setVisible(true);
-            document.getElementById(layer.get("name")).classList.remove("dropdown-content-deselect");
+        for (let i = 0; i < layers.length; i++) {
+            if (menu_items.includes(layers[i].get("name"))) {
+                layers[i].setVisible(true);
+                let el = document.getElementById(layers[i].get("name"));
+                if (el) el.classList.remove("dropdown-content-deselect");
+            }
         }
+        return;
     }
-    for (layer of layers) {
+    for (layer of layers){
+        console.log("Checking layer: " + layer.get("name"));
         var lname = layer.get("name");
-        if (lname == name) {
-            if (layer.getVisible()) {
+        if (lname == name){
+            console.log("Toggling layer: " + lname);
+            console.log("Layer visibility before toggle: " + layer.getVisible());
+            if (layer.getVisible()){
                 layer.setVisible(false);
                 document.getElementById(name).classList.add("dropdown-content-deselect");
             } else {
                 layer.setVisible(true);
                 document.getElementById(name).classList.remove("dropdown-content-deselect");
             }
+            console.log("Layer visibility after toggle: " + layer.getVisible());
         }
     }
 }
@@ -89,7 +107,7 @@ function getLang() {
 }
 
 function GetAheadPosition(map, rotation, speed, coordinates) {
-    console.log("Calculating ahead position with rotation: " + rotation + ", speed: " + speed + ", coordinates: " + JSON.stringify(coordinates));
+    //console.log("Calculating ahead position with rotation: " + rotation + ", speed: " + speed + ", coordinates: " + JSON.stringify(coordinates));
     var aheadDistance = speed * 5;
     var height = map.getSize()[1];
     var maxAheadDistance = height / 3.0 * map.getView().getResolution();
@@ -104,7 +122,7 @@ function GetAheadPosition(map, rotation, speed, coordinates) {
 }
 
 function buildMap(TileMapInfo, mapsource) {
-    console.log("Building map with info: " + JSON.stringify(TileMapInfo));
+    //console.log("Building map with info: " + JSON.stringify(TileMapInfo));
     var tsProjection = new ol.proj.Projection({ // https://stackoverflow.com/questions/47612523/how-to-configure-openlayers-for-a-flat-11-pixel-coordinate-system
         code: 'ZOOMIFY',
         units: 'pixels',
@@ -124,7 +142,7 @@ function buildMap(TileMapInfo, mapsource) {
         async: false
     });
     for (map of TileMapInfo.relatedmaps) {
-        console.log("Checking if related map exists: " + map);
+        //console.log("Checking if related map exists: " + map);
         existingmap = false;
         $.getJSON("/static/addons/tsmap-" + map, function(mapexists) {
             if (mapexists) {
@@ -146,8 +164,8 @@ function buildMap(TileMapInfo, mapsource) {
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         rotateWithView: false,
-        src: mapsource + '/Overlays/playericon.png',
-        scale: 1.0,
+        src: '/static/marker-new.png',
+        scale: 0.2,
         snapToPixel: false
     });
 
@@ -179,49 +197,99 @@ function buildMap(TileMapInfo, mapsource) {
 
     var styleCache = [];
 
-    //read all the layer files and add them as layers.
-    for (i = 0; i < TileMapInfo.layerfiles.length; i++) {
-        x = sources.length;
+
+    // Zähler für asynchrones Layer-Laden
+    let layersToLoad = TileMapInfo.layerfiles.length;
+    let layersLoaded = 0;
+
+    // Layerdaten und Icons unabhängig laden
+    menu_items = [];
+    menu_icons = [];
+
+    function buildMenu() {
+        let z = 0;
+        for (item of menu_items) {
+            var image = mapsource + "/Overlays/" + menu_icons[z];
+            console.log("Loading icon for layer " + item + ": " + image);
+            var entry = `
+                <div class="destination-entry horizon-layer-toggle" id="${item}" onclick="menuClick('${item}')">
+                    <div class="entry-icon"><img src="${image}"  height="50px" width="50px"></div>
+                    <div class="entry-text">
+                        <div class="entry-name link-dark">${item}</div>
+                    </div>
+                </div>
+            `;
+
+            $('#nib-entries').append(entry);
+            z++;
+
+        }
+        ht = 90;
+        ct = 0;
+        column = 0;
+        columncnt = Math.ceil((RelatedMaps.length) / 10);
+        vheight = Math.ceil((RelatedMaps.length) / columncnt);
+        $('.mapcontainer').css('-moz-column-count', columncnt);
+        $('.mapcontainer').css('-webkit-column-count', columncnt);
+        $('.mapcontainer').css('column-count', columncnt);
+        for (map of RelatedMaps) {
+            ct += 1;
+            if (ct > 10) {
+                ht = 90;
+                ct = 1;
+                column += 1;
+            }
+            $('#mapcontainer').append('<input type="button" id="' + map + '" value="' + map + '" class="dropdown-content" onclick = "mapClick(this.value)"></input>');
+            ht += 40;
+        }
+        if (RelatedMaps.length == 0) {
+            $("#mapButton").hide();
+        } else {
+            $("#mapButton").show();
+        }
+    }
+
+    // Layerdaten und Icons laden
+    for (let i = 0; i < TileMapInfo.layerfiles.length; i++) {
+        let layerinfo = TileMapInfo.layerfiles[i];
+        menu_items[i] = layerinfo[0];
+        $.getJSON(mapsource + layerinfo[1], function(overlays) {
+            // Füge das erste Icon des Layers als menu_icon hinzu (oder leer, falls keines vorhanden)
+            let icon = overlays.length > 0 ? overlays[0].Icon : "";
+            menu_icons[i] = icon;
+            // Features erzeugen und in die Quelle einfügen
+            if (sources[i]) {
+                let features = [];
+                overlays.forEach(function(overlay) {
+                    features.push(new ol.Feature({
+                        geometry: new ol.geom.Point([
+                            (TileMapInfo.orig[0] + TileMapInfo.offset[0] + overlay.X) * TileMapInfo.coordscale[0],
+                            TileMapInfo.orig[1] + TileMapInfo.offset[1] + (overlay.Y * TileMapInfo.coordscale[1])
+                        ]),
+                        name: overlay.Name,
+                        kind: overlay.Typen,
+                        icon: overlay.Icon,
+                        uid: overlay.X + '|' + overlay.Y
+                    }));
+                });
+                sources[i].addFeatures(features);
+            }
+            layersLoaded++;
+            if (layersLoaded === layersToLoad) {
+                buildMenu();
+            }
+        });
+    }
+
+    // ...OpenLayers-Layer wie gehabt, aber OHNE eigenen loader...
+    for (let i = 0; i < TileMapInfo.layerfiles.length; i++) {
+        let x = sources.length;
         var layerinfo = TileMapInfo.layerfiles[i];
         sources[x] = new ol.source.Vector({
             format: new ol.format.GeoJSON(),
-            loader: function(extent, resolution, projection) {
-                var nr = 0;
-                for (var key in sourceref) {
-                    var value = sourceref[key];
-                    if (value == this.ol_uid) {
-                        nr = key;
-                    }
-                }
-                console.log("Loading layer " + nr + " from " + mapsource + TileMapInfo.layerfiles[nr][1]);
-                $.getJSON(mapsource + TileMapInfo.layerfiles[nr][1], function(overlays) {
-                    olsource[nr] = {
-                        "type": "FeatureCollection",
-                        "features": []
-                    };
-
-                    overlays.forEach(function(overlay) {
-                        //if (!overlay["ZoomLevelVisibility"] )
-                        olsource[nr].features.push({
-                            "type": "Feature",
-                            "properties": {
-                                "name": overlay.Name,
-                                "kind": overlay.Typen,
-                                "icon": overlay.Icon,
-                                "uid": overlay.X + "|" + (overlay.Y)
-                            },
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [(TileMapInfo.orig[0] + TileMapInfo.offset[0] + overlay.X) * TileMapInfo.coordscale[0], TileMapInfo.orig[1] + TileMapInfo.offset[1] + (overlay.Y * TileMapInfo.coordscale[1])]
-                            }
-                        });
-                    });
-                    sources[nr].addFeatures(sources[nr].getFormat().readFeatures(JSON.stringify(olsource[nr])));
-                });
-            }
+            // kein loader mehr
         });
         sourceref[x] = sources[x].ol_uid;
-        menu_items[i] = layerinfo[0];
         x = layers.length;
         layers[x] = new ol.layer.Vector({
             source: sources[sources.length - 1],
@@ -229,11 +297,11 @@ function buildMap(TileMapInfo, mapsource) {
             updateWhileAnimating: true,
             updateWhileInteracting: true,
             minZoom: 0,
+            declutter: true,
+            renderMode: 'image',
             style: (function() {
-
                 return function(feature, resolution) {
                     var style = styleCache[feature.get('uid')];
-
                     if (!style) {
                         style = [new ol.style.Style({
                             image: new ol.style.Icon(({
@@ -247,7 +315,6 @@ function buildMap(TileMapInfo, mapsource) {
                         })];
                         styleCache[feature.get('uid')] = style;
                     }
-                    // style[0].getImage().setScale(g_map.getView().getResolutionForZoom(8) / resolution);
                     style[0].getImage().setScale(0.5);
                     return style;
                 };
@@ -271,7 +338,9 @@ function buildMap(TileMapInfo, mapsource) {
                 source: new ol.source.XYZ({
                     tileGrid: tilegrid,
                     url: mapsource + '/Tiles/{z}/{x}/{y}.' + ext,
-                    projection: tsProjection
+                    projection: tsProjection,
+                    declutter: true,
+                    renderMode: 'image'
                 }),
                 name: "Tiles",
             })
@@ -294,75 +363,121 @@ function buildMap(TileMapInfo, mapsource) {
         layer.setVisible(false);
     }
     g_map.addLayer(vectorLayer);
+    if (!window.playerToTargetLineSource) {
+        window.playerToTargetLineSource = new ol.source.Vector();
+    }
+    if (!window.playerToTargetLineLayer) {
+        window.playerToTargetLineLayer = new ol.layer.Vector({
+            source: window.playerToTargetLineSource,
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: '#ff0000',
+                    width: 3
+                })
+            }),
+            name: 'PlayerToTargetLine',
+            updateWhileAnimating: true,
+            updateWhileInteracting: true,
+        });
+    }
+    g_map.addLayer(window.playerToTargetLineLayer);
 
-
-    const closeButton = document.querySelector("dialog button");
-    const dialogContent = document.querySelector("dialog p");
-
-    //closeButton.addEventListener("click", () => {
-    //    document.getElementById("dialog-modal").close();
-    //});
     g_map.on('click', function(evt) {
         const feature = g_map.forEachFeatureAtPixel(evt.pixel, function(feature) {
-            console.log(feature.values_['name']);
+            // Prüfe, ob es ein Zielmarker ist (kein Spieler-Feature)
+            if (feature !== g_playerFeature) {
+                currentTargetFeature = feature;
+                // Linie sofort aktualisieren
+                updatePlayerToTargetLine(g_playerFeature.getGeometry().getCoordinates());
+            }
+            console.log("Clicked feature:", feature);
+            var image = mapsource + "/Overlays/" + feature.get('icon');
+            var html = `
+                <div class="box-header">
+                    <i class="fa-solid fa-location-dot google-pin"></i>
+                    <span class="nib-title text-dark">${feature.get('name')}</span>
+                    <i class="fa-solid fa-xmark ms-auto" role="button" onclick="nav_info_box.style.display='block'; nav_setting_box.style.display='none'; window.playerToTargetLineSource.clear(); window.currentTargetFeature = null;"></i>
+                </div>
+                <div class="nib-entries" id="setting-entries">
 
-            dialogContent.innerHTML = feature.values_['name'];
 
-            document.getElementById("dialog-modal").showModal();
+                    <div class="destination-entry">
+                        <div class="entry-icon"><img src="${image}"   height="50px" width="50px"></div>
+                        <div class="entry-text">
+                            <span class="entry-name">${feature.getGeometry().getCoordinates().map(coord => coord.toFixed(2)).join(', ')}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            nav_setting_box.innerHTML = html;
+            nav_setting_box.style.display = 'block';
+            nav_info_box.style.display = 'none';
+
+
             return feature;
         });
 
     });
 
-
-    var ht = 90;
-    var ct = 0;
-    column = 0;
-    var columncnt = Math.ceil((menu_items.length + 2) / 10);
-    var vheight = Math.ceil((menu_items.length + 2) / columncnt);
-    //$('.container').css('height', vheight * 1.5 + "em");
-    $('.container').css('-moz-column-count', columncnt);
-    $('.container').css('-webkit-column-count', columncnt);
-    $('.container').css('column-count', columncnt);
-    $('#container').append('<input type="button" id="hideall" value="Hide All" class="dropdown-content" onclick = "menuClick(this.id)"></input>');
-    $('#container').append('<input type="button" id="showall" value="Show All" class="dropdown-content" onclick = "menuClick(this.id)"></input>');
-    for (item of menu_items) {
-        ct += 1;
-        if (ct > 10) {
-            ht = 90;
-            ct = 1;
-            column += 1;
+    /*
+        var ht = 90;
+        var ct = 0;
+        column = 0;
+        var columncnt = Math.ceil((menu_items.length + 2) / 10);
+        var vheight = Math.ceil((menu_items.length + 2) / columncnt);
+        //$('.container').css('height', vheight * 1.5 + "em");
+        $('.container').css('-moz-column-count', columncnt);
+        $('.container').css('-webkit-column-count', columncnt);
+        $('.container').css('column-count', columncnt);
+        $('#nib-entries').append('<input type="button" id="hideall" value="Hide All" class="dropdown-content" onclick = "menuClick(this.id)"></input>');
+        $('#nib-entries').append('<input type="button" id="showall" value="Show All" class="dropdown-content" onclick = "menuClick(this.id)"></input>');
+        z=0;
+        for (item of menu_items) {
+            var entry = `
+                <div class="destination-entry" onclick = "menuClick(this.value)">
+                    <div class="entry-icon"><img src=""></div>
+                    <div class="entry-text">
+                        <div class="entry-name link-dark">${item}</div>
+                        <div class="entry-info">${menu_icons[z]}</div>
+                    </div>
+                </div>
+            `;
+            ct += 1;
+            if (ct > 10) {
+                ht = 90;
+                ct = 1;
+                column += 1;
+            }
+            $('#nib-entries').append(entry);
+            ht += 40;
+            z++;
         }
-        $('#container').append('<input type="button" id="' + item + '" value="' + item + '" class="dropdown-content" onclick = "menuClick(this.value)"></input>');
-        ht += 40;
-    }
-
-    ht = 90;
-    ct = 0;
-    column = 0;
-    columncnt = Math.ceil((RelatedMaps.length) / 10);
-    vheight = Math.ceil((RelatedMaps.length) / columncnt);
-    //$('.mapcontainer').css('height', vheight * 1.5 + "em");
-    $('.mapcontainer').css('-moz-column-count', columncnt);
-    $('.mapcontainer').css('-webkit-column-count', columncnt);
-    $('.mapcontainer').css('column-count', columncnt);
-    for (map of RelatedMaps) {
-        ct += 1;
-        if (ct > 10) {
-            ht = 90;
-            ct = 1;
-            column += 1;
+    
+        ht = 90;
+        ct = 0;
+        column = 0;
+        columncnt = Math.ceil((RelatedMaps.length) / 10);
+        vheight = Math.ceil((RelatedMaps.length) / columncnt);
+        //$('.mapcontainer').css('height', vheight * 1.5 + "em");
+        $('.mapcontainer').css('-moz-column-count', columncnt);
+        $('.mapcontainer').css('-webkit-column-count', columncnt);
+        $('.mapcontainer').css('column-count', columncnt);
+        for (map of RelatedMaps) {
+            ct += 1;
+            if (ct > 10) {
+                ht = 90;
+                ct = 1;
+                column += 1;
+            }
+            $('#mapcontainer').append('<input type="button" id="' + map + '" value="' + map + '" class="dropdown-content" onclick = "mapClick(this.value)"></input>');
+            ht += 40;
         }
-        $('#mapcontainer').append('<input type="button" id="' + map + '" value="' + map + '" class="dropdown-content" onclick = "mapClick(this.value)"></input>');
-        ht += 40;
-    }
-    if (RelatedMaps.length == 0) {
-        $("#mapButton").hide();
-    } else {
-        $("#mapButton").show();
-    }
-
-
+        if (RelatedMaps.length == 0) {
+            $("#mapButton").hide();
+        } else {
+            $("#mapButton").show();
+        }
+    */
     function zoomChanged() {
         var zoom = g_map.getView().getZoom();
         if (zoom >= 1) {
@@ -448,10 +563,11 @@ function buildMap(TileMapInfo, mapsource) {
         } else {
             g_playerIcon.setRotation(playerrad);
         }
+        updatePlayerToTargetLine(coords);
     }
 
     function refreshPositionFromApi() {
-        console.log("Refreshing position from API");
+        //console.log("Refreshing position from API");
         $.getJSON(mapAPIurl, function(data) {
             if (data.GameRunning == true) {
                 let coords = data.NewData.CarCoordinates;
@@ -464,7 +580,7 @@ function buildMap(TileMapInfo, mapsource) {
 
     var hash = window.location.hash;
     //if (hash != "#norefresh") {
-    refreshInterval = setInterval(refreshPositionFromApi, 50);
+    refreshInterval = setInterval(refreshPositionFromApi, fetchIntervalMs);
     //}
 }
 
@@ -502,7 +618,7 @@ document.loadMap = function loadMap(mapname) {
     }
     var mapsource = "/static/addons/tsmap-" + mapname.toLowerCase();
     $.getJSON(mapsource + "/TileMapInfo.json", function(mapinfo) {
-        console.log("Loading map " + mapname);
+        //console.log("Loading map " + mapname);
         buildMap(mapinfo, mapsource);
     });;
 
@@ -514,9 +630,9 @@ document.loadMap = function loadMap(mapname) {
 var lastGame = null;
 
 function switchGame() {
-    console.log("Switching game...");
+    //console.log("Switching game...");
     $.getJSON(mapAPIurl, function(data) {
-        console.log(data);
+        //console.log(data);
         if (lastGame != data.GameName) {
             lastGame = data.GameName;
             var targetGame = "FH5";
@@ -526,7 +642,7 @@ function switchGame() {
             if (data.GameName !== "FH5" && data.GameName !== "FH4") {
                 window.location.href = "/";
             }
-            console.log("Switching to game " + targetGame);
+            //console.log("Switching to game " + targetGame);
             document.loadMap(targetGame);
         }
     });
@@ -535,8 +651,9 @@ function switchGame() {
 fetch('/config')
     .then(response => response.json())
     .then(config => {
-        console.log("Switching game to initial game");
+        //console.log("Switching game to initial game");
         mapAPIurl = config.mapAPIurl;
+        fetchIntervalMs = config.fetchIntervalMs;
         switchGame();
         setInterval(switchGame, 5000);
 
@@ -545,3 +662,46 @@ fetch('/config')
 
     })
     .catch(err => console.error("Error loading config:", err));
+
+// Globale Variable für das Ziel und die Linie
+var currentTargetFeature = null;
+var playerToTargetLineFeature = null;
+var playerToTargetLineSource = new ol.source.Vector();
+var playerToTargetLineLayer = new ol.layer.Vector({
+    source: playerToTargetLineSource,
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: '#ff0000',
+            width: 3
+        })
+    }),
+    name: 'PlayerToTargetLine',
+    updateWhileAnimating: true,
+    updateWhileInteracting: true,
+});
+
+// Funktion zum Zeichnen/Aktualisieren der Linie
+function updatePlayerToTargetLine(playerCoords) {
+    if (!currentTargetFeature) {
+        window.playerToTargetLineSource.clear();
+        return;
+    }
+    var targetCoords = currentTargetFeature.getGeometry().getCoordinates();
+    // Abstand berechnen
+    var dx = playerCoords[0] - targetCoords[0];
+    var dy = playerCoords[1] - targetCoords[1];
+    var dist = Math.sqrt(dx*dx + dy*dy);
+    // Schwellwert (z.B. 20 Pixel im Karten-Koordinatensystem)
+    if (dist < 80) {
+        currentTargetFeature = null;
+        window.playerToTargetLineSource.clear();
+        return;
+    }
+    var line = new ol.geom.LineString([playerCoords, targetCoords]);
+    if (!window.playerToTargetLineFeature) {
+        window.playerToTargetLineFeature = new ol.Feature({ geometry: line });
+        window.playerToTargetLineSource.addFeature(window.playerToTargetLineFeature);
+    } else {
+        window.playerToTargetLineFeature.setGeometry(line);
+    }
+}
