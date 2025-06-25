@@ -10,7 +10,27 @@ import logging
 import os
 import time
 import requests
+import hashlib
 
+def hash_string(s: str, algorithm: str = 'sha256') -> str:
+    """
+    Erzeugt den Hex-Hash eines Strings mit dem gewählten Algorithmus.
+
+    :param s:      Eingabe-String
+    :param algorithm: Name des Algorithmus, z.B. 'md5', 'sha1', 'sha256'
+    :return:       Hexadezimale Hash-Repräsentation
+    """
+    # 1) String kodieren
+    b = s.encode('utf-8')
+    # 2) passendes Hash-Objekt erzeugen
+    try:
+        h = hashlib.new(algorithm)
+    except ValueError:
+        raise ValueError(f"Unbekannter Algorithmus: {algorithm}")
+    # 3) Daten verarbeiten
+    h.update(b)
+    # 4) Ergebnis als Hex-String zurückgeben
+    return h.hexdigest()
 
 
 def load_config():
@@ -144,12 +164,19 @@ def horizon():
     return render_template('horizon2.html', config=config, timestamp=current_time)
 
 
-@app.route('/horizon2')
-def horizon2():
-    if not user_config_active:
-        return redirect(url_for('get_config_user'))
-    current_time = int(time.time())
-    return render_template('horizon2.html', config=config, timestamp=current_time)
+@app.route('/horizon/markPOIasDone', methods=['POST'])
+def mark_poi_as_done():
+    data = request.json
+    if not data or 'id' not in data:
+        return jsonify({'error': 'Invalid data'}), 400
+    
+    # create an hash from the id string
+    poi_id = hash_string("Hallo Welt!", "md5")
+    
+    print(f"Received request to mark POI as done: {poi_id}")
+
+    
+    return jsonify({'success': f'POI {poi_id} marked as done'}), 200
 
 
 @app.route('/settings')

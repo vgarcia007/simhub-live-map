@@ -387,6 +387,7 @@ function buildMap(TileMapInfo, mapsource) {
             }
             console.log("Clicked feature:", feature);
             var image = mapsource + "/Overlays/" + feature.get('icon');
+            var poiID = mapsource + feature.get('name');
             var html = `
                 <div class="box-header">
                     <i class="fa-solid fa-location-dot google-pin"></i>
@@ -400,7 +401,7 @@ function buildMap(TileMapInfo, mapsource) {
                         <div class="entry-icon"><img src="${image}"   height="50px" width="auto"></div>
                         <div class="entry-text w-100">
                             <div class="entry-name link-dark">${feature.get('name')}</div>
-                            <div class="entry-info text-end pt-1"><button type="button" class="btn btn-success">Mark as done</button></span></div>
+                            <div class="entry-info text-end pt-1"><button type="button" class="btn btn-success" onclick="markPOIasDone('${poiID}')">Mark as done</button></span></div>
                         </div>
                     </div>
                 </div>
@@ -800,3 +801,18 @@ function toggleTheme() {
         setTheme(prefersDark ? 'dark' : 'light');
     }
 })();
+
+function markPOIasDone(id) {
+    //console.log("Marking POI as done: " + name + " at (" + x + ", " + y + ")");
+    $.post('/horizon/markPOIasDone', { id: id }, function(response) {
+        if (response.success) {
+            alert("POI marked as done!");
+            // Optionally, you can remove the POI from the map or update the UI
+            poi_info_box.style.display = 'none';
+            currentTargetFeature = null;
+            window.playerToTargetLineSource.clear();
+        } else {
+            alert("Failed to mark POI as done: " + response.error);
+        }
+    });
+}
