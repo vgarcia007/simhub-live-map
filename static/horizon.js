@@ -13,12 +13,13 @@ var olsource = [];
 var MapTilecenter = [];
 var MapTilemultiplier = [];
 var RelatedMaps = [];
+let followButton = document.getElementById("followButton");
 var suspendAutoMove = function(evt) {
     if (g_map != null) {
         clearTimeout(suspendTimer);
         suspendTimer = 1;
-        $("#followButton").show();
-        g_map.getView().setRotation(0);
+        followButton.style.display = "flex";
+        //g_map.getView().setRotation(0);
     }
 };
 
@@ -26,20 +27,14 @@ let nav_info_box = document.getElementById("nav-info-box");
 
 let nav_setting_box = document.getElementById("nav-setting-box");
 
+let poi_info_box = document.getElementById("poi-info-box");
+let poiInfoIcon = document.getElementById("poiInfoIcon");
+let poiInfo = document.getElementById("poiInfo");
+
 $("#followButton").click(function() {
-     $("#followButton").hide();
+     followButton.style.display = "none";
      suspendTimer = 0;
  });
-
-// $("#menuButton").click(function() {
-//     document.getElementById("maps").classList.remove("show");
-//     document.getElementById("menu").classList.toggle("show");
-// });
-
-// $("#mapButton").click(function() {
-//     document.getElementById("menu").classList.remove("show");
-//     document.getElementById("maps").classList.toggle("show");
-// });
 
 var suspendAutoZoom = function(evt) {
     if (g_map != null) {
@@ -388,7 +383,7 @@ function buildMap(TileMapInfo, mapsource) {
             if (feature !== g_playerFeature) {
                 currentTargetFeature = feature;
                 // Linie sofort aktualisieren
-                updatePlayerToTargetLine(g_playerFeature.getGeometry().getCoordinates());
+                updatePlayerToTargetLine(g_playerFeature.getGeometry().getCoordinates(), rad =null);
             }
             console.log("Clicked feature:", feature);
             var image = mapsource + "/Overlays/" + feature.get('icon');
@@ -396,15 +391,15 @@ function buildMap(TileMapInfo, mapsource) {
                 <div class="box-header">
                     <i class="fa-solid fa-location-dot google-pin"></i>
                     <span class="nib-title text-dark">${feature.get('name')}</span>
-                    <i class="fa-solid fa-xmark ms-auto" role="button" onclick="nav_info_box.style.display='block'; nav_setting_box.style.display='none'; window.playerToTargetLineSource.clear(); window.currentTargetFeature = null;"></i>
+                    <i class="fa-solid fa-xmark ms-auto" role="button" onclick="nav_info_box.style.display='block'; nav_setting_box.style.display='none'; window.playerToTargetLineSource.clear(); poi_info_box.style.display = 'none';; window.currentTargetFeature = null;"></i>
                 </div>
                 <div class="nib-entries" id="setting-entries">
 
 
                     <div class="destination-entry">
-                        <div class="entry-icon"><img src="${image}"   height="50px" width="50px"></div>
-                        <div class="entry-text">
-                            <span class="entry-name">${feature.getGeometry().getCoordinates().map(coord => coord.toFixed(2)).join(', ')}</span>
+                        <div class="entry-icon"><img src="${image}"   height="50px" width="auto"></div>
+                        <div class="entry-text w-100">
+                            <span class="entry-name text-end pt-1"><button type="button" class="btn btn-dark">Mark as done</button></span>
                         </div>
                     </div>
                 </div>
@@ -412,6 +407,9 @@ function buildMap(TileMapInfo, mapsource) {
             nav_setting_box.innerHTML = html;
             nav_setting_box.style.display = 'block';
             nav_info_box.style.display = 'none';
+            poi_info_box.style.display = 'block';
+            poiInfo.innerHTML = feature.get('name');
+            poiInfoIcon.innerHTML = `<img src="${image}" height="50px" width="auto" style="margin: 10px;">`;
 
 
             return feature;
@@ -561,9 +559,9 @@ function buildMap(TileMapInfo, mapsource) {
             g_map.getView().setCenter(GetAheadPosition(g_map, rad, speedkmh, coords));
             g_map.getView().setRotation(rad);
         } else {
-            g_playerIcon.setRotation(playerrad);
+            //g_playerIcon.setRotation(playerrad);
         }
-        updatePlayerToTargetLine(coords);
+        updatePlayerToTargetLine(coords, rad);
     }
 
     function refreshPositionFromApi() {
@@ -681,27 +679,75 @@ var playerToTargetLineLayer = new ol.layer.Vector({
 });
 
 // Funktion zum Zeichnen/Aktualisieren der Linie
-function updatePlayerToTargetLine(playerCoords) {
+function updatePlayerToTargetLine(playerCoords, rad = null) {
     if (!currentTargetFeature) {
         window.playerToTargetLineSource.clear();
+        window.playerToTargetLineFeature = null; // <--- NEU
         return;
     }
     var targetCoords = currentTargetFeature.getGeometry().getCoordinates();
-    // Abstand berechnen
     var dx = playerCoords[0] - targetCoords[0];
     var dy = playerCoords[1] - targetCoords[1];
     var dist = Math.sqrt(dx*dx + dy*dy);
-    // Schwellwert (z.B. 20 Pixel im Karten-Koordinatensystem)
+
+    if (rad !== null) {
+        //console.log(
+        //    "playerCoords:", playerCoords,
+        //   " targetCoords:", targetCoords,
+        //    " ΔEast:", dx.toFixed(2),
+        //    " ΔNorth:", dy.toFixed(2),
+        //    " raw rad:", rad !== null ? rad.toFixed(3) : "–"
+        //    );
+
+        // 1. Absoluten Zielwinkel berechnen (0° = Norden, im Uhrzeigersinn)
+        //var angleToTarget = Math.atan2(dx, dy) * 180 / Math.PI; // dx/dy, weil 0° = Norden
+        //if (angleToTarget < 0) angleToTarget += 360;
+
+        // 2. Spieler-Rotation in Grad (0° = Norden, im Uhrzeigersinn)
+        //var playerYawDeg = (rad * 180 / Math.PI);
+        //if (playerYawDeg < 0) playerYawDeg += 360;
+
+        // 3. Relativen Winkel berechnen (0° = voraus, 90° = rechts, 180° = hinten, 270° = links)
+        //var relAngle = (angleToTarget - playerYawDeg + 360) % 360;
+
+        //console.log("Absoluter Zielwinkel: " + angleToTarget + "°, Spieler-Rotation: " + playerYawDeg + "°, Relativ: " + relAngle + "°");
+    }
+    poiInfo.innerHTML = dist.toFixed(2) + "m";
     if (dist < 80) {
         currentTargetFeature = null;
         window.playerToTargetLineSource.clear();
+        window.playerToTargetLineFeature = null; // <--- NEU
+        poi_info_box.style.display = 'none';
         return;
     }
     var line = new ol.geom.LineString([playerCoords, targetCoords]);
-    if (!window.playerToTargetLineFeature) {
+    // Immer ein neues Feature anlegen, wenn das alte nicht mehr im Source ist
+    if (!window.playerToTargetLineFeature || window.playerToTargetLineSource.getFeatures().indexOf(window.playerToTargetLineFeature) === -1) {
         window.playerToTargetLineFeature = new ol.Feature({ geometry: line });
+        window.playerToTargetLineSource.clear();
         window.playerToTargetLineSource.addFeature(window.playerToTargetLineFeature);
     } else {
         window.playerToTargetLineFeature.setGeometry(line);
     }
+    // Stil mit Glow, Transparenz und Pfeilspitze
+    window.playerToTargetLineLayer.setStyle(function(feature) {
+        const styles = [];
+        // Glow-Effekt (breite, halbtransparente Linie)
+        styles.push(new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'rgba(68,136,221, 1)',
+                width: 15
+            })
+        }));
+        // Hauptlinie
+        styles.push(new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'rgb(255, 255, 255)',
+                width: 8,
+                lineDash: [12, 12], // gestrichelt
+            })
+        }));
+
+        return styles;
+    });
 }
