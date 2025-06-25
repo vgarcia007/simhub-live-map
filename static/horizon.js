@@ -208,7 +208,7 @@ function buildMap(TileMapInfo, mapsource) {
             console.log("Loading icon for layer " + item + ": " + image);
             var entry = `
                 <div class="destination-entry horizon-layer-toggle" id="${item}" onclick="menuClick('${item}')">
-                    <div class="entry-icon"><img src="${image}"  height="50px" width="50px"></div>
+                    <div class="entry-icon"><img src="${image}"  height="50px" width="50"></div>
                     <div class="entry-text">
                         <div class="entry-name link-dark">${item}</div>
                     </div>
@@ -390,7 +390,7 @@ function buildMap(TileMapInfo, mapsource) {
             var html = `
                 <div class="box-header">
                     <i class="fa-solid fa-location-dot google-pin"></i>
-                    <span class="nib-title text-dark">${feature.get('name')}</span>
+                    <span class="nib-title text-dark"></span>
                     <i class="fa-solid fa-xmark ms-auto" role="button" onclick="nav_info_box.style.display='block'; nav_setting_box.style.display='none'; window.playerToTargetLineSource.clear(); poi_info_box.style.display = 'none';; window.currentTargetFeature = null;"></i>
                 </div>
                 <div class="nib-entries" id="setting-entries">
@@ -399,11 +399,13 @@ function buildMap(TileMapInfo, mapsource) {
                     <div class="destination-entry">
                         <div class="entry-icon"><img src="${image}"   height="50px" width="auto"></div>
                         <div class="entry-text w-100">
-                            <span class="entry-name text-end pt-1"><button type="button" class="btn btn-dark">Mark as done</button></span>
+                            <div class="entry-name link-dark">${feature.get('name')}</div>
+                            <div class="entry-info text-end pt-1"><button type="button" class="btn btn-success">Mark as done</button></span></div>
                         </div>
                     </div>
                 </div>
             `;
+
             nav_setting_box.innerHTML = html;
             nav_setting_box.style.display = 'block';
             nav_info_box.style.display = 'none';
@@ -691,29 +693,38 @@ function updatePlayerToTargetLine(playerCoords, rad = null) {
     var dist = Math.sqrt(dx*dx + dy*dy);
 
     if (rad !== null) {
-        //console.log(
-        //    "playerCoords:", playerCoords,
-        //   " targetCoords:", targetCoords,
-        //    " ΔEast:", dx.toFixed(2),
-        //    " ΔNorth:", dy.toFixed(2),
-        //    " raw rad:", rad !== null ? rad.toFixed(3) : "–"
-        //    );
+        let yaw = -rad * 180 / Math.PI;
+        // Optional: auf [0,360) normieren
+        yaw = (yaw + 360) % 360;
+        const dx = targetCoords[0] - playerCoords[0];
+        const dy = targetCoords[1] - playerCoords[1];
+        let angleRad = Math.atan2(dy, dx);
 
-        // 1. Absoluten Zielwinkel berechnen (0° = Norden, im Uhrzeigersinn)
-        //var angleToTarget = Math.atan2(dx, dy) * 180 / Math.PI; // dx/dy, weil 0° = Norden
-        //if (angleToTarget < 0) angleToTarget += 360;
+        // 2) In Grad umwandeln (0° = Osten, + gegen CCW)
+        let angleDeg = angleRad * 180 / Math.PI;
 
-        // 2. Spieler-Rotation in Grad (0° = Norden, im Uhrzeigersinn)
-        //var playerYawDeg = (rad * 180 / Math.PI);
-        //if (playerYawDeg < 0) playerYawDeg += 360;
+        // 3) In einen Kompasskurs überführen:
+        //    Unser „0“ soll Norden statt Osten sein,
+        //    und wir wollen CW-Messung statt CCW.
+        //    Daher: bearing = 90° − angleDeg
+        let bearing = 90 - angleDeg;
 
-        // 3. Relativen Winkel berechnen (0° = voraus, 90° = rechts, 180° = hinten, 270° = links)
-        //var relAngle = (angleToTarget - playerYawDeg + 360) % 360;
+        // 4) Normieren auf [0,360)
+        bearing = (bearing + 360) % 360;
+        console.log("Bearing to target: " + bearing + "°");
+        console.log("Distance to target: " + dist + "m");
+        console.log("Player yaw: " + rad);
+        var correctedBearing = bearing - yaw; // Adjusted to match the original logic
+        //const correctedBearing = bearing + rad -90;
+        console.log("Player corrected yaw: " + correctedBearing);
 
-        //console.log("Absoluter Zielwinkel: " + angleToTarget + "°, Spieler-Rotation: " + playerYawDeg + "°, Relativ: " + relAngle + "°");
+        console.log("Corrected bearing for icon: " + correctedBearing + "°");
+        // Set the icon rotation based on the corrected bearing
+        var directionIcon = '<i class="fa-solid fa-arrow-up fa-rotate-by" style="--fa-rotate-angle: '+correctedBearing+'deg;"></i>';
+        poiInfoIcon.innerHTML = directionIcon;
     }
     poiInfo.innerHTML = dist.toFixed(2) + "m";
-    if (dist < 80) {
+    if (dist < 40) {
         currentTargetFeature = null;
         window.playerToTargetLineSource.clear();
         window.playerToTargetLineFeature = null; // <--- NEU
@@ -751,3 +762,41 @@ function updatePlayerToTargetLine(playerCoords, rad = null) {
         return styles;
     });
 }
+
+
+//Theme Logic
+const themeLink = document.getElementById('theme-link');
+const toggleBtns = document.querySelectorAll('.theme-toggle');
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+const themeIcon = themeToggleBtn.querySelector('i');
+toggleBtns.forEach(btn => btn.addEventListener('click', toggleTheme));
+const DARK_CSS = '/static/app-dark.css';
+const LIGHT_CSS = '';
+
+function setTheme(mode) {
+    if (mode === 'dark') {
+        themeLink.href = DARK_CSS;
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+    } else {
+        themeLink.href = LIGHT_CSS;
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+    }
+    localStorage.setItem('theme', mode);
+}
+
+function toggleTheme() {
+    const current = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+(function init() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'light') {
+        setTheme(saved);
+    } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
+    }
+})();

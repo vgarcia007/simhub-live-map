@@ -373,7 +373,7 @@ def proxy_unminimized():
 @app.route('/fakedata')
 def fakedata():
     try:
-        with open('fake_gamedata.json', 'r') as f:
+        with open('fake_gamedata_horizon.json', 'r') as f:
             data = json.load(f)
             
         return jsonify(minimize_json(data))

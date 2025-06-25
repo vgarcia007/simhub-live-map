@@ -55,6 +55,7 @@ html, body {
   font-size: var(--font-size-header-poi);
 }
 
+#poiInfoIcon .fa-solid,
 #poiInfoIcon .material-symbols-outlined,
 #poiInfoIcon .material-symbols-rounded {
   font-size: var(--font-size-poiInfoIcon)!important;
