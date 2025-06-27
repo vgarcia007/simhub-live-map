@@ -3,79 +3,37 @@ import requests
 from flask_cors import CORS
 import json
 from generate_transforms import process_tracks
+from update_addons import update_addons
+
 from waitress import serve
 import logging
 import os
 import time
+import requests
 
-def minimize_json(data):
-    """
-    Minimize JSON data by removing unnecessary things.
-    """
-    small_data ={}
-    small_data['NewData'] = {}
-    small_data['NewData']['FeedbackData'] = {}
-    try:
-        small_data['GameName'] = data['GameName']
-    except KeyError:
-        small_data['GameName'] = "Unknown Game"
-    try:
-        small_data['IsGameInRace'] = data['IsGameInRace']
-    except KeyError:
-        small_data['IsGameInRace'] = False
-    if data['NewData'] is not None:
-        try:
-            small_data['NewData']['TrackName'] = data['NewData']['TrackName']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['TrackCode'] = data['NewData']['TrackCode']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['FilteredSpeedKmh'] = data['NewData']['FilteredSpeedKmh']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['FeedbackData']['CoordinatesX'] = data['NewData']['FeedbackData']['CoordinatesX']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['FeedbackData']['CoordinatesY'] = data['NewData']['FeedbackData']['CoordinatesY']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['FeedbackData']['OrientationYaw'] = data['NewData']['FeedbackData']['OrientationYaw']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['CurrentLapTime']= data['NewData']['CurrentLapTime']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['CurrentLap']= data['NewData']['CurrentLap']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['CurrentSectorIndex']= data['NewData']['CurrentSectorIndex']
-        except KeyError:
-            pass
-    else:
-        small_data['NewData'] = None
-    
-    return small_data
+import sqlite3
+
+DB_PATH = 'poi_status.db'
+
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    with get_db() as db:
+        db.execute('''
+            CREATE TABLE IF NOT EXISTS poi_status (
+                mapname TEXT NOT NULL,
+                layerinfo TEXT NOT NULL,
+                uid TEXT NOT NULL,
+                done INTEGER NOT NULL DEFAULT 1,
+                PRIMARY KEY (mapname, layerinfo, uid)
+            )
+        ''')
+init_db()
 
 
-process_tracks("static/track_reference_points.json", "static/track_transforms.json")
-
-
-app = Flask(__name__)
-CORS(app)  
-
-
-
-
-# Create a function to load configuration
 def load_config():
     global config, user_config_active, PROXY_TARGET_URL
     
@@ -103,6 +61,87 @@ def load_config():
         raise ValueError(f"Invalid PROXY_TARGET_URL: {PROXY_TARGET_URL}. Error: {e}")
     return config
 
+
+def minimize_json(data):
+    """
+    Minimize JSON data by removing unnecessary things.
+    """
+    small_data ={}
+    small_data['NewData'] = {}
+    small_data['NewData']['FeedbackData'] = {}
+    try:
+        small_data['GameName'] = data['GameName']
+    except KeyError:
+        small_data['GameName'] = "Unknown Game"
+    try:
+        small_data['IsGameInRace'] = data['IsGameInRace']
+    except KeyError:
+        small_data['IsGameInRace'] = False
+    try:
+        small_data['GameRunning'] = data['GameRunning']
+    except KeyError:
+        small_data['GameRunning'] = False
+    if data['NewData'] is not None:
+        try:
+            small_data['NewData']['TrackName'] = data['NewData']['TrackName']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['TrackCode'] = data['NewData']['TrackCode']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['FilteredSpeedKmh'] = data['NewData']['FilteredSpeedKmh']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['FeedbackData']['CoordinatesX'] = data['NewData']['FeedbackData']['CoordinatesX']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['FeedbackData']['CoordinatesY'] = data['NewData']['FeedbackData']['CoordinatesY']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['FeedbackData']['OrientationYaw'] = data['NewData']['FeedbackData']['OrientationYaw']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['CarCoordinates'] = data['NewData']['CarCoordinates']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['OrientationYaw'] = data['NewData']['OrientationYaw']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['SpeedKmh'] = data['NewData']['SpeedKmh']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['CurrentLapTime']= data['NewData']['CurrentLapTime']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['CurrentLap']= data['NewData']['CurrentLap']
+        except KeyError:
+            pass
+        try:
+            small_data['NewData']['CurrentSectorIndex']= data['NewData']['CurrentSectorIndex']
+        except KeyError:
+            pass
+    else:
+        small_data['NewData'] = None
+    
+    return small_data
+
+process_tracks("static/track_reference_points.json", "static/track_transforms.json")
+update_addons("https://garcias-garage.de/files-other/nfsh-addons/version.json", "static/addons")
+
+app = Flask(__name__)
+CORS(app)  
+
+
 # Initialize configuration
 config = {}
 user_config_active = False
@@ -116,6 +155,72 @@ def index():
         return redirect(url_for('get_config_user'))
     current_time = int(time.time())
     return render_template('index.html', config=config, timestamp=current_time)
+
+
+@app.route('/horizon')
+def horizon():
+    if not user_config_active:
+        return redirect(url_for('get_config_user'))
+    current_time = int(time.time())
+    return render_template('horizon2.html', config=config, timestamp=current_time)
+
+
+@app.route('/horizon/markPOIasDone', methods=['POST'])
+def mark_poi_as_done():
+    data = request.json
+    if not data or not all(k in data for k in ("mapname", "layerinfo", "uid")):
+        return jsonify({'error': 'Invalid data'}), 400
+
+    mapname = data["mapname"]
+    layerinfo = data["layerinfo"]
+    uid = data["uid"]
+
+    with get_db() as db:
+        db.execute('''
+            INSERT INTO poi_status (mapname, layerinfo, uid, done)
+            VALUES (?, ?, ?, 1)
+            ON CONFLICT(mapname, layerinfo, uid)
+            DO UPDATE SET done=1
+        ''', (mapname, layerinfo, uid))
+    return jsonify({'success': 'Marker updated'}), 200
+
+
+@app.route('/horizon/unmarkPOIasDone', methods=['POST'])
+def unmark_poi_as_done():
+    data = request.json
+    if not data or not all(k in data for k in ("mapname", "layerinfo", "uid")):
+        return jsonify({'error': 'Invalid data'}), 400
+
+    mapname = data["mapname"]
+    layerinfo = data["layerinfo"]
+    uid = data["uid"]
+
+    with get_db() as db:
+        db.execute('''
+            INSERT INTO poi_status (mapname, layerinfo, uid, done)
+            VALUES (?, ?, ?, 0)
+            ON CONFLICT(mapname, layerinfo, uid)
+            DO UPDATE SET done=0
+        ''', (mapname, layerinfo, uid))
+    return jsonify({'success': 'Marker unmarked'}), 200
+
+
+@app.route('/horizon/poiStatus', methods=['GET'])
+def get_poi_status():
+    mapname = request.args.get('mapname')
+    layerinfo = request.args.get('layerinfo')
+    query = 'SELECT mapname, layerinfo, uid, done FROM poi_status WHERE 1=1'
+    params = []
+    if mapname:
+        query += ' AND mapname=?'
+        params.append(mapname)
+    if layerinfo:
+        query += ' AND layerinfo=?'
+        params.append(layerinfo)
+    with get_db() as db:
+        rows = db.execute(query, params).fetchall()
+        result = [dict(row) for row in rows]
+    return jsonify(result)
 
 
 @app.route('/settings')
@@ -324,6 +429,16 @@ def proxy():
     except Exception as e:
         return {'error': str(e)}, 500
 
+# Route to handle CORS requests
+@app.route('/proxy/unminimized')
+def proxy_unminimized():
+    try:
+        print(f"Fetching data from {PROXY_TARGET_URL}")
+        response = requests.get(PROXY_TARGET_URL)
+        data = response.json()
+        return jsonify(data)
+    except Exception as e:
+        return {'error': str(e)}, 500
 
 # Route to serve fake game data
 @app.route('/fakedata')

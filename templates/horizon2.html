@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <title>NAVI FOR SIMHUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.12.0/mapbox-gl.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+        :root {
+        --ui-scale-factor: {{config.mapInterfaceScale}};
+        }
+    </style>
+    <link rel="stylesheet" href="/static/app.css" />
+    <link rel="stylesheet" href="" id="theme-link">
+    <link rel="icon" type="image/png" href="/static/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/static/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/static/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Navi" />
+    <link rel="manifest" href="/static/favicon/site.webmanifest" />
+</head>
+<body>
+    <div id="map"></div>
+    <div id="nav-info-box">
+        <div class="box-header">
+            <i class="fa-solid fa-location-dot google-pin"></i>
+            <span class="nib-title"></span>
+            <a data-bs-toggle="collapse" href="#nib-entries" role="button" aria-expanded="false" aria-controls="nib-entries" class="d-flex align-items-center text-decoration-none link-dark ms-auto">
+            <span class="">
+                <i class="fa-solid fa-chevron-up"></i>
+            </span>
+            </a>    
+        </div>
+        <div class="nib-entries collapse show" id="nib-entries">
+        </div>
+    </div>
+    
+    <button class="btn btn-dark" id="followButton">
+        <i class="fa-solid fa-location-crosshairs fa-2x fa-fw"></i>
+    </button>
+
+    <button class="btn btn-dark" id="followButton">
+        <i class="fa-solid fa-location-crosshairs fa-2x fa-fw"></i>
+    </button>
+
+    <div id="nav-setting-box" class="collapse">
+        <div class="box-header">
+            <i class="fa-solid fa-location-dot google-pin"></i>
+            <span class="nib-title">Settings</span>
+            <i class="fa-solid fa-xmark ms-auto" data-bs-toggle="collapse" href="#nav-setting-box" role="button" aria-expanded="false" aria-controls="nav-setting-box"></i>
+        </div>
+        <div class="nib-entries" id="setting-entries">
+            <div class="destination-entry">
+                <div class="entry-icon"><i class="fa-solid fa-gears fa-fw"></i></div>
+                <div class="entry-text">
+                    <a class="entry-name link-dark" href="/config-user">Config</a>
+                    <div class="entry-info">App Settings</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="poi-info-box" style="display: none;">
+        <div class="box-header-poi">
+            <span class="nib-title" id="poiInfoIcon"></span>
+            <span class="nib-title" id="poiInfo"></span>
+        </div>
+    </div>
+
+    <!-- Bottom Toolbar -->
+    <div id="bottom-toolbar"> 
+        <div class="btn-group w-100 " role="group">
+        <a href="#" class="btn btn-dark theme-toggle w-100 m-0 p-2 rounded-0" id="theme-toggle-btn">
+            <i class="fa-solid fa-sun fa-2x fa-fw" ></i>
+        </a>
+        <a class="btn btn-dark w-100 m-0 p-2 rounded-0" href="/settings" role="button">
+            <i class="fa-solid fa-gears fa-2x fa-fw" ></i>
+        </a>
+        </div>
+    </div>
+	
+    <button id="downloadMapProress" class="centerButton" style="display:none"><div><img src="/static/marker-new.png" height="40px" /></div><div id="progressValue" style="margin-bottom: 4px;">0%</div></button>
+
+    <script src="https://cdn.jsdelivr.net/npm/ol@v10.6.1/dist/ol.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/horizon.js?v={{timestamp}}"></script>
+</body>
+</html>

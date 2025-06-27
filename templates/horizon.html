@@ -1,0 +1,279 @@
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v10.6.1/dist/ol.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+    <style>
+        @font-face {
+        font-family: "Renault Group";
+        font-style: normal;
+        font-weight: 400;
+        src: local("Renault Group"),
+            url("https://fonts.cdnfonts.com/s/66600/RenaultGroupRegular.woff")
+            format("woff");
+        }
+        @font-face {
+        font-family: "Renault Group";
+        font-style: normal;
+        font-weight: 200;
+        src: local("Renault Group"),
+            url("https://fonts.cdnfonts.com/s/66600/RenaultGroupLight.woff")
+            format("woff");
+        }
+        @font-face {
+        font-family: "Renault Group";
+        font-style: normal;
+        font-weight: 600;
+        src: local("Renault Group"),
+            url("https://fonts.cdnfonts.com/s/66600/RenaultGroupSemibold.woff")
+            format("woff");
+        }
+        @font-face {
+        font-family: "Renault Group";
+        font-style: normal;
+        font-weight: 700;
+        src: local("Renault Group"),
+            url("https://fonts.cdnfonts.com/s/66600/RenaultGroupBold.woff")
+            format("woff");
+        }
+        @font-face {
+        font-family: "Renault Group";
+        font-style: normal;
+        font-weight: 800;
+        src: local("Renault Group"),
+            url("https://fonts.cdnfonts.com/s/66600/RenaultGroupExtrabold.woff")
+            format("woff");
+        }
+        body {
+            margin: 0;
+            background: #323232;
+            font-family: "Renault Group";
+        }
+
+
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+		
+		.ol-mouse-position {
+			position: absolute;
+			top: 8px;
+			right: 16px;
+			color: #fc3d3d;
+		}
+		
+		.menuButton {
+            position: fixed;
+            top: 50px;
+            left: 0px;
+            font-size: 20px;
+            border: 1px solid #57b55c;
+            background: white;
+            color: black;
+            padding: 5px;
+            padding-right: 5px;
+            padding-top: 2px;
+            padding-bottom: 0px;
+            box-shadow: 0 0 5px #57b55c;
+            font-family: "Renault Group";
+        }
+		
+		.menuButton div {
+			vertical-align: middle;
+		}
+		
+		#menuButton:hover {
+            transition: background-color 200ms linear;
+            background-color: #222;
+        }
+		
+		.layerButton {
+			position: fixed;
+            left: 15px;
+            font-size: 20px;
+            border: 1px solid #808080;
+            background: black;
+            color: white;
+            padding: 5px;
+            padding-right: 15px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            box-shadow: 0 0 5px #808080;
+            font-family: "Renault Group";
+		}
+		
+		.layerButton div {
+			vertical-align: middle;
+		}
+		
+		#layerButton:hover {
+            transition: background-color 200ms linear;
+            background-color: #222;
+        }
+		
+        .centerButton {
+            position: fixed;
+            bottom: 10px;
+            left: 15px;
+            font-size: 20px;
+            border-radius: 25px;
+            border: 1px solid #808080;
+            background: black;
+            color: white;
+            padding: 5px;
+            padding-right: 15px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            box-shadow: 0 0 5px #808080;
+            font-family: "Renault Group";
+        }
+
+        #centerButton:hover {
+            transition: background-color 200ms linear;
+            background-color: #222;
+        }
+
+        #centerButton:focus {
+            outline: 0;
+        }
+
+        .centerButton div {
+            display: inline-block;
+            vertical-align: middle;
+        }
+		
+		/* Dropdown Button */
+        .dropbtn {
+          background-color: black;
+          color: white;
+          padding: 16px;
+          font-size: 16px;
+          border: none;
+          cursor: pointer;
+          font-family: "Renault Group";
+        }
+        
+        /* Dropdown button on hover & focus */
+        .dropbtn:hover {
+		  transition: background-color 200ms linear;
+          background-color: #222;
+        }
+		
+		.dropbtn:focus {
+			background-color: black;
+		}
+        
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+		  position: fixed;
+		  top: 0px;
+		  left: 0px;
+		  overflow:auto;
+          border: 1px solid #808080;
+		  background-color: black;
+          color: black;
+          display: inline-block;
+          font-family: "Renault Group";
+        }
+        
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+          display: none;
+          position: relative;
+          background-color: black;
+		  color: white;
+		  overflow:auto;
+          min-width: 220px;
+          z-index: 1;
+          font-family: "Renault Group";
+        }
+        
+        /* Links inside the dropdown */
+        .dropdown-content input {
+          padding: 8px;
+          text-decoration: none;
+          display: block;
+          font-family: "Renault Group";
+        }
+        
+        /* Change color of dropdown links on hover */
+        .dropdown-content input:hover {transition: background-color 200ms linear; background-color: #222}
+		
+		/* Change textcolor when layer is invisible */
+		.dropdown-content-deselect {
+			color: gray;
+		}
+        
+        /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+        .show {display:block;}
+		
+		.container {
+			-moz-column-count: 4;
+			-moz-column-gap: 0px;
+			-webkit-column-count: 4;
+			-webkit-column-gap: 0px;
+			column-count: 4;
+			column-gap: 0px;
+			height: auto;
+		}
+		
+		.container > input {
+            font-size: 17px;
+			margin: 0;
+		}
+		
+		.mapcontainer {
+			-moz-column-count: 4;
+			-moz-column-gap: 0px;
+			-webkit-column-count: 4;
+			-webkit-column-gap: 0px;
+			column-count: 4;
+			column-gap: 0px;
+			height: auto;
+		}
+		
+		.mapcontainer > input {
+			height: 2.2em;
+			margin: 0;
+		}
+
+      #dialog-modal{
+        z-index: 10000;
+        background-color: #131212;
+        border: 2px solid #57b55c;
+        border-radius: 3px;
+        box-shadow: 0 0 #57b55c, 0 0 #57b55c, 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        color: white;
+        font-family: 'Renault Group';
+        font-size: 20px;
+      }
+    </style>
+</head>
+
+<body>
+
+    <div id="map">
+	</div>
+	<div class="dropdown">
+		<button id="menuButton" class="dropbtn"><i class="fas fa-layer-group fa-2x"></i></button>
+		<button id="mapButton" class="dropbtn" style="display:none"><i class="fas fa-map fa-2x"></i></button>
+		<div id="menu" class="dropdown-content">
+			<div id="container" class="container">
+                sadfasdf
+			</div>
+		</div>
+		<div id="maps" class="dropdown-content">
+			<div id="mapcontainer" class="mapcontainer">
+			</div>
+		</div>
+        <dialog id="dialog-modal">
+            <button autofocus><i class="fas fa-times fa-2x"></i></button>
+            <p></p>
+        </dialog>
+	</div>
+	<button id="centerButton" class="centerButton" style="display:none"><div><img src="/static/marker-new.png" height="40px" /></div><div style="margin-bottom: 4px;">Center</div></button>
+    <button id="downloadMapProress" class="centerButton" style="display:none"><div><img src="/static/marker-new.png" height="40px" /></div><div id="progressValue" style="margin-bottom: 4px;">0%</div></button>
+
+    <script src="/static/horizon.js?v={{timestamp}}"></script>
+</body>

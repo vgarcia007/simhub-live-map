@@ -5,3 +5,4 @@ config-user.json
 static/track_transforms.json
 /static/track_transforms.json
 nfsh.log
+poi_status.db
