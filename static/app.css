@@ -222,3 +222,6 @@ html, body {
   right: 0;
   z-index: 10;
 }
+.ol-mouse-position{
+  display: none;
+}
