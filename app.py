@@ -10,27 +10,28 @@ import logging
 import os
 import time
 import requests
-import hashlib
 
-def hash_string(s: str, algorithm: str = 'sha256') -> str:
-    """
-    Erzeugt den Hex-Hash eines Strings mit dem gewählten Algorithmus.
+import sqlite3
 
-    :param s:      Eingabe-String
-    :param algorithm: Name des Algorithmus, z.B. 'md5', 'sha1', 'sha256'
-    :return:       Hexadezimale Hash-Repräsentation
-    """
-    # 1) String kodieren
-    b = s.encode('utf-8')
-    # 2) passendes Hash-Objekt erzeugen
-    try:
-        h = hashlib.new(algorithm)
-    except ValueError:
-        raise ValueError(f"Unbekannter Algorithmus: {algorithm}")
-    # 3) Daten verarbeiten
-    h.update(b)
-    # 4) Ergebnis als Hex-String zurückgeben
-    return h.hexdigest()
+DB_PATH = 'poi_status.db'
+
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    with get_db() as db:
+        db.execute('''
+            CREATE TABLE IF NOT EXISTS poi_status (
+                mapname TEXT NOT NULL,
+                layerinfo TEXT NOT NULL,
+                uid TEXT NOT NULL,
+                done INTEGER NOT NULL DEFAULT 1,
+                PRIMARY KEY (mapname, layerinfo, uid)
+            )
+        ''')
+init_db()
 
 
 def load_config():
@@ -167,16 +168,59 @@ def horizon():
 @app.route('/horizon/markPOIasDone', methods=['POST'])
 def mark_poi_as_done():
     data = request.json
-    if not data or 'id' not in data:
+    if not data or not all(k in data for k in ("mapname", "layerinfo", "uid")):
         return jsonify({'error': 'Invalid data'}), 400
-    
-    # create an hash from the id string
-    poi_id = hash_string("Hallo Welt!", "md5")
-    
-    print(f"Received request to mark POI as done: {poi_id}")
 
-    
-    return jsonify({'success': f'POI {poi_id} marked as done'}), 200
+    mapname = data["mapname"]
+    layerinfo = data["layerinfo"]
+    uid = data["uid"]
+
+    with get_db() as db:
+        db.execute('''
+            INSERT INTO poi_status (mapname, layerinfo, uid, done)
+            VALUES (?, ?, ?, 1)
+            ON CONFLICT(mapname, layerinfo, uid)
+            DO UPDATE SET done=1
+        ''', (mapname, layerinfo, uid))
+    return jsonify({'success': 'Marker updated'}), 200
+
+
+@app.route('/horizon/unmarkPOIasDone', methods=['POST'])
+def unmark_poi_as_done():
+    data = request.json
+    if not data or not all(k in data for k in ("mapname", "layerinfo", "uid")):
+        return jsonify({'error': 'Invalid data'}), 400
+
+    mapname = data["mapname"]
+    layerinfo = data["layerinfo"]
+    uid = data["uid"]
+
+    with get_db() as db:
+        db.execute('''
+            INSERT INTO poi_status (mapname, layerinfo, uid, done)
+            VALUES (?, ?, ?, 0)
+            ON CONFLICT(mapname, layerinfo, uid)
+            DO UPDATE SET done=0
+        ''', (mapname, layerinfo, uid))
+    return jsonify({'success': 'Marker unmarked'}), 200
+
+
+@app.route('/horizon/poiStatus', methods=['GET'])
+def get_poi_status():
+    mapname = request.args.get('mapname')
+    layerinfo = request.args.get('layerinfo')
+    query = 'SELECT mapname, layerinfo, uid, done FROM poi_status WHERE 1=1'
+    params = []
+    if mapname:
+        query += ' AND mapname=?'
+        params.append(mapname)
+    if layerinfo:
+        query += ' AND layerinfo=?'
+        params.append(layerinfo)
+    with get_db() as db:
+        rows = db.execute(query, params).fetchall()
+        result = [dict(row) for row in rows]
+    return jsonify(result)
 
 
 @app.route('/settings')
@@ -400,7 +444,7 @@ def proxy_unminimized():
 @app.route('/fakedata')
 def fakedata():
     try:
-        with open('fake_gamedata_horizon.json', 'r') as f:
+        with open('fake_gamedata.json', 'r') as f:
             data = json.load(f)
             
         return jsonify(minimize_json(data))

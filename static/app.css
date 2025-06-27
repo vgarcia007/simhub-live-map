@@ -215,3 +215,10 @@ html, body {
 .horizon-layer-toggle{
   cursor: pointer;
 }
+
+.horizon-poi-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}
