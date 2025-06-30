@@ -51,7 +51,7 @@ $("#map").on('drag', suspendAutoMove);
 $("#map").on('wheel', suspendAutoZoom);
 
 function menuClick(name) {
-    console.log("Menu click: " + name);
+
     if (name == "hideall") {
         for (let i = 0; i < layers.length; i++) {
             if (menu_items.includes(layers[i].get("name"))) {
@@ -73,11 +73,9 @@ function menuClick(name) {
         return;
     }
     for (layer of layers){
-        console.log("Checking layer: " + layer.get("name"));
+
         var lname = layer.get("name");
         if (lname == name){
-            console.log("Toggling layer: " + lname);
-            console.log("Layer visibility before toggle: " + layer.getVisible());
             if (layer.getVisible()){
                 layer.setVisible(false);
                 document.getElementById(name).classList.add("dropdown-content-deselect");
@@ -85,7 +83,6 @@ function menuClick(name) {
                 layer.setVisible(true);
                 document.getElementById(name).classList.remove("dropdown-content-deselect");
             }
-            console.log("Layer visibility after toggle: " + layer.getVisible());
         }
     }
 }
@@ -102,7 +99,6 @@ function getLang() {
 }
 
 function GetAheadPosition(map, rotation, speed, coordinates) {
-    //console.log("Calculating ahead position with rotation: " + rotation + ", speed: " + speed + ", coordinates: " + JSON.stringify(coordinates));
     var aheadDistance = speed * 5;
     var height = map.getSize()[1];
     var maxAheadDistance = height / 3.0 * map.getView().getResolution();
@@ -117,8 +113,7 @@ function GetAheadPosition(map, rotation, speed, coordinates) {
 }
 
 function buildMap(TileMapInfo, mapsource, mapname) {
-    //console.log("Building map with info: " + JSON.stringify(TileMapInfo));
-    var tsProjection = new ol.proj.Projection({ // https://stackoverflow.com/questions/47612523/how-to-configure-openlayers-for-a-flat-11-pixel-coordinate-system
+    var tsProjection = new ol.proj.Projection({
         code: 'ZOOMIFY',
         units: 'pixels',
         extent: [
@@ -137,7 +132,6 @@ function buildMap(TileMapInfo, mapsource, mapname) {
         async: false
     });
     for (map of TileMapInfo.relatedmaps) {
-        //console.log("Checking if related map exists: " + map);
         existingmap = false;
         $.getJSON("/static/addons/tsmap-" + map, function(mapexists) {
             if (mapexists) {
@@ -193,20 +187,18 @@ function buildMap(TileMapInfo, mapsource, mapname) {
     var styleCache = [];
 
 
-    // Zähler für asynchrones Layer-Laden
+    // Counter for asynchronous layer loading
     let layersToLoad = TileMapInfo.layerfiles.length;
     let layersLoaded = 0;
 
-    // Layerdaten und Icons unabhängig laden
+    // Load layer data and icons independently
     menu_items = [];
     menu_icons = [];
 
     function buildMenu() {
-        console.log(menu_items);
         let z = 0;
         for (item of menu_items) {
             var image = mapsource + "/Overlays/" + menu_icons[z];
-            console.log("Loading icon for layer " + item + ": " + image);
             var entry = `
                 <div class="destination-entry horizon-layer-toggle" id="${item}" onclick="menuClick('${item}')">
                     <div class="entry-icon"><img src="${image}"  height="50px" width="50"></div>
@@ -245,8 +237,8 @@ function buildMap(TileMapInfo, mapsource, mapname) {
         }
     }
 
-    // Layerdaten und Icons laden
-// Helper: Lade ein Layer und den Status, returne ein Promise
+    // Load layer data and icons
+// Helper: Load a layer and the status, return a Promise
 function loadLayerAndStatus(i) {
     return new Promise((resolve) => {
         let layerinfo = TileMapInfo.layerfiles[i];
@@ -257,17 +249,17 @@ function loadLayerAndStatus(i) {
             $.getJSON('/horizon/poiStatus', { mapname: mapname, layerinfo: currentLayerinfo }, function(statusList) {
                 resolve({ overlays, statusList, i, currentLayerinfo });
             }).fail(function() {
-                // Auch bei Fehler weitermachen, leere Liste übergeben!
+                // Also continue on error, pass empty list!
                 resolve({ overlays, statusList: [], i, currentLayerinfo });
             });
         }).fail(function() {
-            // Wenn das Overlay-Laden fehlschlägt: Trotzdem weiter
+            // If loading the overlay fails: Continue anyway
             resolve({ overlays: [], statusList: [], i, currentLayerinfo });
         });
     });
 }
 
-// Starte das Laden für alle Layer gleichzeitig:
+// Start loading for all layers simultaneously:
 let allLayerPromises = [];
 for (let i = 0; i < TileMapInfo.layerfiles.length; i++) {
     let layerinfo = TileMapInfo.layerfiles[i];
@@ -276,7 +268,7 @@ for (let i = 0; i < TileMapInfo.layerfiles.length; i++) {
     allLayerPromises.push(loadLayerAndStatus(i));
 }
 
-// Wenn alles geladen ist, verarbeite die Ergebnisse
+// When everything is loaded, process the results
 Promise.all(allLayerPromises).then(results => {
     results.forEach(({ overlays, statusList, i, currentLayerinfo }) => {
         let statusDict = {};
@@ -307,20 +299,18 @@ Promise.all(allLayerPromises).then(results => {
         }
     });
 
-    // Am Ende Menü bauen
-    console.log("All layers loaded, building menu...");
     buildMenu();
 });
 
 
 
-    // ...OpenLayers-Layer wie gehabt, aber OHNE eigenen loader...
+    // ...OpenLayers layer as before, BUT WITHOUT own loader...
     for (let i = 0; i < TileMapInfo.layerfiles.length; i++) {
         let x = sources.length;
         var layerinfo = TileMapInfo.layerfiles[i];
         sources[x] = new ol.source.Vector({
             format: new ol.format.GeoJSON(),
-            // kein loader mehr
+            // no loader anymore
         });
         sourceref[x] = sources[x].ol_uid;
         x = layers.length;
@@ -416,13 +406,12 @@ Promise.all(allLayerPromises).then(results => {
     g_map.addLayer(window.playerToTargetLineLayer);
 
     function showPOIDetails(feature) {
-        // Prüfe, ob es ein Zielmarker ist (kein Spieler-Feature)
+        // Check if it is a target marker (not a player feature)
         if (feature !== g_playerFeature) {
             currentTargetFeature = feature;
-            // Linie sofort aktualisieren
+            // Immediately update line
             updatePlayerToTargetLine(g_playerFeature.getGeometry().getCoordinates(), rad = null);
         }
-        console.log("Clicked feature:", feature);
         var image = mapsource + "/Overlays/" + feature.get('icon');
         var m_uid = feature.get('uid');
         var m_layer = feature.get('layerinfo');
@@ -474,21 +463,20 @@ Promise.all(allLayerPromises).then(results => {
         });
     });
 
-    // Nach dem Markieren als erledigt POI-Details neu anzeigen
+    // After marking as done, re-display POI details
     window.markPOIasDone = async function(mapname, layerinfo, uid) {
         const payload = {
             mapname: mapname,
             layerinfo: layerinfo,
             uid: uid
         };
-        console.log("Marking POI as done:", payload);
         $.ajax({
             url: '/horizon/markPOIasDone',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(payload),
             success: function(response) {
-                // Feature im Frontend suchen und als done markieren
+                // Find feature in frontend and mark as done
                 const feature = sources
                     .flatMap(src => src.getFeatures())
                     .find(f =>
@@ -499,10 +487,10 @@ Promise.all(allLayerPromises).then(results => {
                 if (feature) {
                     feature.set('isDone', true);
                     feature.changed();
-                    // POI-Details neu anzeigen
+                    // Re-display POI details
                     showPOIDetails(feature);
                 }
-                // UI updaten...
+                // Update UI...
             }
         });
     };
@@ -513,14 +501,13 @@ Promise.all(allLayerPromises).then(results => {
             layerinfo: layerinfo,
             uid: uid
         };
-        console.log("Marking POI as done:", payload);
         $.ajax({
             url: '/horizon/unmarkPOIasDone',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(payload),
             success: function(response) {
-                // Feature im Frontend suchen und als done markieren
+                // Find feature in frontend and mark as not done
                 const feature = sources
                     .flatMap(src => src.getFeatures())
                     .find(f =>
@@ -531,73 +518,14 @@ Promise.all(allLayerPromises).then(results => {
                 if (feature) {
                     feature.set('isDone', false);
                     feature.changed();
-                    // POI-Details neu anzeigen
+                    // Re-display POI details
                     showPOIDetails(feature);
                 }
-                // UI updaten...
+                // Update UI...
             }
         });
     };
 
-    /*
-        var ht = 90;
-        var ct = 0;
-        column = 0;
-        var columncnt = Math.ceil((menu_items.length + 2) / 10);
-        var vheight = Math.ceil((menu_items.length + 2) / columncnt);
-        //$('.container').css('height', vheight * 1.5 + "em");
-        $('.container').css('-moz-column-count', columncnt);
-        $('.container').css('-webkit-column-count', columncnt);
-        $('.container').css('column-count', columncnt);
-        $('#nib-entries').append('<input type="button" id="hideall" value="Hide All" class="dropdown-content" onclick = "menuClick(this.id)"></input>');
-        $('#nib-entries').append('<input type="button" id="showall" value="Show All" class="dropdown-content" onclick = "menuClick(this.id)"></input>');
-        z=0;
-        for (item of menu_items) {
-            var entry = `
-                <div class="destination-entry" onclick = "menuClick(this.value)">
-                    <div class="entry-icon"><img src=""></div>
-                    <div class="entry-text">
-                        <div class="entry-name link-dark">${item}</div>
-                        <div class="entry-info">${menu_icons[z]}</div>
-                    </div>
-                </div>
-            `;
-            ct += 1;
-            if (ct > 10) {
-                ht = 90;
-                ct = 1;
-                column += 1;
-            }
-            $('#nib-entries').append(entry);
-            ht += 40;
-            z++;
-        }
-    
-        ht = 90;
-        ct = 0;
-        column = 0;
-        columncnt = Math.ceil((RelatedMaps.length) / 10);
-        vheight = Math.ceil((RelatedMaps.length) / columncnt);
-        //$('.mapcontainer').css('height', vheight * 1.5 + "em");
-        $('.mapcontainer').css('-moz-column-count', columncnt);
-        $('.mapcontainer').css('-webkit-column-count', columncnt);
-        $('.mapcontainer').css('column-count', columncnt);
-        for (map of RelatedMaps) {
-            ct += 1;
-            if (ct > 10) {
-                ht = 90;
-                ct = 1;
-                column += 1;
-            }
-            $('#mapcontainer').append('<input type="button" id="' + map + '" value="' + map + '" class="dropdown-content" onclick = "mapClick(this.value)"></input>');
-            ht += 40;
-        }
-        if (RelatedMaps.length == 0) {
-            $("#mapButton").hide();
-        } else {
-            $("#mapButton").show();
-        }
-    */
     function zoomChanged() {
         var zoom = g_map.getView().getZoom();
         if (zoom >= 1) {
@@ -687,7 +615,6 @@ Promise.all(allLayerPromises).then(results => {
     }
 
     function refreshPositionFromApi() {
-        //console.log("Refreshing position from API");
         $.getJSON(mapAPIurl, function(data) {
             if (data.GameRunning == true) {
                 let coords = data.NewData.CarCoordinates;
@@ -738,7 +665,6 @@ document.loadMap = function loadMap(mapname) {
     }
     var mapsource = "/static/addons/tsmap-" + mapname.toLowerCase();
     $.getJSON(mapsource + "/TileMapInfo.json", function(mapinfo) {
-        //console.log("Loading map " + mapname);
         buildMap(mapinfo, mapsource, mapname);
     });;
 
@@ -750,9 +676,7 @@ document.loadMap = function loadMap(mapname) {
 var lastGame = null;
 
 function switchGame() {
-    //console.log("Switching game...");
     $.getJSON(mapAPIurl, function(data) {
-        //console.log(data);
         if (lastGame != data.GameName) {
             lastGame = data.GameName;
             var targetGame = "FH5";
@@ -762,7 +686,6 @@ function switchGame() {
             if (data.GameName !== "FH5" && data.GameName !== "FH4") {
                 window.location.href = "/";
             }
-            //console.log("Switching to game " + targetGame);
             document.loadMap(targetGame);
         }
     });
@@ -771,19 +694,16 @@ function switchGame() {
 fetch('/config')
     .then(response => response.json())
     .then(config => {
-        //console.log("Switching game to initial game");
         mapAPIurl = config.mapAPIurl;
         fetchIntervalMs = config.fetchIntervalMs;
         switchGame();
         setInterval(switchGame, 5000);
-
-        //initially hide all layers
         menuClick('hideall');
 
     })
     .catch(err => console.error("Error loading config:", err));
 
-// Globale Variable für das Ziel und die Linie
+// Global variable for target and line
 var currentTargetFeature = null;
 var playerToTargetLineFeature = null;
 var playerToTargetLineSource = new ol.source.Vector();
@@ -800,11 +720,11 @@ var playerToTargetLineLayer = new ol.layer.Vector({
     updateWhileInteracting: true,
 });
 
-// Funktion zum Zeichnen/Aktualisieren der Linie
+// Function to draw/update the line
 function updatePlayerToTargetLine(playerCoords, rad = null) {
     if (!currentTargetFeature) {
         window.playerToTargetLineSource.clear();
-        window.playerToTargetLineFeature = null; // <--- NEU
+        window.playerToTargetLineFeature = null;
         return;
     }
     var targetCoords = currentTargetFeature.getGeometry().getCoordinates();
@@ -814,31 +734,21 @@ function updatePlayerToTargetLine(playerCoords, rad = null) {
 
     if (rad !== null) {
         let yaw = -rad * 180 / Math.PI;
-        // Optional: auf [0,360) normieren
+
         yaw = (yaw + 360) % 360;
         const dx = targetCoords[0] - playerCoords[0];
         const dy = targetCoords[1] - playerCoords[1];
         let angleRad = Math.atan2(dy, dx);
 
-        // 2) In Grad umwandeln (0° = Osten, + gegen CCW)
         let angleDeg = angleRad * 180 / Math.PI;
 
-        // 3) In einen Kompasskurs überführen:
-        //    Unser „0“ soll Norden statt Osten sein,
-        //    und wir wollen CW-Messung statt CCW.
-        //    Daher: bearing = 90° − angleDeg
         let bearing = 90 - angleDeg;
 
-        // 4) Normieren auf [0,360)
+        // 4) Normalize to [0,360)
         bearing = (bearing + 360) % 360;
-        console.log("Bearing to target: " + bearing + "°");
-        console.log("Distance to target: " + dist + "m");
-        console.log("Player yaw: " + rad);
-        var correctedBearing = bearing - yaw; // Adjusted to match the original logic
-        //const correctedBearing = bearing + rad -90;
-        console.log("Player corrected yaw: " + correctedBearing);
 
-        console.log("Corrected bearing for icon: " + correctedBearing + "°");
+        var correctedBearing = bearing - yaw; // Adjusted to match the original logic
+
         // Set the icon rotation based on the corrected bearing
         var directionIcon = '<i class="fa-solid fa-arrow-up fa-rotate-by" style="--fa-rotate-angle: '+correctedBearing+'deg;"></i>';
         poiInfoIcon.innerHTML = directionIcon;
@@ -847,12 +757,12 @@ function updatePlayerToTargetLine(playerCoords, rad = null) {
     if (dist < 40) {
         currentTargetFeature = null;
         window.playerToTargetLineSource.clear();
-        window.playerToTargetLineFeature = null; // <--- NEU
+        window.playerToTargetLineFeature = null;
         poi_info_box.style.display = 'none';
         return;
     }
     var line = new ol.geom.LineString([playerCoords, targetCoords]);
-    // Immer ein neues Feature anlegen, wenn das alte nicht mehr im Source ist
+    // Always create a new feature if the old one is no longer in the source
     if (!window.playerToTargetLineFeature || window.playerToTargetLineSource.getFeatures().indexOf(window.playerToTargetLineFeature) === -1) {
         window.playerToTargetLineFeature = new ol.Feature({ geometry: line });
         window.playerToTargetLineSource.clear();
@@ -860,22 +770,22 @@ function updatePlayerToTargetLine(playerCoords, rad = null) {
     } else {
         window.playerToTargetLineFeature.setGeometry(line);
     }
-    // Stil mit Glow, Transparenz und Pfeilspitze
+    // Style with glow, transparency and arrowhead
     window.playerToTargetLineLayer.setStyle(function(feature) {
         const styles = [];
-        // Glow-Effekt (breite, halbtransparente Linie)
+        // Glow effect (wide, semi-transparent line)
         styles.push(new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'rgba(68,136,221, 1)',
                 width: 15
             })
         }));
-        // Hauptlinie
+        // Main line
         styles.push(new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'rgb(255, 255, 255)',
                 width: 8,
-                lineDash: [12, 12], // gestrichelt
+                lineDash: [12, 12], // dashed
             })
         }));
 
