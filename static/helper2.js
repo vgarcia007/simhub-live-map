@@ -657,7 +657,7 @@ field('upload').addEventListener('submit', async event => {
     try {
         const imported = await requestJson(helper.dataset.importUrl, { method: 'POST', body: form });
         uploadedFile = file;
-        await openRecording(imported.recording, imported.recording.track_name, imported.display_name, null, imported.yaw);
+        await openRecording(imported.recording, imported.track_key, imported.display_name, null, imported.yaw);
     } catch (error) {
         showStatus(error.message);
     } finally {

@@ -6,7 +6,7 @@ from mapping_helper import (
     REFERENCE_LOCK, UPLOAD_LIMIT, alignment_reference_points, read_recording,
     initialize_track_storage, learn_live_fm8_track, metadata_text, read_refpoints, track_key, write_refpoints,
 )
-from track_identity import legacy_track_for_recording, resolve_track, track_aliases
+from track_identity import legacy_track_for_recording, recording_track_key, resolve_track, track_aliases
 from update_addons import update_addons
 
 from waitress import serve
@@ -271,10 +271,11 @@ def helper2_import():
     try:
         recording = helper2_upload()
         tracks = read_refpoints().get(recording['game'], {})
-        key = recording['track_name']
+        key = recording_track_key(recording)
         existing = tracks.get(key) or tracks.get(legacy_track_for_recording(tracks, recording), {})
         return jsonify(
             recording=recording,
+            track_key=key,
             display_name=existing.get('display_name') or recording['display_name'] or key,
             yaw=existing.get('yaw', 0),
         )
@@ -301,8 +302,8 @@ def helper2_save():
         track = track_key(request.form.get('track'))
         alignment = json.loads(request.form.get('alignment', 'null'))
         uploaded = helper2_upload() if 'recording' in request.files else None
-        if uploaded is not None and (uploaded['game'], uploaded['track_name']) != (game, track):
-            raise ValueError("GameCode and TrackName must match the uploaded recording.")
+        if uploaded is not None and (uploaded['game'], recording_track_key(uploaded)) != (game, track):
+            raise ValueError("The game and track key must match the uploaded recording.")
 
         with REFERENCE_LOCK:
             refpoints = read_refpoints()
@@ -334,7 +335,7 @@ def helper2_save():
             display_name = (metadata_text(request.form.get('display_name')) or previous.get('display_name')
                             or recording['display_name'] or track)
             updated = {
-                'track_name': track,
+                'track_name': recording['track_name'],
                 'display_name': display_name,
                 'aliases': track_aliases(track, *previous.get('aliases', ()), previous_key,
                                          recording['track_code'], recording['display_name']),
@@ -342,6 +343,8 @@ def helper2_save():
                 'ref_points': refs,
                 'helper2': {'recording': recording, 'alignment': saved_alignment},
             }
+            if recording['track_config']:
+                updated['track_config'] = recording['track_config']
             if previous_key != track:
                 del tracks[previous_key]
             tracks[track] = updated

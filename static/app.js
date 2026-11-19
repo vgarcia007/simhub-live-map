@@ -570,8 +570,17 @@ document.getElementById('followButton').addEventListener('click', () => {
     hideFollowButton();
 });
 
-function liveTrackCandidates(data) {
-    return [...new Set([data.TrackIdWithConfig, data.TrackId, data.TrackName, data.TrackCode]
+function liveTrackCandidates(data, gameCode) {
+    const candidates = [data.TrackIdWithConfig, data.TrackId, data.TrackName, data.TrackCode];
+    if (gameCode === 'PCars3') {
+        const config = typeof data.TrackConfig === 'string' ? data.TrackConfig.trim() : '';
+        const layoutNames = [data.TrackId, data.TrackName]
+            .filter(name => config && typeof name === 'string' && name.trim())
+            .map(name => name.trim().endsWith(`-${config}`) ? name.trim() : `${name.trim()}-${config}`);
+        const configuredId = data.TrackIdWithConfig !== data.TrackId ? data.TrackIdWithConfig : null;
+        candidates.unshift(configuredId, ...layoutNames, data.TrackCode);
+    }
+    return [...new Set(candidates
         .filter(value => typeof value === 'string' || typeof value === 'number')
         .map(value => String(value).trim())
         .filter(Boolean))];
@@ -661,7 +670,7 @@ async function fetchGameData(config) {
 
         const d = data.NewData.FeedbackData;
         const gameName = data.GameCode || data.GameName;
-        const candidates = liveTrackCandidates(data.NewData);
+        const candidates = liveTrackCandidates(data.NewData, gameName);
         const trackIdentity = JSON.stringify(candidates);
         const trackName = data.NewData.TrackName || data.NewData.TrackCode || candidates[0];
 

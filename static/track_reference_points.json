@@ -20423,8 +20423,10 @@
           "lng": 6.986446274427319
         }
       ],
-      "display_name": "Nurburgring-Nordschleife",
-      "aliases": []
+      "display_name": "N\u00fcrburgring Nordschleife",
+      "aliases": [],
+      "track_name": "Nurburgring",
+      "track_config": "Nordschleife"
     },
     "Bathurst-Mount_Panorama": {
       "yaw": 190,
@@ -20500,8 +20502,10 @@
           "lng": 149.55830582389385
         }
       ],
-      "display_name": "Bathurst-Mount_Panorama",
-      "aliases": []
+      "display_name": "Bathurst \u2013 Mount Panorama",
+      "aliases": [],
+      "track_name": "Bathurst",
+      "track_config": "Mount_Panorama"
     },
     "AutodromoNazionaleMonza-GP": {
       "yaw": 180,
@@ -20535,8 +20539,10 @@
           "lng": 9.289241246556236
         }
       ],
-      "display_name": "AutodromoNazionaleMonza-GP",
-      "aliases": []
+      "display_name": "Monza GP",
+      "aliases": [],
+      "track_name": "AutodromoNazionaleMonza",
+      "track_config": "GP"
     },
     "Azure_Circuit-GP": {
       "yaw": 60,
@@ -20591,8 +20597,10 @@
           "lng": 7.4255899063732596
         }
       ],
-      "display_name": "Azure_Circuit-GP",
-      "aliases": []
+      "display_name": "Azure Circuit GP",
+      "aliases": [],
+      "track_name": "Azure_Circuit",
+      "track_config": "GP"
     },
     "Hockenheimring-GP": {
       "yaw": 180,
@@ -20626,8 +20634,10 @@
           "lng": 8.58427
         }
       ],
-      "display_name": "Hockenheimring-GP",
-      "aliases": []
+      "display_name": "Hockenheimring GP",
+      "aliases": [],
+      "track_name": "Hockenheimring",
+      "track_config": "GP"
     }
   }
 }

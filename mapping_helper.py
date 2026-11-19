@@ -12,7 +12,7 @@ from threading import Lock
 import numpy as np
 
 from generate_transforms import build_transforms, process_tracks
-from track_identity import migrate_track_keys, resolve_track, track_aliases
+from track_identity import migrate_track_keys, recording_track_key, resolve_track, track_aliases
 
 REFERENCE_FILE = Path("static/track_reference_points.json")
 TRANSFORM_FILE = Path("static/track_transforms.json")
@@ -38,7 +38,7 @@ def poi_renames(refpoints):
             continue
         files = {path.stem: path for path in directory.glob("*.json") if path.is_file()}
         for track, entry in tracks.items():
-            if entry.get("track_name") != track or track in files:
+            if not entry.get("track_name") or track in files:
                 continue
             for alias in entry.get("aliases", ()):
                 if alias in files and resolve_track(tracks, alias) == track:
@@ -168,6 +168,7 @@ def read_recording(stream):
         "points": points,
         "skipped": skipped,
     }
+    track_key(recording_track_key(recording))
     axes = (2,) if game == "FM8" else (2, 1)
     if not any(has_area(points, axis) for axis in axes):
         raise ValueError("The recording needs at least three non-collinear points.")

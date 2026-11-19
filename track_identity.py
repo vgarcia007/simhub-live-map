@@ -7,6 +7,24 @@ FM8_TRACKS = {
 }
 
 
+# Layout names and keys confirmed against the PCars3 .shtl recordings.
+PCARS3_TRACKS = {
+    "Nurburgring-Nordschleife": ("Nurburgring", "Nordschleife", "Nürburgring Nordschleife"),
+    "Bathurst-Mount_Panorama": ("Bathurst", "Mount_Panorama", "Bathurst – Mount Panorama"),
+    "AutodromoNazionaleMonza-GP": ("AutodromoNazionaleMonza", "GP", "Monza GP"),
+    "Azure_Circuit-GP": ("Azure_Circuit", "GP", "Azure Circuit GP"),
+    "Hockenheimring-GP": ("Hockenheimring", "GP", "Hockenheimring GP"),
+}
+
+
+def recording_track_key(recording):
+    name = recording.get("track_name")
+    config = recording.get("track_config")
+    if recording.get("game") == "PCars3" and name and config:
+        return f"{name}-{config}"
+    return name
+
+
 def track_aliases(track, *names):
     return list(dict.fromkeys(name for name in names if isinstance(name, str) and name and name != track))
 
@@ -26,7 +44,7 @@ def legacy_track_for_recording(tracks, recording):
         key = resolve_track(tracks, alias)
         if key in tracks and not tracks[key].get("helper2") and not tracks[key].get("track_name"):
             return key
-    return recording["track_name"]
+    return recording_track_key(recording)
 
 
 def migrate_track_keys(refpoints):
@@ -34,16 +52,26 @@ def migrate_track_keys(refpoints):
     for game, tracks in refpoints.items():
         for old_key, entry in list(tracks.items()):
             recording = entry.get("helper2", {}).get("recording", {})
-            confirmed = FM8_TRACKS.get(old_key) if game == "FM8" else None
-            track = recording.get("track_name") or confirmed or old_key
+            pcars = PCARS3_TRACKS.get(old_key) if game == "PCars3" else None
+            confirmed = FM8_TRACKS.get(old_key) if game == "FM8" else old_key if pcars else None
+            recorded_key = recording_track_key(recording)
+            track = recorded_key or confirmed or old_key
             if track != old_key and track in tracks:
                 # An occupied key is ambiguous. Keep both entries available.
                 track = old_key
             name = entry.get("display_name") or recording.get("display_name") or old_key
+            if pcars and name == old_key:
+                name = pcars[2]
             aliases = track_aliases(track, *entry.get("aliases", ()), old_key,
                                     recording.get("track_code"), recording.get("display_name"))
             identity = {"display_name": name, "aliases": aliases}
-            if track == recording.get("track_name") or track == confirmed:
+            if track == recorded_key:
+                identity["track_name"] = recording["track_name"]
+                if recording.get("track_config"):
+                    identity["track_config"] = recording["track_config"]
+            elif pcars and track == confirmed:
+                identity["track_name"], identity["track_config"] = pcars[:2]
+            elif track == confirmed:
                 identity["track_name"] = track
             if any(entry.get(key) != value for key, value in identity.items()):
                 entry.update(identity)

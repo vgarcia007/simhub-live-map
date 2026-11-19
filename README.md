@@ -24,15 +24,18 @@ We use an affine transformation because game coordinates and GPS coordinates are
 ## Track data for clients
 
 [static/track_reference_points.json](static/track_reference_points.json) stores entries
-under `[GameCode][TrackName]`, using the identifiers from the SimHub `.shtl` recording.
-For FM8, SimHub's live JSON provides the same values as `GameName` and
+under `[GameCode][track key]`, using the identifiers from the SimHub `.shtl` recording.
+For FM8, the key is `TrackName`, which SimHub's live JSON reports as
 `NewData.TrackId`. For example, the Nürburgring Nordschleife is `["FM8"]["32"]`.
+For PCars3, the key is `TrackName-TrackConfig` when a layout is present. PCars3
+uses `Nurburgring-Nordschleife` and `Nurburgring-GP` for distinct layouts.
 
-Each entry contains `display_name`, `yaw` and `ref_points`. The `aliases` list
-contains previous keys or names. Legacy tracks keep their previous keys until the
-recording or live telemetry verifies their IDs. The server derives its local
-transformations from this file at startup. POIs use the same key in
-`static/poi/<GameCode>/<TrackName>.json`, for example
+Each entry contains `display_name`, `yaw` and `ref_points`. Confirmed entries
+also have `track_name` and, when present, `track_config` as recorded by SimHub.
+The `aliases` list contains previous keys or names. Legacy tracks keep their
+previous keys until the recording or live telemetry verifies their IDs.
+The server derives its local transformations from this file at startup.
+POIs use `static/poi/<GameCode>/<track key>.json`, for example
 [`static/poi/FM8/32.json`](static/poi/FM8/32.json).
 
 ## Contributing
