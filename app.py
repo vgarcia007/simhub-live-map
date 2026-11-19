@@ -587,29 +587,31 @@ def poi(game, trackcode):
 @app.route('/static/poi/<game>/<trackcode>.json')
 def static_poi(game, trackcode):
     try:
-        directory, filename, _, _ = poi_storage(game, trackcode)
+        with REFERENCE_LOCK:
+            directory, filename, _, _ = poi_storage(game, trackcode)
+            return send_from_directory(os.path.abspath(directory), filename)
     except ValueError as error:
         return {'error': str(error)}, 400
-    return send_from_directory(os.path.abspath(directory), filename)
 
 
 @app.route('/poi-editor/<game>/<trackcode>', methods=['GET', 'POST'])
 def poi_editor(game, trackcode):
     try:
-        directory, filename, _, _ = poi_storage(game, trackcode)
+        with REFERENCE_LOCK:
+            directory, filename, _, _ = poi_storage(game, trackcode)
+            path = os.path.join(directory, filename)
+            if request.method == 'GET':
+                try:
+                    with open(path, 'r', encoding='utf-8') as source:
+                        return jsonify(json.load(source))
+                except FileNotFoundError:
+                    return jsonify({"type": "FeatureCollection", "features": []})
+            os.makedirs(directory, exist_ok=True)
+            with open(path, 'w', encoding='utf-8') as output:
+                json.dump(request.json, output, indent=2)
+            return jsonify({"status": "success"})
     except ValueError as error:
         return {'error': str(error)}, 400
-    path = os.path.join(directory, filename)
-    if request.method == 'GET':
-        try:
-            with open(path, 'r', encoding='utf-8') as source:
-                return jsonify(json.load(source))
-        except FileNotFoundError:
-            return jsonify({"type": "FeatureCollection", "features": []})
-    os.makedirs(directory, exist_ok=True)
-    with open(path, 'w', encoding='utf-8') as output:
-        json.dump(request.json, output, indent=2)
-    return jsonify({"status": "success"})
 
 
 @app.route('/favicon.ico')

@@ -12,10 +12,11 @@ from threading import Lock
 import numpy as np
 
 from generate_transforms import build_transforms, process_tracks
-from track_identity import migrate_track_keys, track_aliases
+from track_identity import migrate_track_keys, resolve_track, track_aliases
 
 REFERENCE_FILE = Path("static/track_reference_points.json")
 TRANSFORM_FILE = Path("static/track_transforms.json")
+POI_DIRECTORY = Path("static/poi")
 REFERENCE_LOCK = Lock()
 UPLOAD_LIMIT = 2 * 1024 * 1024
 JSON_LIMIT = 8 * 1024 * 1024
@@ -29,10 +30,30 @@ def read_refpoints():
         return json.load(source)
 
 
+def poi_renames(refpoints):
+    moves = []
+    for game, tracks in refpoints.items():
+        directory = POI_DIRECTORY / track_key(game)
+        if not directory.is_dir():
+            continue
+        files = {path.stem: path for path in directory.glob("*.json") if path.is_file()}
+        for track, entry in tracks.items():
+            if entry.get("track_name") != track or track in files:
+                continue
+            for alias in entry.get("aliases", ()):
+                if alias in files and resolve_track(tracks, alias) == track:
+                    destination = directory / (track_key(track) + ".json")
+                    moves.append((files.pop(alias), destination))
+                    files[track] = destination
+                    break
+    return moves
+
+
 def write_refpoints(refpoints):
-    # Call under REFERENCE_LOCK. Stage both outputs before replacing either.
+    # Call under REFERENCE_LOCK. Stage both outputs before updating the track files.
     transforms = build_transforms(refpoints)
     staged = []
+    moved_pois = []
 
     def stage(path, write):
         with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as output:
@@ -54,6 +75,10 @@ def write_refpoints(refpoints):
             previous = TRANSFORM_FILE.read_bytes()
             backup = stage(TRANSFORM_FILE, lambda output: output.write(previous))
 
+        for source, destination in poi_renames(refpoints):
+            source.rename(destination)
+            moved_pois.append((source, destination))
+
         os.replace(transforms_temp, TRANSFORM_FILE)
         try:
             os.replace(refs_temp, REFERENCE_FILE)
@@ -63,6 +88,10 @@ def write_refpoints(refpoints):
             else:
                 os.replace(backup, TRANSFORM_FILE)
             raise
+    except OSError:
+        for source, destination in reversed(moved_pois):
+            destination.rename(source)
+        raise
     finally:
         for path in staged:
             path.unlink(missing_ok=True)
@@ -156,7 +185,7 @@ def has_area(points, axis):
 def initialize_track_storage():
     with REFERENCE_LOCK:
         refpoints = read_refpoints()
-        if migrate_track_keys(refpoints):
+        if migrate_track_keys(refpoints) or poi_renames(refpoints):
             write_refpoints(refpoints)
         else:
             process_tracks(REFERENCE_FILE, TRANSFORM_FILE)

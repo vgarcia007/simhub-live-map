@@ -31,7 +31,9 @@ For FM8, SimHub's live JSON provides the same values as `GameName` and
 Each entry contains `display_name`, `yaw` and `ref_points`. The `aliases` list
 contains previous keys or names. Legacy tracks keep their previous keys until the
 recording or live telemetry verifies their IDs. The server derives its local
-transformations from this file at startup.
+transformations from this file at startup. POIs use the same key in
+`static/poi/<GameCode>/<TrackName>.json`, for example
+[`static/poi/FM8/32.json`](static/poi/FM8/32.json).
 
 ## Contributing
 
