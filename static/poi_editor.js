@@ -235,7 +235,7 @@ function initEditor(config) {
                 'circle-color': '#B42222'
             }
         });
-        loadGeoJSON(`/poi-editor/${game}/${trackcode}`);
+        loadGeoJSON(`/poi-editor/${encodeURIComponent(game)}/${encodeURIComponent(trackcode)}`);
     });
 
     // selecting via layer (optional fallback)
@@ -281,7 +281,7 @@ function initEditor(config) {
     });
 
     document.getElementById('save-geojson').addEventListener('click', () => {
-        saveGeoJSON(`/poi-editor/${game}/${trackcode}`);
+        saveGeoJSON(`/poi-editor/${encodeURIComponent(game)}/${encodeURIComponent(trackcode)}`);
     });
 
     // Funktion zum Löschen eines Markers

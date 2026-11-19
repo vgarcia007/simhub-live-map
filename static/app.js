@@ -33,8 +33,7 @@ let currentPoiinfoBox = null;
 let lastPoi = null;
 let gameToLatLng = null;
 let lastGameName = null;
-let lastTrackCode = null;
-let transformCache = {};
+let lastTrackIdentity = null;
 let map, marker;
 let poiEditorLink = document.getElementById('poiEditorLink');
 
@@ -61,7 +60,8 @@ async function switch_logic(config) {
     const data = await res.json();
     console.log("API Response Data:", data); // Debugging
 
-    if (data.GameName === 'FH4' || data.GameName === 'FH5') {
+    const gameCode = data.GameCode || data.GameName;
+    if (gameCode === 'FH4' || gameCode === 'FH5') {
         console.log("Switching logic for Forza Horizon");
         // jum to other route /horizon
         window.location.href = "/horizon";
@@ -72,7 +72,7 @@ async function switch_logic(config) {
         InfoBoxShowHide("show");
         //InfoBoxSetTitle("Info");
         InfoBoxEntryClear();
-        fetchGameData(config);
+        if (map) map.once('load', () => fetchGameData(config));
     }
 }
 
@@ -570,6 +570,24 @@ document.getElementById('followButton').addEventListener('click', () => {
     hideFollowButton();
 });
 
+function liveTrackCandidates(data) {
+    return [...new Set([data.TrackIdWithConfig, data.TrackId, data.TrackName, data.TrackCode]
+        .filter(value => typeof value === 'string' || typeof value === 'number')
+        .map(value => String(value).trim())
+        .filter(Boolean))];
+}
+
+function matchLiveTrack(tracks, candidates) {
+    for (const key of candidates) {
+        if (Object.prototype.hasOwnProperty.call(tracks, key)) return key;
+    }
+    for (const name of candidates) {
+        const matches = Object.keys(tracks).filter(key => tracks[key].aliases?.includes(name));
+        if (matches.length === 1) return matches[0];
+    }
+    return candidates[0];
+}
+
 /**
  * Fetches game data from the specified API and updates the map, markers, and UI elements accordingly.
  * Handles various states such as waiting for GPS data, missing transformations, and lap information updates.
@@ -642,16 +660,24 @@ async function fetchGameData(config) {
         }
 
         const d = data.NewData.FeedbackData;
-        const gameName = data.GameName;
-        const trackCode = data.NewData.TrackCode;
-        const trackName = data.NewData.TrackName;
+        const gameName = data.GameCode || data.GameName;
+        const candidates = liveTrackCandidates(data.NewData);
+        const trackIdentity = JSON.stringify(candidates);
+        const trackName = data.NewData.TrackName || data.NewData.TrackCode || candidates[0];
 
-        // Load Trackinfo
-        if (gameName !== lastGameName || trackCode !== lastTrackCode) {
-            console.log("Loading TrackInfo for", gameName, trackCode);
-            poiEditorLink.href = `/poi/${gameName}/${trackCode}`;
-            loadGeoJsonAndAddLayer(map, `/static/poi/${gameName}/${trackCode}.json`, 123456);
-
+        // Resolve the game recording key first. Older SimHub names still match stored aliases.
+        if (gameName !== lastGameName || trackIdentity !== lastTrackIdentity) {
+            const tfRes = await fetch("/static/track_transforms.json", { cache: "no-store" });
+            const tfJson = await tfRes.json();
+            const tracks = tfJson[gameName] || {};
+            const track = matchLiveTrack(tracks, candidates);
+            const coeffs = Object.prototype.hasOwnProperty.call(tracks, track) ? tracks[track] : null;
+            console.log("Loading TrackInfo for", gameName, track);
+            if (track) {
+                const path = `${encodeURIComponent(gameName)}/${encodeURIComponent(track)}`;
+                poiEditorLink.href = `/poi/${path}`;
+                loadGeoJsonAndAddLayer(map, `/static/poi/${path}.json`, 123456);
+            }
 
             if (infobox_warning_TrackInfo_id) {
                 InfoBoxEntryUpdate(
@@ -668,30 +694,20 @@ async function fetchGameData(config) {
                 );
             }
 
-            // Transform-Cache
-            if (!transformCache[gameName]?.[trackCode]) {
-                const tfRes = await fetch("/static/track_transforms.json", { cache: "no-store" });
-                const tfJson = await tfRes.json();
-                transformCache[gameName] = transformCache[gameName] || {};
-                transformCache[gameName][trackCode] = tfJson[gameName]?.[trackCode] || null;
-            }
-            const coeffs = transformCache[gameName][trackCode];
-            console.log("Transform Coefficients:", coeffs);
-
             if (!coeffs) {
                 // Missing Transform
                 if (!infobox_warning_NoTransform_id) {
                     infobox_warning_NoTransform_id = InfoBoxEntryAdd(
                         'fa-solid fa-road-circle-xmark fa-fw',
                         'Transform missing',
-                        'Please create it:<br><a href="/helper">Click here</a>'
+                        'Please create it:<br><a href="/helper2">Click here</a>'
                     );
                 } else {
                     InfoBoxEntryUpdate(
                         infobox_warning_NoTransform_id,
                         'fa-solid fa-road-circle-xmark fa-fw',
                         'Transform missing',
-                        'Please create it:<br><a href="/helper">Click here</a>'
+                        'Please create it:<br><a href="/helper2">Click here</a>'
                     );
                 }
                 throw new Error("Transformation missing");
@@ -711,7 +727,7 @@ async function fetchGameData(config) {
             ];
 
             lastGameName = gameName;
-            lastTrackCode = trackCode;
+            lastTrackIdentity = trackIdentity;
         }
 
         if (!gameToLatLng) throw new Error("Transformation missing");

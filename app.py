@@ -1,8 +1,12 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, jsonify, render_template, redirect, send_from_directory, url_for
 import requests
 from flask_cors import CORS
 import json
-from generate_transforms import process_tracks
+from mapping_helper import (
+    REFERENCE_LOCK, UPLOAD_LIMIT, alignment_reference_points, read_recording,
+    initialize_track_storage, learn_live_fm8_track, metadata_text, read_refpoints, track_key, write_refpoints,
+)
+from track_identity import legacy_track_for_recording, resolve_track, track_aliases
 from update_addons import update_addons
 
 from waitress import serve
@@ -73,6 +77,7 @@ def minimize_json(data):
         small_data['GameName'] = data['GameName']
     except KeyError:
         small_data['GameName'] = "Unknown Game"
+    small_data['GameCode'] = data.get('GameCode') or small_data['GameName']
     try:
         small_data['IsGameInRace'] = data['IsGameInRace']
     except KeyError:
@@ -81,53 +86,49 @@ def minimize_json(data):
         small_data['GameRunning'] = data['GameRunning']
     except KeyError:
         small_data['GameRunning'] = False
-    if data['NewData'] is not None:
+    new_data = data.get('NewData')
+    if new_data is not None:
+        for field in ('TrackName', 'TrackCode', 'TrackId', 'TrackIdWithConfig', 'TrackConfig'):
+            if field in new_data:
+                small_data['NewData'][field] = new_data[field]
         try:
-            small_data['NewData']['TrackName'] = data['NewData']['TrackName']
+            small_data['NewData']['FilteredSpeedKmh'] = new_data['FilteredSpeedKmh']
         except KeyError:
             pass
         try:
-            small_data['NewData']['TrackCode'] = data['NewData']['TrackCode']
+            small_data['NewData']['FeedbackData']['CoordinatesX'] = new_data['FeedbackData']['CoordinatesX']
         except KeyError:
             pass
         try:
-            small_data['NewData']['FilteredSpeedKmh'] = data['NewData']['FilteredSpeedKmh']
+            small_data['NewData']['FeedbackData']['CoordinatesY'] = new_data['FeedbackData']['CoordinatesY']
         except KeyError:
             pass
         try:
-            small_data['NewData']['FeedbackData']['CoordinatesX'] = data['NewData']['FeedbackData']['CoordinatesX']
+            small_data['NewData']['FeedbackData']['OrientationYaw'] = new_data['FeedbackData']['OrientationYaw']
         except KeyError:
             pass
         try:
-            small_data['NewData']['FeedbackData']['CoordinatesY'] = data['NewData']['FeedbackData']['CoordinatesY']
+            small_data['NewData']['CarCoordinates'] = new_data['CarCoordinates']
         except KeyError:
             pass
         try:
-            small_data['NewData']['FeedbackData']['OrientationYaw'] = data['NewData']['FeedbackData']['OrientationYaw']
+            small_data['NewData']['OrientationYaw'] = new_data['OrientationYaw']
         except KeyError:
             pass
         try:
-            small_data['NewData']['CarCoordinates'] = data['NewData']['CarCoordinates']
+            small_data['NewData']['SpeedKmh'] = new_data['SpeedKmh']
         except KeyError:
             pass
         try:
-            small_data['NewData']['OrientationYaw'] = data['NewData']['OrientationYaw']
+            small_data['NewData']['CurrentLapTime']= new_data['CurrentLapTime']
         except KeyError:
             pass
         try:
-            small_data['NewData']['SpeedKmh'] = data['NewData']['SpeedKmh']
+            small_data['NewData']['CurrentLap']= new_data['CurrentLap']
         except KeyError:
             pass
         try:
-            small_data['NewData']['CurrentLapTime']= data['NewData']['CurrentLapTime']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['CurrentLap']= data['NewData']['CurrentLap']
-        except KeyError:
-            pass
-        try:
-            small_data['NewData']['CurrentSectorIndex']= data['NewData']['CurrentSectorIndex']
+            small_data['NewData']['CurrentSectorIndex']= new_data['CurrentSectorIndex']
         except KeyError:
             pass
     else:
@@ -135,7 +136,7 @@ def minimize_json(data):
     
     return small_data
 
-process_tracks("static/track_reference_points.json", "static/track_transforms.json")
+initialize_track_storage()
 update_addons("https://garcias-garage.de/files-other/nfsh-addons/version.json", "static/addons")
 
 app = Flask(__name__)
@@ -236,6 +237,123 @@ def helper():
         return redirect(url_for('get_config_user'))
     return render_template('helper.html')
 
+@app.route('/helper2')
+@app.route('/helper2/<game>/<track>')
+def helper2(game=None, track=None):
+    if not user_config_active:
+        return redirect(url_for('get_config_user'))
+    if game is not None:
+        tracks = read_refpoints().get(game, {})
+        key = resolve_track(tracks, track)
+        if not tracks.get(key, {}).get('helper2'):
+            return {'error': 'Track not found in Mapping Helper 2.'}, 404
+        if key != track:
+            return redirect(url_for('helper2', game=game, track=key))
+    script_version = os.stat(os.path.join(app.static_folder, 'helper2.js')).st_mtime_ns
+    return render_template('helper2.html', game=game, track=track, script_version=script_version)
+
+
+def helper2_upload():
+    if request.content_length and request.content_length > UPLOAD_LIMIT + 64 * 1024:
+        raise ValueError("The recording exceeds 2 MB.")
+    uploaded = request.files.get('recording')
+    if not uploaded or not uploaded.filename.lower().endswith('.shtl'):
+        raise ValueError("Choose a .shtl recording.")
+    uploaded.stream.seek(0, os.SEEK_END)
+    if uploaded.stream.tell() > UPLOAD_LIMIT:
+        raise ValueError("The recording exceeds 2 MB.")
+    uploaded.stream.seek(0)
+    return read_recording(uploaded.stream)
+
+
+@app.route('/helper2/import', methods=['POST'])
+def helper2_import():
+    try:
+        recording = helper2_upload()
+        tracks = read_refpoints().get(recording['game'], {})
+        key = recording['track_name']
+        existing = tracks.get(key) or tracks.get(legacy_track_for_recording(tracks, recording), {})
+        return jsonify(
+            recording=recording,
+            display_name=existing.get('display_name') or recording['display_name'] or key,
+            yaw=existing.get('yaw', 0),
+        )
+    except ValueError as error:
+        return {'error': str(error)}, 400
+
+
+@app.route('/helper2/recording/<game>/<track>')
+def helper2_recording(game, track):
+    tracks = read_refpoints().get(game, {})
+    key = resolve_track(tracks, track)
+    entry = tracks.get(key, {})
+    if 'helper2' not in entry:
+        return {'error': 'Track not found in Mapping Helper 2.'}, 404
+    return jsonify(**entry['helper2'], display_name=entry.get('display_name', key))
+
+
+@app.route('/helper2/save', methods=['POST'])
+def helper2_save():
+    try:
+        if request.content_length and request.content_length > UPLOAD_LIMIT + 64 * 1024:
+            raise ValueError("The recording exceeds 2 MB.")
+        game = track_key(request.form.get('game'))
+        track = track_key(request.form.get('track'))
+        alignment = json.loads(request.form.get('alignment', 'null'))
+        uploaded = helper2_upload() if 'recording' in request.files else None
+        if uploaded is not None and (uploaded['game'], uploaded['track_name']) != (game, track):
+            raise ValueError("GameCode and TrackName must match the uploaded recording.")
+
+        with REFERENCE_LOCK:
+            refpoints = read_refpoints()
+            tracks = refpoints.setdefault(game, {})
+            previous_key = resolve_track(tracks, track) if uploaded is None else track
+            if uploaded is not None and track not in tracks:
+                previous_key = legacy_track_for_recording(tracks, uploaded)
+            existing = tracks.get(previous_key)
+            if uploaded is None:
+                if not existing or 'helper2' not in existing:
+                    return {'error': 'Track not found in Mapping Helper 2.'}, 404
+                track = previous_key
+                recording = existing['helper2']['recording']
+            else:
+                recording = uploaded
+                if existing is not None:
+                    old_recording = existing.get('helper2', {}).get('recording')
+                    if old_recording and old_recording.get('track_config') != recording['track_config']:
+                        raise ValueError("A different configuration already uses this GameCode and TrackName.")
+                    if request.form.get('replace') != 'yes':
+                        return {'error': 'Replace the saved reference points for this track?',
+                                'replace_required': True}, 409
+
+            refs = alignment_reference_points(recording, alignment)
+            saved_alignment = {key: alignment[key] for key in (
+                'latitude', 'longitude', 'scale', 'rotation', 'yaw', 'mirror', 'axis'
+            )}
+            previous = existing or {}
+            display_name = (metadata_text(request.form.get('display_name')) or previous.get('display_name')
+                            or recording['display_name'] or track)
+            updated = {
+                'track_name': track,
+                'display_name': display_name,
+                'aliases': track_aliases(track, *previous.get('aliases', ()), previous_key,
+                                         recording['track_code'], recording['display_name']),
+                'yaw': alignment['yaw'],
+                'ref_points': refs,
+                'helper2': {'recording': recording, 'alignment': saved_alignment},
+            }
+            if previous_key != track:
+                del tracks[previous_key]
+            tracks[track] = updated
+            write_refpoints(refpoints)
+        return jsonify(url=url_for('helper2', game=game, track=track), point_count=len(refs))
+    except (ValueError, RecursionError) as error:
+        return {'error': str(error)}, 400
+    except Exception:
+        app.logger.exception("Could not save Mapping Helper 2 reference points")
+        return {'error': 'Could not save the reference points. Please try again.'}, 500
+
+
 @app.route('/config-user-update', methods=['POST'])
 def update_config_user():
     data = request.json
@@ -284,10 +402,10 @@ def icons():
 @app.route('/refpoints/<game>/<track>')
 def get_refpoint(game, track):
     try:
-        with open('static/track_reference_points.json', 'r') as f:
-            refpoints = json.load(f)
-        if game in refpoints and track in refpoints[game]:
-            return jsonify(refpoints[game][track])
+        tracks = read_refpoints().get(game, {})
+        key = resolve_track(tracks, track)
+        if key in tracks:
+            return jsonify(tracks[key])
         else:
             return {'error': 'Track not found'}, 404
     except Exception as e:
@@ -328,9 +446,13 @@ def list_tracks():
         
         poi_dict[entry] = file_counts
     try:
-        with open('static/track_reference_points.json', 'r') as f:
-            refpoints = json.load(f)
+        refpoints = read_refpoints()
 
+        for game, tracks in refpoints.items():
+            counts = poi_dict.setdefault(game, {})
+            for track, entry in tracks.items():
+                key = poi_track_key(track, entry, counts)
+                counts[track] = counts.get(key, 0)
         return render_template('tracks.html', config=config, games=refpoints, poi_dict=poi_dict)
     except Exception as e:
         return {'error': str(e)}, 500
@@ -339,81 +461,47 @@ def list_tracks():
 @app.route('/delete-track/<game>/<track>', methods=['GET'])
 def delete_track(game, track):
     try:
-        with open('static/track_reference_points.json', 'r') as f:
-            refpoints = json.load(f)
-        
-        if game in refpoints and track in refpoints[game]:
-            del refpoints[game][track]
-            # If the game has no tracks left, remove the game entry
+        with REFERENCE_LOCK:
+            refpoints = read_refpoints()
+            tracks = refpoints.get(game, {})
+            key = resolve_track(tracks, track)
+            if key not in tracks:
+                return {'error': 'Track not found'}, 404
+            del tracks[key]
             if not refpoints[game]:
                 del refpoints[game]
-            
-            with open('static/track_reference_points.json', 'w') as f:
-                json.dump(refpoints, f, indent=2)
-            
-            process_tracks("static/track_reference_points.json", "static/track_transforms.json")
-            return jsonify({'message': 'Track deleted successfully'}), 200
-        else:
-            return {'error': 'Track not found'}, 404
+            write_refpoints(refpoints)
+        return jsonify({'message': 'Track deleted successfully'}), 200
     except Exception as e:
         return {'error': str(e)}, 500
 
 
 @app.route('/save-refpoints/<game>', methods=['POST'])
 def save_refpoints(game):
-
     data = request.json
-
-    #check if data is valid
     if not isinstance(data, dict):
         return {'error': 'Invalid data format'}, 400
-    #check if track is provided
-    try:
-        track = top_key = next(iter(data))
-        print(game)
-        print(track)
-    except StopIteration:
+    if not data:
         return {'error': 'No track provided'}, 400
 
+    track = next(iter(data))
     try:
-        with open('static/track_reference_points.json', 'r') as f:
-            refpoints = json.load(f)
+        with REFERENCE_LOCK:
+            refpoints = read_refpoints()
+            tracks = refpoints.setdefault(game, {})
+            entry = tracks.setdefault(resolve_track(tracks, track), {'display_name': track})
+            if 'helper2' in entry:
+                return {'error': 'Edit this track in Mapping Helper 2.'}, 409
+            if 'yaw' not in data[track]:
+                return {'error': 'Yaw value is required'}, 400
+            if 'ref_points' not in data[track]:
+                return {'error': 'Reference points are required'}, 400
+            if len(data[track]['ref_points']) < 3:
+                return {'error': 'At least three reference points are required'}, 400
+            entry.update(yaw=data[track]['yaw'], ref_points=data[track]['ref_points'])
+            write_refpoints(refpoints)
     except Exception as e:
         return {'error': str(e)}, 500
-
-    if game not in refpoints:
-        refpoints[game] = {}
-    if track not in refpoints[game]:
-        refpoints[game][track] = {}
-
-    if 'yaw' not in refpoints[game][track]:
-        refpoints[game][track]['yaw'] = 0.0
-    if 'ref_points' not in refpoints[game][track]:
-        refpoints[game][track]['ref_points'] = []
-
-    # Update the yaw value
-    if 'yaw' in data[track]:
-        refpoints[game][track]['yaw'] = data[track]['yaw']
-    else:
-        return {'error': 'Yaw value is required'}, 400
-    # Update the reference points
-    if 'ref_points' in data[track]:
-        #check if we have at least three ref_points
-        if len(data[track]['ref_points']) < 3:
-            return {'error': 'At least three reference points are required'}, 400
-        refpoints[game][track]['ref_points'] = data[track]['ref_points']
-    else:
-        return {'error': 'Reference points are required'}, 400
-    
-    #now write back the static/track_reference_points.json file
-    try:
-        with open('static/track_reference_points.json', 'w') as f:
-            json.dump(refpoints, f, indent=2)
-    except Exception as e:
-        return {'error': str(e)}, 500
-
-
-    process_tracks("static/track_reference_points.json", "static/track_transforms.json")
 
     return jsonify({'message': 'Data saved successfully'}), 200
 
@@ -425,7 +513,18 @@ def proxy():
         print(f"Fetching data from {PROXY_TARGET_URL}")
         response = requests.get(PROXY_TARGET_URL)
         data = response.json()
-        return jsonify(minimize_json(data))
+        telemetry = minimize_json(data)
+        new = telemetry['NewData']
+        if telemetry['GameCode'] == 'FM8' and telemetry['IsGameInRace'] and new and not new.get('TrackConfig'):
+            track = metadata_text(new.get('TrackId'))
+            configured = metadata_text(new.get('TrackIdWithConfig'))
+            if track.isdecimal() and configured in ('', track):
+                names = tuple(metadata_text(new.get(key)) for key in ('TrackCode', 'TrackName'))
+                try:
+                    learn_live_fm8_track(track, names)
+                except OSError:
+                    app.logger.exception("Could not update track identity from SimHub")
+        return jsonify(telemetry)
     except Exception as e:
         return {'error': str(e)}, 500
 
@@ -452,30 +551,66 @@ def fakedata():
         return {'error': str(e)}, 500
 
 
+def poi_track_key(track, entry, existing):
+    return next((key for key in (track, *entry.get('aliases', ())) if key in existing), track)
+
+
+def poi_storage(game, track):
+    track_key(game)
+    track_key(track)
+    tracks = read_refpoints().get(game, {})
+    key = resolve_track(tracks, track)
+    entry = tracks.get(key, {})
+    directory = os.path.join('static', 'poi', game)
+    files = {
+        os.path.splitext(filename)[0] for filename in os.listdir(directory)
+        if filename.endswith('.json')
+    } if os.path.isdir(directory) else set()
+    filename = poi_track_key(key, entry, files) + '.json'
+    return directory, filename, key, entry.get('display_name', key)
+
+
 @app.route('/poi/<game>/<trackcode>')
 def poi(game, trackcode):
     if not user_config_active:
         return redirect(url_for('get_config_user'))
-    
+    try:
+        _, _, key, display_name = poi_storage(game, trackcode)
+    except ValueError as error:
+        return {'error': str(error)}, 400
     with open('icons.json', 'r') as f:
         icons = json.load(f)
-    print(icons)
-    return render_template('poi_editor.html', config=config, game=game, trackcode=trackcode, directions=icons)
+    return render_template('poi_editor.html', config=config, game=game, trackcode=key,
+                           display_name=display_name, directions=icons)
+
+
+@app.route('/static/poi/<game>/<trackcode>.json')
+def static_poi(game, trackcode):
+    try:
+        directory, filename, _, _ = poi_storage(game, trackcode)
+    except ValueError as error:
+        return {'error': str(error)}, 400
+    return send_from_directory(os.path.abspath(directory), filename)
+
 
 @app.route('/poi-editor/<game>/<trackcode>', methods=['GET', 'POST'])
 def poi_editor(game, trackcode):
+    try:
+        directory, filename, _, _ = poi_storage(game, trackcode)
+    except ValueError as error:
+        return {'error': str(error)}, 400
+    path = os.path.join(directory, filename)
     if request.method == 'GET':
         try:
-            with open(f'static/poi/{game}/{trackcode}.json', 'r') as file:
-                data = json.load(file)
-            return jsonify(data)
+            with open(path, 'r', encoding='utf-8') as source:
+                return jsonify(json.load(source))
         except FileNotFoundError:
             return jsonify({"type": "FeatureCollection", "features": []})
-    elif request.method == 'POST':
-        data = request.json
-        with open(f'static/poi/{game}/{trackcode}.json', 'w') as file:
-            json.dump(data, file, indent=2)
-        return jsonify({"status": "success"})
+    os.makedirs(directory, exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as output:
+        json.dump(request.json, output, indent=2)
+    return jsonify({"status": "success"})
+
 
 @app.route('/favicon.ico')
 def favicon_redirect():
@@ -497,7 +632,7 @@ if __name__ == '__main__':
     
     if debug:
         logger.debug("Running in debug mode with Flask development server")
-        app.run(port=5000, debug=True)
+        app.run(port=5015, debug=True)
     else:
         logger.info("Running in production mode with Waitress server")
-        serve(app, host="0.0.0.0", port=5000)
+        serve(app, host="0.0.0.0", port=5015)

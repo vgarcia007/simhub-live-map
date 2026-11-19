@@ -7,10 +7,7 @@ def solve_affine(refs, key):
     x, _, _, _ = np.linalg.lstsq(A, b, rcond=None)
     return x.tolist()
 
-def process_tracks(input_file, output_file):
-    with open(input_file, 'r') as f:
-        data = json.load(f)
-
+def build_transforms(data):
     result = {}
     for game, tracks in data.items():
         result[game] = {}
@@ -21,9 +18,17 @@ def process_tracks(input_file, output_file):
             result[game][track_name] = {
                 'lat': lat_coeffs,
                 'lng': lng_coeffs,
-                'yaw': values.get('yaw', 0),  # Optional yaw value
+                'yaw': values.get('yaw', 0),
+                'display_name': values.get('display_name', track_name),
+                'aliases': values.get('aliases', []),
             }
 
+    return result
+
+
+def process_tracks(input_file, output_file):
+    with open(input_file, 'r') as f:
+        result = build_transforms(json.load(f))
     with open(output_file, 'w') as f:
         json.dump(result, f, indent=2)
         print(f"🗺️ ✅ Transformations saved to {output_file}")

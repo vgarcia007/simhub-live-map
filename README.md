@@ -21,6 +21,18 @@ A reference point consists of the in-game coordinates and the corresponding GPS 
 
 We use an affine transformation because game coordinates and GPS coordinates are not directly comparable. Rotation, translation, and different scales need to be accounted for, which can only be reliably achieved with at least three reference points.
 
+## Track data for clients
+
+[static/track_reference_points.json](static/track_reference_points.json) stores entries
+under `[GameCode][TrackName]`, using the identifiers from the SimHub `.shtl` recording.
+For FM8, SimHub's live JSON provides the same values as `GameName` and
+`NewData.TrackId`. For example, the Nürburgring Nordschleife is `["FM8"]["32"]`.
+
+Each entry contains `display_name`, `yaw` and `ref_points`. The `aliases` list
+contains previous keys or names. Legacy tracks keep their previous keys until the
+recording or live telemetry verifies their IDs. The server derives its local
+transformations from this file at startup.
+
 ## Contributing
 
 ### Using the Mapping Helper Tool
@@ -30,7 +42,7 @@ To simplify the creation and management of reference points, you can use the bui
 #### How to Use the Mapping Helper
 
 1. Start the server as described in the "Getting Started" section.
-2. Open your browser and navigate to `http://localhost:5000/helper`.
+2. Open your browser and navigate to `http://localhost:5015/helper`.
 3. Use the interface to:
    - Add new reference points by providing in-game coordinates and corresponding GPS coordinates.
    - Adjust the yaw correction if the map rotation is incorrect.
@@ -55,7 +67,7 @@ This tool streamlines the process and reduces the risk of errors when adding or 
    python app.py
    ```
 
-3. Open `localhost:5000` in your browser.
+3. Open `localhost:5015` in your browser.
 4. Edit Settings ![alt text](screenshots/config01.jpg?raw=true)
 5. Start Mapping ![alt text](screenshots/mapping01.png?raw=true)
 6. Enjoy the Map ![alt text](screenshots/map01.jpg?raw=true)
