@@ -732,7 +732,8 @@ async function fetchGameData(config) {
             gameToLatLng = (x, y) => [
                 c.lat[0] * x + c.lat[1] * y + c.lat[2],
                 c.lng[0] * x + c.lng[1] * y + c.lng[2],
-                c.yaw
+                c.yaw,
+                c.yaw_sign === -1 ? -1 : 1
             ];
 
             lastGameName = gameName;
@@ -751,8 +752,8 @@ async function fetchGameData(config) {
         }
 
         // Marker & Camera
-        const [lat, lng, yaw_off] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
-        const yaw = d.OrientationYaw + yaw_off;
+        const [lat, lng, yaw_off, yawSign] = gameToLatLng(d.CoordinatesX, d.CoordinatesY);
+        const yaw = yawSign * d.OrientationYaw + yaw_off;
         const speed = data.NewData.FilteredSpeedKmh;
 
         const newPos = {

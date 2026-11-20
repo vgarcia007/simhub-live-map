@@ -16,20 +16,16 @@
           data-import-url="{{ url_for('helper2_import') }}"
           data-save-url="{{ url_for('helper2_save') }}"
           data-config-url="{{ url_for('get_config') }}"
+          {% if selected_recording %}data-catalog-url="{{ url_for('catalog_recording', token=selected_recording) }}"{% endif %}
           {% if game is not none %}data-recording-url="{{ url_for('helper2_recording', game=game, track=track) }}"
           data-track="{{ track }}"{% endif %}>
-        <h1 class="h3 mb-3">Mapping Helper 2</h1>
+        {% if uploaded_recording is defined %}
+        <script id="uploaded-recording" type="application/json">{{ uploaded_recording | tojson }}</script>
+        {% endif %}
         <div id="status" class="mb-3" role="status" aria-live="polite" hidden></div>
-        <form id="upload" class="mb-3" {% if game is not none %}hidden{% endif %}>
-            <label for="recording" class="form-label">SimHub lap recording (.shtl)</label>
-            <div class="input-group">
-                <input id="recording" type="file" class="form-control" accept=".shtl" required>
-                <button type="submit" class="btn btn-primary">Load recording</button>
-            </div>
-        </form>
         <div id="workspace" hidden>
             <div class="mb-3">
-                <h2 id="recording-name" class="h5 mb-1"></h2>
+                <h1 id="recording-name" class="h5 mb-1"></h1>
                 <div id="recording-details" class="text-body-secondary small"></div>
             </div>
             <div class="editor">
@@ -78,6 +74,7 @@
                                        step="any" value="0" required>
                             </div>
                         </div>
+                        <div id="yaw-calibration-help" class="form-text mb-2" hidden>Set the yaw at the current orientation to calibrate this game. The correction then follows the rotation.</div>
                         <div class="form-check mb-3">
                             <input id="mirror" class="form-check-input" type="checkbox">
                             <label for="mirror" class="form-check-label">Mirror outline</label>

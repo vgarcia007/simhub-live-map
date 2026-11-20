@@ -1,7 +1,3 @@
-#upload {
-    max-width: 34rem;
-}
-
 .editor {
     display: grid;
     grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);

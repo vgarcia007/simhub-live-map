@@ -12,6 +12,8 @@ const emptyDirections = { type: 'FeatureCollection', features: [] };
 let map;
 let token;
 let recording;
+let yawProfile;
+let yawReference;
 let uploadedFile;
 let anchor;
 let geometry;
@@ -110,6 +112,7 @@ function alignment() {
         mirror: field('mirror').checked,
         axis: field('axis').value,
         yaw: field('yaw').valueAsNumber,
+        yaw_reference: yawReference,
     };
 }
 
@@ -287,7 +290,35 @@ function updateDirections(visible, transform) {
     source.setData({ type: 'FeatureCollection', features });
 }
 
+function wrapYaw(angle) {
+    return ((angle + 180) % 360 + 360) % 360 - 180;
+}
+
+function gameYawProfile() {
+    return field('axis').value === 'xz' && yawProfile;
+}
+
+function captureYawReference() {
+    const yaw = field('yaw').valueAsNumber;
+    const rotation = field('rotation').valueAsNumber;
+    if (Number.isFinite(yaw) && Number.isFinite(rotation)) {
+        const reflection = field('mirror').checked ? -1 : 1;
+        const sign = yawReference ? yawReference.sign : reflection;
+        yawReference = { zero: wrapYaw(reflection * (yaw + rotation)), sign };
+    }
+}
+
 function updateOutline() {
+    const profile = gameYawProfile() || yawReference;
+    field('yaw').readOnly = Boolean(gameYawProfile());
+    field('yaw-calibration-help').hidden = Boolean(gameYawProfile());
+    if (profile) {
+        const rotation = field('rotation').valueAsNumber;
+        const reflection = field('mirror').checked ? -1 : 1;
+        if (Number.isFinite(rotation)) {
+            field('yaw').value = wrapYaw(reflection * profile.zero - rotation).toFixed(4);
+        }
+    }
     if (!ready || !geometry || !anchor) return;
     const valid = field('scale').validity.valid && field('rotation').validity.valid;
     const transform = alignment();
@@ -609,8 +640,10 @@ async function initMap() {
     });
 }
 
-async function openRecording(data, track, displayName, transform, yaw = 0) {
+async function openRecording(data, track, displayName, transform, yaw = 0, profile = null) {
     recording = data;
+    yawProfile = profile;
+    yawReference = transform && transform.yaw_reference;
     if (resetBestFit) resetBestFit();
     searchSequence++;
     const name = displayName || recording.display_name || track;
@@ -632,7 +665,8 @@ async function openRecording(data, track, displayName, transform, yaw = 0) {
     field('yaw').value = transform ? transform.yaw : yaw;
     field('axis').value = transform ? transform.axis : 'xz';
     field('axis').disabled = recording.game === 'FM8';
-    field('mirror').checked = transform ? transform.mirror : recording.game === 'FM8';
+    field('mirror').checked = transform ? transform.mirror : Boolean(yawProfile && yawProfile.sign === -1);
+    if (!gameYawProfile() && !yawReference) captureYawReference();
     prepareGeometry();
     placed = Boolean(transform);
     anchor = transform
@@ -643,29 +677,25 @@ async function openRecording(data, track, displayName, transform, yaw = 0) {
     if (!map) await initMap();
 }
 
-field('upload').addEventListener('submit', async event => {
-    event.preventDefault();
+async function importRecording(loadFile) {
     if (saving || importing) return;
-    const file = field('recording').files[0];
-    const button = field('upload').querySelector('button');
-    const form = new FormData();
-    form.append('recording', file);
-    button.disabled = true;
     importing = true;
     updateOutline();
     showStatus('');
     try {
+        const file = await loadFile();
+        const form = new FormData();
+        form.append('recording', file);
         const imported = await requestJson(helper.dataset.importUrl, { method: 'POST', body: form });
         uploadedFile = file;
-        await openRecording(imported.recording, imported.track_key, imported.display_name, null, imported.yaw);
+        await openRecording(imported.recording, imported.track_key, imported.display_name, null, imported.yaw, imported.yaw_profile);
     } catch (error) {
         showStatus(error.message);
     } finally {
-        button.disabled = false;
         importing = false;
         updateOutline();
     }
-});
+}
 
 field('place').addEventListener('click', () => setPlacementMode(placed ? !placing : true));
 field('fit').addEventListener('click', fitOutline);
@@ -673,12 +703,16 @@ field('display-name').addEventListener('input', () => {
     field('recording-name').textContent = field('display-name').value.trim() || field('track-name').value;
 });
 field('axis').addEventListener('change', () => {
+    yawReference = null;
+    if (!gameYawProfile()) captureYawReference();
     prepareGeometry();
     updateOutline();
 });
+field('yaw').addEventListener('input', captureYawReference);
 for (const id of ['scale', 'rotation', 'mirror']) field(id).addEventListener('input', updateOutline);
 
 function circuitName(name) {
+    name = name.replace(/_/g, ' ');
     return name.replace(/(?:[\s_-]+(?:full|short|club|sprint|endurance|national|gp|layout|reverse|alt))+$/i, '').trim() || name;
 }
 
@@ -803,7 +837,6 @@ field('alignment').addEventListener('submit', async event => {
             saved = await requestJson(helper.dataset.saveUrl, options);
         }
         uploadedFile = null;
-        field('upload').hidden = true;
         window.history.replaceState(null, '', saved.url);
         showStatus(`Saved ${saved.point_count.toLocaleString()} reference points.`, 'success');
     } catch (error) {
@@ -816,6 +849,24 @@ field('alignment').addEventListener('submit', async event => {
 
 if (helper.dataset.recordingUrl) {
     requestJson(helper.dataset.recordingUrl)
-        .then(saved => openRecording(saved.recording, helper.dataset.track, saved.display_name, saved.alignment))
+        .then(saved => openRecording(saved.recording, helper.dataset.track, saved.display_name, saved.alignment, 0, saved.yaw_profile))
         .catch(error => showStatus(error.message));
+}
+
+const upload = field('uploaded-recording');
+if (upload) {
+    const { file, recording, track_key, display_name, yaw, yaw_profile } = JSON.parse(upload.textContent);
+    upload.remove();
+    const bytes = Uint8Array.from(atob(file), character => character.charCodeAt(0));
+    uploadedFile = new File([bytes], 'simhub-recording.shtl');
+    openRecording(recording, track_key, display_name, null, yaw, yaw_profile)
+        .catch(error => showStatus(error.message));
+} else if (helper.dataset.catalogUrl) {
+    importRecording(async () => {
+        const response = await fetch(helper.dataset.catalogUrl);
+        if (!response.ok) {
+            throw new Error('This recording is unavailable. Refresh the recordings list and select it again.');
+        }
+        return new File([await response.blob()], 'simhub-recording.shtl');
+    });
 }

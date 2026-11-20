@@ -21,6 +21,23 @@ A reference point consists of the in-game coordinates and the corresponding GPS 
 
 We use an affine transformation because game coordinates and GPS coordinates are not directly comparable. Rotation, translation, and different scales need to be accounted for, which can only be reliably achieved with at least three reference points.
 
+## SimHub recordings from a Windows share
+
+Mount the SimHub share read-only on the Navi server. The default mount path is
+`/mnt/simhub-recordings`. Set `SIMHUB_RECORDINGS_ROOT` in the server environment
+to use a different path. The mount can point at the SimHub installation,
+`PluginsData`, or a game folder containing the recording directories.
+
+Navi copies new and changed `.shtl` files from `MapRecords` and `MapRecordsCloud`
+at startup and checks the share every minute in the background. Copies are kept
+in `~/.local/share/simhub-navi/recordings` by default. Set
+`SIMHUB_RECORDINGS_CACHE` to choose another local directory. Navi keeps its copies
+when the share is offline or files are removed from it.
+
+**Recordings** uses the local copies for previews and mapping, and lists the
+newest recording per source and track. Select **Map** or **Remap** to open the
+recording in Mapping Helper 2.
+
 ## Track data for clients
 
 [static/track_reference_points.json](static/track_reference_points.json) stores entries
@@ -35,6 +52,9 @@ also have `track_name` and, when present, `track_config` as recorded by SimHub.
 The `aliases` list contains previous keys or names. Legacy tracks keep their
 previous keys until the recording or live telemetry verifies their IDs.
 The server derives its local transformations from this file at startup.
+Track heading is `OrientationYaw * yaw_sign + yaw`, with `yaw_sign` defaulting
+to `1` when absent. Helper 2 derives `yaw` from track alignment for FM8 and
+PCars3. The other games can follow the rotation after a manual yaw calibration.
 POIs use `static/poi/<GameCode>/<track key>.json`, for example
 [`static/poi/FM8/32.json`](static/poi/FM8/32.json).
 

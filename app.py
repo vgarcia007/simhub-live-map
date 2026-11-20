@@ -1,11 +1,17 @@
-from flask import Flask, request, jsonify, render_template, redirect, send_from_directory, url_for
+from flask import Flask, request, jsonify, render_template, redirect, send_file, send_from_directory, url_for
+from base64 import b64encode
+from threading import Thread
+from werkzeug.serving import is_running_from_reloader
 import requests
 from flask_cors import CORS
+from itsdangerous import BadSignature, URLSafeSerializer
 import json
 from mapping_helper import (
-    REFERENCE_LOCK, UPLOAD_LIMIT, alignment_reference_points, read_recording,
+    REFERENCE_LOCK, UPLOAD_LIMIT, YAW_PROFILES, alignment_reference_points, apply_automatic_yaw, read_recording,
     initialize_track_storage, learn_live_fm8_track, metadata_text, read_refpoints, track_key, write_refpoints,
 )
+from recording_catalog import catalog_tracks, cloud_download, find_recording, preview_recording
+from recording_sync import recordings_cache, run_recording_sync
 from track_identity import legacy_track_for_recording, recording_track_key, resolve_track, track_aliases
 from update_addons import update_addons
 
@@ -140,7 +146,8 @@ initialize_track_storage()
 update_addons("https://garcias-garage.de/files-other/nfsh-addons/version.json", "static/addons")
 
 app = Flask(__name__)
-CORS(app)  
+CORS(app)
+recording_links = URLSafeSerializer(os.urandom(32), salt="simhub-recordings")
 
 
 # Initialize configuration
@@ -237,7 +244,53 @@ def helper():
         return redirect(url_for('get_config_user'))
     return render_template('helper.html')
 
-@app.route('/helper2')
+@app.route('/recordings')
+def list_recordings():
+    return render_recordings()
+
+
+def render_recordings(upload_error=None):
+    root = recordings_cache()
+    try:
+        tracks, skipped = catalog_tracks(root, read_refpoints())
+    except FileNotFoundError:
+        tracks, skipped = [], 0
+    except OSError:
+        return render_template('recordings.html', tracks=None, skipped=0, upload_error=upload_error)
+    for track in tracks:
+        display_name = track['name'] if track['name'] != track['key'] else ''
+        for source in track['sources'].values():
+            source['token'] = recording_links.dumps([source['path'], source['size'], source['rank'][0], display_name])
+    return render_template('recordings.html', tracks=tracks, skipped=skipped, upload_error=upload_error)
+
+
+def catalog_recording_details(token):
+    relative, size, modified_ns, display_name = recording_links.loads(token)
+    return find_recording(recordings_cache(), relative, size, modified_ns), display_name
+
+
+@app.route('/recordings/preview/<token>')
+def catalog_preview(token):
+    try:
+        path, _ = catalog_recording_details(token)
+        _, preview = preview_recording(path)
+        return jsonify(preview)
+    except (BadSignature, OSError, ValueError):
+        return {'error': 'This preview is unavailable. Refresh the recordings list and select it again.'}, 404
+
+
+@app.route('/recordings/file/<token>')
+def catalog_recording(token):
+    try:
+        path, display_name = catalog_recording_details(token)
+        if path.parent.name.lower() == 'maprecordscloud':
+            return app.response_class(cloud_download(path, display_name), mimetype='application/octet-stream')
+        return send_file(str(path), mimetype='application/octet-stream')
+    except (BadSignature, OSError, ValueError):
+        return {'error': 'This recording is unavailable. Refresh the recordings list and select it again.'}, 404
+
+
+@app.route('/helper2', methods=['GET', 'POST'])
 @app.route('/helper2/<game>/<track>')
 def helper2(game=None, track=None):
     if not user_config_active:
@@ -250,7 +303,20 @@ def helper2(game=None, track=None):
         if key != track:
             return redirect(url_for('helper2', game=game, track=key))
     script_version = os.stat(os.path.join(app.static_folder, 'helper2.js')).st_mtime_ns
-    return render_template('helper2.html', game=game, track=track, script_version=script_version)
+    selected_recording = request.args.get('recording') if game is None else None
+    if request.method == 'POST':
+        try:
+            imported = recording_import_data(helper2_upload())
+        except ValueError as error:
+            return render_recordings(upload_error=str(error)), 400
+        uploaded = request.files['recording']
+        uploaded.stream.seek(0)
+        imported['file'] = b64encode(uploaded.stream.read()).decode('ascii')
+        return render_template('helper2.html', game=game, script_version=script_version, uploaded_recording=imported)
+    if game is None and not selected_recording:
+        return redirect(url_for('list_recordings'))
+    return render_template('helper2.html', game=game, track=track, script_version=script_version,
+                           selected_recording=selected_recording)
 
 
 def helper2_upload():
@@ -266,19 +332,26 @@ def helper2_upload():
     return read_recording(uploaded.stream)
 
 
+def recording_import_data(recording):
+    tracks = read_refpoints().get(recording['game'], {})
+    key = recording_track_key(recording)
+    existing = tracks.get(key) or tracks.get(legacy_track_for_recording(tracks, recording), {})
+    display_name = existing.get('display_name')
+    if not display_name or display_name == key:
+        display_name = recording['display_name'] or key
+    return {
+        'recording': recording,
+        'track_key': key,
+        'display_name': display_name,
+        'yaw': existing.get('yaw', 0),
+        'yaw_profile': YAW_PROFILES.get(recording['game']),
+    }
+
+
 @app.route('/helper2/import', methods=['POST'])
 def helper2_import():
     try:
-        recording = helper2_upload()
-        tracks = read_refpoints().get(recording['game'], {})
-        key = recording_track_key(recording)
-        existing = tracks.get(key) or tracks.get(legacy_track_for_recording(tracks, recording), {})
-        return jsonify(
-            recording=recording,
-            track_key=key,
-            display_name=existing.get('display_name') or recording['display_name'] or key,
-            yaw=existing.get('yaw', 0),
-        )
+        return jsonify(recording_import_data(helper2_upload()))
     except ValueError as error:
         return {'error': str(error)}, 400
 
@@ -290,7 +363,8 @@ def helper2_recording(game, track):
     entry = tracks.get(key, {})
     if 'helper2' not in entry:
         return {'error': 'Track not found in Mapping Helper 2.'}, 404
-    return jsonify(**entry['helper2'], display_name=entry.get('display_name', key))
+    return jsonify(**entry['helper2'], display_name=entry.get('display_name', key),
+                   yaw_profile=YAW_PROFILES.get(game))
 
 
 @app.route('/helper2/save', methods=['POST'])
@@ -343,6 +417,11 @@ def helper2_save():
                 'ref_points': refs,
                 'helper2': {'recording': recording, 'alignment': saved_alignment},
             }
+            if game not in YAW_PROFILES or saved_alignment['axis'] != 'xz':
+                reference = alignment.get('yaw_reference')
+                if isinstance(reference, dict):
+                    saved_alignment['yaw_reference'] = {key: reference.get(key) for key in ('zero', 'sign')}
+            apply_automatic_yaw(game, updated, saved_alignment)
             if recording['track_config']:
                 updated['track_config'] = recording['track_config']
             if previous_key != track:
@@ -634,6 +713,8 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     logger.info(f"Starting application with DEBUG={debug}")
     logger.info(f"Using PROXY_TARGET_URL: {PROXY_TARGET_URL}")
+    if not debug or is_running_from_reloader():
+        Thread(target=run_recording_sync, name="recording-sync", daemon=True).start()
     
     if debug:
         logger.debug("Running in debug mode with Flask development server")

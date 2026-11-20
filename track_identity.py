@@ -1,8 +1,9 @@
-# Confirmed against the FM8 .shtl samples supplied with this project.
+# Confirmed against the local FM8 recordings and the cloud recording for Spa.
 FM8_TRACKS = {
     "Nurburgring Endurance": "31",
     "Nurburgring Nordschleife": "32",
     "Nurburgring Sprint": "34",
+    "Spa Francorchamps Full": "530",
     "Brands Hatch GP": "860",
 }
 

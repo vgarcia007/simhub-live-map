@@ -121,7 +121,7 @@ def metadata_text(value):
     return ""
 
 
-def read_recording(stream):
+def read_recording_data(stream):
     try:
         with gzip.GzipFile(fileobj=stream, mode="rb") as compressed:
             raw = compressed.read(JSON_LIMIT + 1)
@@ -141,6 +141,32 @@ def read_recording(stream):
     if len(coordinates) > POINT_LIMIT:
         raise ValueError(f"The recording exceeds {POINT_LIMIT:,} coordinate samples.")
 
+    return data
+
+
+def recording_metadata(data):
+    game = data.get("GameCode")
+    name = data.get("TrackName")
+    game = track_key(str(game) if type(game) is int else game)
+    name = track_key(str(name) if type(name) is int else name)
+    recording = {
+        "game": game,
+        "track_name": name,
+        "display_name": metadata_text(data.get("TrackDisplayName")),
+        "track_code": metadata_text(data.get("TrackCode")),
+        "track_config": metadata_text(data.get("TrackConfig")),
+    }
+    track_key(recording_track_key(recording))
+    return recording
+
+
+def read_recording(stream):
+    return parse_recording(read_recording_data(stream))
+
+
+def parse_recording(data):
+    recording = recording_metadata(data)
+    coordinates = data["CarCoordinates"]
     points = []
     skipped = 0
     for sample in coordinates:
@@ -155,20 +181,8 @@ def read_recording(stream):
         progress = sample.get("p")
         points.append([*position, progress if bounded_number(progress, -1, 1) else None])
 
-    game = data.get("GameCode")
-    name = data.get("TrackName")
-    game = track_key(str(game) if type(game) is int else game)
-    name = track_key(str(name) if type(name) is int else name)
-    recording = {
-        "game": game,
-        "track_name": name,
-        "display_name": metadata_text(data.get("TrackDisplayName")),
-        "track_code": metadata_text(data.get("TrackCode")),
-        "track_config": metadata_text(data.get("TrackConfig")),
-        "points": points,
-        "skipped": skipped,
-    }
-    track_key(recording_track_key(recording))
+    recording.update(points=points, skipped=skipped)
+    game = recording["game"]
     axes = (2,) if game == "FM8" else (2, 1)
     if not any(has_area(points, axis) for axis in axes):
         raise ValueError("The recording needs at least three non-collinear points.")
@@ -183,10 +197,59 @@ def has_area(points, axis):
     return np.linalg.matrix_rank(centered) == 2
 
 
+# Clockwise offset for raw heading zero before any map rotation or reflection.
+# The sign is the raw heading's sense in the unmirrored game coordinate plane.
+YAW_PROFILES = {
+    "FM8": {"zero": 180, "sign": -1},
+    "PCars3": {"zero": 0, "sign": -1},
+}
+
+
+def apply_automatic_yaw(game, entry, alignment):
+    profile = YAW_PROFILES.get(game) if alignment["axis"] == "xz" else None
+    reflection = -1 if alignment["mirror"] else 1
+    if profile is None:
+        profile = alignment.get("yaw_reference")
+        if profile is None:
+            zero = reflection * (alignment["yaw"] + alignment["rotation"])
+            profile = {"zero": (zero + 180) % 360 - 180, "sign": reflection * entry.get("yaw_sign", 1)}
+        alignment["yaw_reference"] = profile
+    if (
+        not isinstance(profile, dict)
+        or not bounded_number(profile.get("zero"), -180, 180)
+        or not bounded_number(profile.get("sign"), -1, 1)
+        or profile["sign"] not in (-1, 1)
+    ):
+        raise ValueError("Invalid yaw calibration.")
+    offset = reflection * profile["zero"] - alignment["rotation"]
+    alignment["yaw"] = round((offset + 180) % 360 - 180, 4)
+    entry["yaw"] = alignment["yaw"]
+    if reflection * profile["sign"] == -1:
+        entry["yaw_sign"] = -1
+    else:
+        entry.pop("yaw_sign", None)
+
+
+def migrate_automatic_yaw(refpoints):
+    changed = False
+    for game, tracks in refpoints.items():
+        for entry in tracks.values():
+            alignment = entry.get("helper2", {}).get("alignment")
+            if not alignment:
+                continue
+            before = (alignment.copy(), entry.get("yaw"), entry.get("yaw_sign"))
+            alignment.pop("yaw_auto", None)
+            apply_automatic_yaw(game, entry, alignment)
+            changed |= before != (alignment, entry.get("yaw"), entry.get("yaw_sign"))
+    return changed
+
+
 def initialize_track_storage():
     with REFERENCE_LOCK:
         refpoints = read_refpoints()
-        if migrate_track_keys(refpoints) or poi_renames(refpoints):
+        keys_changed = migrate_track_keys(refpoints)
+        yaw_changed = migrate_automatic_yaw(refpoints)
+        if keys_changed or yaw_changed or poi_renames(refpoints):
             write_refpoints(refpoints)
         else:
             process_tracks(REFERENCE_FILE, TRANSFORM_FILE)

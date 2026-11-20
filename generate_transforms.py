@@ -19,6 +19,7 @@ def build_transforms(data):
                 'lat': lat_coeffs,
                 'lng': lng_coeffs,
                 'yaw': values.get('yaw', 0),
+                **({'yaw_sign': -1} if values.get('yaw_sign') == -1 else {}),
                 'display_name': values.get('display_name', track_name),
                 'aliases': values.get('aliases', []),
             }

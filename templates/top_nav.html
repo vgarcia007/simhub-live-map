@@ -10,6 +10,7 @@
                 {% for endpoint, icon, label in [
                     ('helper2', 'fa-map-location-dot', 'Mapping Helper 2'),
                     ('list_tracks', 'fa-road-circle-exclamation', 'Tracks'),
+                    ('list_recordings', 'fa-folder-open', 'Recordings'),
                     ('get_config_user', 'fa-gears', 'Config'),
                 ] %}
                 <li class="nav-item">
@@ -24,12 +25,6 @@
                     <span class="nav-link disabled active" aria-current="page">
                         <i class="fa-solid fa-map-pin" aria-hidden="true"></i> POI Editor
                     </span>
-                </li>
-                {% elif request.endpoint == 'helper2' and game is not none %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('helper2') }}">
-                        <i class="fa-solid fa-file-import" aria-hidden="true"></i> New import
-                    </a>
                 </li>
                 {% endif %}
             </ul>

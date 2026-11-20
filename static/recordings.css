@@ -1,0 +1,273 @@
+.recordings-view {
+    --recordings-border: #303b47;
+    --recordings-surface: #19212a;
+    --recordings-raised: #222c37;
+    --recordings-muted: #aab7c5;
+    --recordings-accent: #a4d6ff;
+    background: #121820;
+}
+
+.recordings-page {
+    padding-top: clamp(1.5rem, 4vw, 3rem);
+    padding-bottom: 3rem;
+}
+
+.recordings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+}
+
+.recordings-header h1 {
+    margin: 0;
+    font-size: clamp(1.65rem, 3vw, 2.15rem);
+    font-weight: 650;
+    letter-spacing: -.03em;
+}
+
+.recordings-upload input {
+    max-width: 24rem;
+}
+
+.recordings-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+    padding-bottom: .65rem;
+    margin-bottom: .85rem;
+    border-bottom: 1px solid var(--recordings-border);
+}
+
+.recordings-filters a,
+.recordings-action {
+    min-height: 2.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    padding: .35rem .65rem;
+    border: 1px solid transparent;
+    border-radius: .45rem;
+    color: inherit;
+    text-decoration: none;
+    font-size: .875rem;
+    font-weight: 550;
+    white-space: nowrap;
+}
+
+.recordings-filters a {
+    color: var(--recordings-muted);
+}
+
+.recordings-filters a[aria-current="page"] {
+    background: var(--recordings-raised);
+    color: var(--recordings-accent);
+}
+
+.recordings-filters a span {
+    min-width: 1.4em;
+    text-align: center;
+    font-size: .75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.recordings-action {
+    border-color: var(--recordings-border);
+    background: var(--recordings-raised);
+}
+
+.recordings-action:hover,
+.recordings-filters a:hover {
+    color: var(--recordings-accent);
+    border-color: #52738b;
+}
+
+.recordings-view a:focus-visible,
+.recordings-view button:focus-visible {
+    outline: 2px solid var(--recordings-accent);
+    outline-offset: 2px;
+}
+
+.recordings-list,
+.recordings-notice {
+    overflow: hidden;
+    border: 1px solid var(--recordings-border);
+    border-radius: .65rem;
+    background: var(--recordings-surface);
+}
+
+.recordings-entry {
+    display: grid;
+    grid-template-columns: minmax(0, .95fr) minmax(7rem, .47fr) minmax(21rem, 1.2fr);
+    gap: 1.25rem;
+    padding: .95rem 1.15rem;
+}
+
+.recordings-entry + .recordings-entry {
+    border-top: 1px solid var(--recordings-border);
+}
+
+.recordings-list-header {
+    align-items: center;
+    padding-block: .65rem;
+    background: #1e2731;
+    color: var(--recordings-muted);
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.recordings-track h2,
+.recordings-game {
+    margin: 0 0 .2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.recordings-track-meta,
+.recordings-footnote,
+.recordings-preview-status {
+    color: var(--recordings-muted);
+    font-size: .84rem;
+}
+
+.recordings-track-meta {
+    overflow-wrap: anywhere;
+}
+
+.recordings-track-footer,
+.recordings-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+}
+
+.recordings-track-footer {
+    column-gap: .9rem;
+    margin-top: .45rem;
+}
+
+.recordings-edit {
+    color: var(--recordings-accent);
+    font-size: .82rem;
+    text-underline-offset: .17em;
+}
+
+.recordings-sources {
+    display: grid;
+    align-content: center;
+    gap: .45rem;
+    min-width: 0;
+}
+
+.recordings-source {
+    display: grid;
+    grid-template-columns: minmax(3.1rem, .6fr) minmax(6.75rem, 1fr) max-content;
+    align-items: center;
+    gap: .6rem;
+}
+
+.recordings-source-name {
+    font-size: .88rem;
+    font-weight: 550;
+}
+
+.recordings-actions {
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    min-width: 9.9rem;
+}
+
+.recordings-actions .recordings-action {
+    width: 4.75rem;
+    padding-inline: .35rem;
+}
+
+.recordings-list-header .recordings-source > :last-child {
+    min-width: 9.9rem;
+}
+
+.recordings-status {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    color: var(--recordings-muted);
+    font-size: .82rem;
+}
+
+.recordings-status::before {
+    content: "";
+    flex: 0 0 .4rem;
+    height: .4rem;
+    border-radius: 50%;
+    background: var(--recordings-status-color, #94a5b4);
+}
+
+.is-mapped,
+.is-closed {
+    --recordings-status-color: #78cca1;
+}
+
+.is-unmapped,
+.is-gapped {
+    --recordings-status-color: #e3b479;
+}
+
+.recordings-notice {
+    padding: 1rem 1.15rem;
+    color: var(--recordings-muted);
+}
+
+.recordings-footnote {
+    margin-top: .85rem;
+}
+
+.recordings-preview {
+    border: 1px solid var(--recordings-border);
+    border-radius: .65rem;
+    background: var(--recordings-surface);
+}
+
+.recordings-preview .modal-title {
+    padding-right: .5rem;
+    font-size: 1.1rem;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.recordings-preview-status {
+    margin: 0 0 .7rem;
+}
+
+@media (max-width: 767px) {
+    .recordings-entry {
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+        gap: .75rem;
+        padding: .85rem;
+    }
+
+    .recordings-sources {
+        grid-column: 1 / -1;
+    }
+
+    .recordings-list-header {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .recordings-source {
+        grid-template-columns: max-content minmax(0, 1fr);
+        row-gap: .3rem;
+        padding-bottom: .3rem;
+    }
+
+    .recordings-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+}
