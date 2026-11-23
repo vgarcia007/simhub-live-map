@@ -23,20 +23,67 @@ We use an affine transformation because game coordinates and GPS coordinates are
 
 ## SimHub recordings from a Windows share
 
-Mount the SimHub share read-only on the Navi server. The default mount path is
-`/mnt/simhub-recordings`. Set `SIMHUB_RECORDINGS_ROOT` in the server environment
-to use a different path. The mount can point at the SimHub installation,
-`PluginsData`, or a game folder containing the recording directories.
+In **Config → Windows recording share**, enable sync, enter your Windows
+account, and use **Find shares** on the SimHub host or enter the UNC path.
+Share the SimHub installation or its `PluginsData` folder with read permission
+for that account. On Debian-based hosts, install the optional SMB client
+bindings for the Python interpreter used by Navi (`sudo apt install python3-smbc`).
+Existing system mounts via `SIMHUB_RECORDINGS_ROOT` or `/mnt/simhub-recordings`
+can still be selected. A new install without a mount starts with sync off.
 
-Navi copies new and changed `.shtl` files from `MapRecords` and `MapRecordsCloud`
-at startup and checks the share every minute in the background. Copies are kept
-in `~/.local/share/simhub-navi/recordings` by default. Set
-`SIMHUB_RECORDINGS_CACHE` to choose another local directory. Navi keeps its copies
-when the share is offline or files are removed from it.
+Navi checks for new and changed `.shtl` files in `MapRecords` and
+`MapRecordsCloud` every minute when sync is enabled. The copies are stored in
+`~/.local/share/simhub-navi/recordings` by default. Set
+`SIMHUB_RECORDINGS_CACHE` to choose a different local directory. Copies remain
+available when sync is disabled, when Windows is offline, or after a file is
+removed from the share. Manual uploads remain available through **Recordings**.
 
 **Recordings** uses the local copies for previews and mapping, and lists the
 newest recording per source and track. Select **Map** or **Remap** to open the
 recording in Mapping Helper 2.
+
+## Track names in Recordings and Mapping Helper 2
+
+`track_names.json` ships with the app. Each entry maps a game-specific key or
+alias to a circuit and layout name. A readable saved name takes priority, then
+a readable SimHub display name, then the local catalog. A catalog match can
+also supply the circuit name for the map search. Keys, POIs and reference
+points keep their existing identities.
+
+Catalog sources checked on 2026-11-23:
+
+- FM8 has all 73 layout ordinals in the
+  [published telemetry table](https://github.com/bluemanos/forza-motorsport-car-track-ordinal/blob/9877395abf1278908ed123d7d645ea11ef6ff550/fm8/tracks.csv).
+  Local recordings confirm examples such as Brands Hatch GP and Nürburgring
+  Endurance. The source license is in `track_names.LICENSES.txt`.
+- PCars3 contains 138 circuit and layout labels with aliases based on the
+  [publisher's course list](https://p-cars3.bn-ent.net/course/),
+  [DLC list](https://p-cars3.bn-ent.net/dlc/),
+  [Steam track asset names](https://steamdb.info/depot/958401/) and supplied
+  SimHub recordings. The recordings verify these SimHub keys: `Azure_Circuit-GP`,
+  `Bathurst-Mount_Panorama`, `Brands_Hatch-GP`, `Cadwell-Club`,
+  `Hockenheimring-GP`, `AutodromoNazionaleMonza-GP`, `Nurburgring-GP`,
+  `Nurburgring-Nordschleife`, and the cloud filename
+  `Autodromo_Internazionale_Enzo_E_Dino_Ferrari_Imola-GP`.
+  Other aliases use published game names and asset names.
+- RRRE includes all 191 layout IDs and 80 circuit IDs in the
+  [RaceRoom developer snapshot](https://github.com/kwstudios-sweden/r3e-spectator-overlay/blob/c9bcd098b427648050ba49ac1259514f81114d8a/r3e-data.json)
+  from 2026-11-11. Local recordings confirm the older SimHub text keys for
+  Nordschleife and Portimão Club.
+- SIMBINRACE07 uses base game and expansion names from the
+  [Race Injection manual](https://store.steampowered.com/manual/44680/), plus
+  internal layout names from the
+  [base game](https://steamdb.info/depot/8601/apps/),
+  [GTR Evolution](https://steamdb.info/depot/8661/),
+  [STCC](https://steamdb.info/depot/8691/), and
+  [Race Injection expansion depots](https://steamdb.info/app/44680/depots/).
+  These sources establish file keys such as `2007_Brands_Hatch`,
+  `Nordschleife`, `2010_Falkenberg` and `MidOhio_chic`.
+
+The supplied Forza Horizon 5 recordings for fictional courses use SimHub
+`DT__…` keys. That prefix also appears in files that SimHub stores with
+`GameCode: SIMBINRACE07`. Navi uses the recorded game code and track key
+together. An unresolved key stays visible as recorded.
 
 ## Track data for clients
 

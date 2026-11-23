@@ -11,8 +11,8 @@
 </head>
 <body class="recordings-view">
     {% include 'top_nav.html' %}
-    {% set active = request.args.get('status', 'all') %}
-    {% if active not in ('all', 'open', 'mapped') %}{% set active = 'all' %}{% endif %}
+    {% set active = request.args.get('status', 'open') %}
+    {% if active not in ('all', 'open', 'mapped') %}{% set active = 'open' %}{% endif %}
     <main class="container recordings-page">
         <header class="recordings-header">
             <h1>Recordings</h1>
@@ -38,11 +38,11 @@
         {% else %}
         {% set missing = tracks | rejectattr('mapped') | list %}
         {% set mapped = tracks | selectattr('mapped') | list %}
-        {% set items = missing if active == 'open' else mapped if active == 'mapped' else missing + mapped %}
+        {% set items = missing if active == 'open' else mapped if active == 'mapped' else tracks %}
         <nav class="recordings-filters" aria-label="Filter recordings">
             {% for value, label, count in [
-                ('all', 'All', tracks | length),
                 ('open', 'Needs mapping', missing | length),
+                ('all', 'All', tracks | length),
                 ('mapped', 'Mapped', mapped | length)
             ] %}
             <a href="{{ url_for('list_recordings', status=value) }}" {% if value == active %}aria-current="page"{% endif %}>

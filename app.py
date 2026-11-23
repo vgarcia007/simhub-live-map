@@ -11,8 +11,9 @@ from mapping_helper import (
     initialize_track_storage, learn_live_fm8_track, metadata_text, read_refpoints, track_key, write_refpoints,
 )
 from recording_catalog import catalog_tracks, cloud_download, find_recording, preview_recording
-from recording_sync import recordings_cache, run_recording_sync
+from recording_sync import RecordingSync, ShareError, read_sync_settings, recordings_cache, share_settings, smb_request
 from track_identity import legacy_track_for_recording, recording_track_key, resolve_track, track_aliases
+from track_names import resolve_track_names
 from update_addons import update_addons
 
 from waitress import serve
@@ -146,7 +147,8 @@ initialize_track_storage()
 update_addons("https://garcias-garage.de/files-other/nfsh-addons/version.json", "static/addons")
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"^/(?!config-user/recording-sync(?:/|$)).*": {}})
+recording_sync = RecordingSync()
 recording_links = URLSafeSerializer(os.urandom(32), salt="simhub-recordings")
 
 
@@ -258,7 +260,7 @@ def render_recordings(upload_error=None):
     except OSError:
         return render_template('recordings.html', tracks=None, skipped=0, upload_error=upload_error)
     for track in tracks:
-        display_name = track['name'] if track['name'] != track['key'] else ''
+        display_name = track['source_display_name']
         for source in track['sources'].values():
             source['token'] = recording_links.dumps([source['path'], source['size'], source['rank'][0], display_name])
     return render_template('recordings.html', tracks=tracks, skipped=skipped, upload_error=upload_error)
@@ -336,13 +338,12 @@ def recording_import_data(recording):
     tracks = read_refpoints().get(recording['game'], {})
     key = recording_track_key(recording)
     existing = tracks.get(key) or tracks.get(legacy_track_for_recording(tracks, recording), {})
-    display_name = existing.get('display_name')
-    if not display_name or display_name == key:
-        display_name = recording['display_name'] or key
+    names = resolve_track_names(recording['game'], key, recording['track_config'],
+                                existing.get('display_name', ''), recording['display_name'])
     return {
         'recording': recording,
         'track_key': key,
-        'display_name': display_name,
+        **names._asdict(),
         'yaw': existing.get('yaw', 0),
         'yaw_profile': YAW_PROFILES.get(recording['game']),
     }
@@ -363,7 +364,10 @@ def helper2_recording(game, track):
     entry = tracks.get(key, {})
     if 'helper2' not in entry:
         return {'error': 'Track not found in Mapping Helper 2.'}, 404
-    return jsonify(**entry['helper2'], display_name=entry.get('display_name', key),
+    recording = entry['helper2']['recording']
+    names = resolve_track_names(game, key, recording.get('track_config', ''),
+                                entry.get('display_name', ''), recording.get('display_name', ''))
+    return jsonify(**entry['helper2'], **names._asdict(),
                    yaw_profile=YAW_PROFILES.get(game))
 
 
@@ -406,8 +410,9 @@ def helper2_save():
                 'latitude', 'longitude', 'scale', 'rotation', 'yaw', 'mirror', 'axis'
             )}
             previous = existing or {}
-            display_name = (metadata_text(request.form.get('display_name')) or previous.get('display_name')
-                            or recording['display_name'] or track)
+            names = resolve_track_names(game, track, recording['track_config'],
+                                        previous.get('display_name', ''), recording['display_name'])
+            display_name = metadata_text(request.form.get('display_name')) or names.display_name
             updated = {
                 'track_name': recording['track_name'],
                 'display_name': display_name,
@@ -464,6 +469,35 @@ def get_config_user():
     load_config()
 
     return render_template('config.html', config=config)
+
+
+@app.route('/config-user/recording-sync', methods=['GET', 'POST'])
+@app.route('/config-user/recording-sync/<any(discover,test):operation>', methods=['POST'])
+def manage_recording_sync(operation='save'):
+    try:
+        if request.method == 'GET':
+            return jsonify(recording_sync.info()), 200, {'Cache-Control': 'no-store'}
+        origin = request.headers.get('Origin')
+        if request.headers.get('Sec-Fetch-Site') in ('cross-site', 'same-site') or (
+            origin and origin != request.host_url.rstrip('/')
+        ):
+            return {'error': 'Open Config directly on the Navi server.'}, 403
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return {'error': 'Invalid recording sync settings.'}, 400
+        if operation == 'save':
+            recording_sync.save(data)
+            return jsonify(recording_sync.info()), 200, {'Cache-Control': 'no-store'}
+        settings = share_settings(data, read_sync_settings(), operation)
+        return jsonify(smb_request(operation, settings)), 200, {'Cache-Control': 'no-store'}
+    except ValueError as error:
+        return {'error': str(error) if not isinstance(error, json.JSONDecodeError)
+                else 'Could not read the recording sync settings.'}, 400
+    except ShareError as error:
+        return {'error': str(error)}, 502
+    except OSError:
+        return {'error': 'Could not access the recording sync settings or start the SMB client.'}, 503
+
 
 @app.route('/config')
 def get_config():
@@ -714,7 +748,7 @@ if __name__ == '__main__':
     logger.info(f"Starting application with DEBUG={debug}")
     logger.info(f"Using PROXY_TARGET_URL: {PROXY_TARGET_URL}")
     if not debug or is_running_from_reloader():
-        Thread(target=run_recording_sync, name="recording-sync", daemon=True).start()
+        Thread(target=recording_sync.run, name="recording-sync", daemon=True).start()
     
     if debug:
         logger.debug("Running in debug mode with Flask development server")

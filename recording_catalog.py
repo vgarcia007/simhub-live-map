@@ -7,6 +7,7 @@ from pathlib import Path
 
 from mapping_helper import UPLOAD_LIMIT, has_area, parse_recording, read_recording_data
 from track_identity import legacy_track_for_recording, recording_track_key, resolve_track
+from track_names import normalized_name, readable_track_name, resolve_track_names
 
 SOURCES = {"maprecords": "local", "maprecordscloud": "cloud"}
 
@@ -16,21 +17,23 @@ def recordings_root():
 
 
 def recording_directories(root):
+    def directories(path):
+        return [entry for entry in path.iterdir() if not entry.is_symlink() and entry.is_dir()]
+
+    yield from recording_folders(root, directories)
+
+
+def recording_folders(root, directories):
     if root.name.lower() in SOURCES:
         yield root
         return
-    plugins = root / "PluginsData"
-    if plugins.is_dir() and not plugins.is_symlink():
-        root = plugins
-    for directory in root.iterdir():
-        if directory.is_symlink() or not directory.is_dir():
-            continue
+    children = directories(root)
+    plugins = next((entry for entry in children if entry.name.lower() == "pluginsdata"), None)
+    for directory in directories(plugins) if plugins is not None else children:
         if directory.name.lower() in SOURCES:
             yield directory
             continue
-        for child in directory.iterdir():
-            if child.name.lower() in SOURCES and not child.is_symlink() and child.is_dir():
-                yield child
+        yield from (child for child in directories(directory) if child.name.lower() in SOURCES)
 
 
 def cloud_recording_data(path):
@@ -121,20 +124,41 @@ def catalog_tracks(root, refpoints):
                 groups[identity] = {
                     "game": game,
                     "key": key,
-                    "name": existing.get("display_name") or recording["display_name"] or key,
+                    "saved_name": existing.get("display_name", ""),
+                    "recorded_name": recording["display_name"],
+                    "configs": set(),
                     "mapped": len(existing.get("ref_points", ())) >= 3,
                     "edit_key": existing_key if existing.get("helper2") else None,
                     "sources": {},
                 }
 
-            if groups[identity]["name"] == key and recording["display_name"]:
-                groups[identity]["name"] = recording["display_name"]
-            candidates = groups[identity]["sources"]
+            group = groups[identity]
+            if not readable_track_name(group["recorded_name"], key) and readable_track_name(recording["display_name"], key):
+                group["recorded_name"] = recording["display_name"]
+            if recording["track_config"]:
+                group["configs"].add(recording["track_config"])
+            candidates = group["sources"]
             rank = (info.st_mtime_ns, file.name.casefold())
             if source not in candidates or rank > candidates[source]["rank"]:
                 candidates[source] = {"path": file.relative_to(root).as_posix(), "rank": rank,
                                       "size": info.st_size, "closed": closed, "has_gaps": has_gaps}
-    return sorted(groups.values(), key=lambda track: (track["game"], track["name"].casefold(), track["key"])), skipped
+    for group in groups.values():
+        saved_name = group.pop("saved_name")
+        recorded_name = group.pop("recorded_name")
+        configs = group.pop("configs")
+        key = group["key"]
+        config = next(iter(configs)) if len(configs) == 1 else ""
+        names = resolve_track_names(group["game"], key, config, saved_name, recorded_name)
+        group["name"] = names.display_name
+        # Only relay an observed label to the other source. A catalog guess
+        # must never become part of the recording's matching metadata.
+        group["source_display_name"] = (
+            next((name for name in (saved_name, recorded_name) if name != key and readable_track_name(name, key)), "")
+            if len(configs) <= 1 else ""
+        )
+    return sorted(groups.values(), key=lambda track: (
+        track["game"].casefold(), normalized_name(track["name"]), track["key"],
+    )), skipped
 
 
 def find_recording(root, relative, size, modified_ns):

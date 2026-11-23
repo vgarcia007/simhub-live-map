@@ -12,6 +12,7 @@ const emptyDirections = { type: 'FeatureCollection', features: [] };
 let map;
 let token;
 let recording;
+let trackSearchName;
 let yawProfile;
 let yawReference;
 let uploadedFile;
@@ -640,13 +641,14 @@ async function initMap() {
     });
 }
 
-async function openRecording(data, track, displayName, transform, yaw = 0, profile = null) {
+async function openRecording(data, track, { display_name, search_name, alignment: transform, yaw = 0, yaw_profile: profile }) {
     recording = data;
+    trackSearchName = search_name;
     yawProfile = profile;
     yawReference = transform && transform.yaw_reference;
     if (resetBestFit) resetBestFit();
     searchSequence++;
-    const name = displayName || recording.display_name || track;
+    const name = display_name || recording.display_name || track;
     field('recording-name').textContent = name;
     const details = [
         recording.game,
@@ -656,10 +658,11 @@ async function openRecording(data, track, displayName, transform, yaw = 0, profi
         recording.skipped && `${recording.skipped} invalid samples skipped`,
     ];
     field('recording-details').textContent = details.filter(Boolean).join(' · ');
-    field('query').value = /^\d+$/.test(name) ? '' : circuitName(name);
+    field('query').value = search_name || (/^\d+$/.test(name) ? '' : circuitName(name));
     field('search-results').replaceChildren();
     field('track-name').value = track;
     field('display-name').value = name;
+    field('display-name').defaultValue = name;
     field('scale').value = transform ? transform.scale : 1;
     field('rotation').value = transform ? transform.rotation : 0;
     field('yaw').value = transform ? transform.yaw : yaw;
@@ -688,7 +691,7 @@ async function importRecording(loadFile) {
         form.append('recording', file);
         const imported = await requestJson(helper.dataset.importUrl, { method: 'POST', body: form });
         uploadedFile = file;
-        await openRecording(imported.recording, imported.track_key, imported.display_name, null, imported.yaw, imported.yaw_profile);
+        await openRecording(imported.recording, imported.track_key, imported);
     } catch (error) {
         showStatus(error.message);
     } finally {
@@ -746,7 +749,9 @@ field('search').addEventListener('submit', async event => {
     results.textContent = 'Searching…';
 
     const short = circuitName(query);
-    const recordingName = circuitName(field('display-name').value.trim() || recording.display_name || '');
+    const displayName = field('display-name').value.trim();
+    const recordingName = displayName === field('display-name').defaultValue && trackSearchName
+        ? trackSearchName : circuitName(displayName || recording.display_name || '');
     const words = searchWords(short);
     const recordingWords = searchWords(recordingName);
     // When the input is a short version of the uploaded name, search for the full circuit name.
@@ -849,17 +854,17 @@ field('alignment').addEventListener('submit', async event => {
 
 if (helper.dataset.recordingUrl) {
     requestJson(helper.dataset.recordingUrl)
-        .then(saved => openRecording(saved.recording, helper.dataset.track, saved.display_name, saved.alignment, 0, saved.yaw_profile))
+        .then(saved => openRecording(saved.recording, helper.dataset.track, saved))
         .catch(error => showStatus(error.message));
 }
 
 const upload = field('uploaded-recording');
 if (upload) {
-    const { file, recording, track_key, display_name, yaw, yaw_profile } = JSON.parse(upload.textContent);
+    const { file, ...imported } = JSON.parse(upload.textContent);
     upload.remove();
     const bytes = Uint8Array.from(atob(file), character => character.charCodeAt(0));
     uploadedFile = new File([bytes], 'simhub-recording.shtl');
-    openRecording(recording, track_key, display_name, null, yaw, yaw_profile)
+    openRecording(imported.recording, imported.track_key, imported)
         .catch(error => showStatus(error.message));
 } else if (helper.dataset.catalogUrl) {
     importRecording(async () => {
